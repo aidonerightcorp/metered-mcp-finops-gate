@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="only light">
+  <title>omni-fabric-runtime: Unified 5-Profile Adaptive Hermes Agent Plugin</title>
+  <style>
+    :root {
+      color-scheme: only light;
+      --paper: #f5f2ea;
+      --card: #fcfbf7;
+      --card-alt: #f0ece1;
+      --ink: #1b2230;
+      --muted: #525c6e;
+      --line: #d6cfc2;
+      --accent: #1b6b52;
+      --accent-soft: #e6f3ee;
+      --blue: #1d5bbf;
+      --blue-soft: #e9f0fc;
+      --plum: #6830ba;
+      --plum-soft: #f2ecfd;
+      --amber: #9a5b13;
+      --amber-soft: #fbf2e4;
+      --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --serif: Georgia, "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.55;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 22px 64px;
+    }
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 22px;
+    }
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .pill {
+      background: var(--accent-soft);
+      border: 1px solid #b5decb;
+      color: var(--accent);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      font-family: var(--mono);
+    }
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(28px, 3.3vw, 40px);
+      line-height: 1.18;
+      margin: 0 0 10px;
+    }
+    .lede {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 920px;
+      margin: 0 0 24px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 24px;
+    }
+    h2 {
+      font-family: var(--serif);
+      font-size: 22.5px;
+      margin: 0 0 6px;
+    }
+    .sec-sub {
+      color: var(--muted);
+      font-size: 14.5px;
+      margin: 0 0 18px;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    button, .btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--card-alt);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    button:hover, .btn:hover { background: #e6e0d2; text-decoration: none; }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #ffffff; }
+    .btn-primary:hover { background: #145440; color: #ffffff; }
+    .btn-blue { background: var(--blue); border-color: var(--blue); color: #ffffff; }
+    .btn-blue:hover { background: #164799; color: #ffffff; }
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 18px;
+    }
+    @media (max-width: 880px) {
+      .sim-grid { grid-template-columns: 1fr; }
+    }
+    .toggle-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #faf8f2;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    label.cap-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 10px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13.8px;
+    }
+    label.cap-row input {
+      margin-top: 3px;
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+    }
+    .profile-box {
+      background: #faf8f2;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .profile-badge {
+      display: inline-block;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      font-weight: 700;
+      background: var(--accent-soft);
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    pre.code {
+      margin: 12px 0 0;
+      background: #f5f1e6;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 12.2px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    .cap-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+    .cap-pill {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 9px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+    }
+    .cap-pill.on { background: var(--accent-soft); color: var(--accent); border-color: #b5decb; }
+    .cap-pill.off { background: var(--card-alt); color: var(--muted); }
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.3px;
+    }
+    .matrix-table th, .matrix-table td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 10px;
+      text-align: left;
+    }
+    .matrix-table th {
+      background: #f5f1e6;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .video-wrap {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (max-width: 880px) {
+      .video-wrap { grid-template-columns: 1fr; }
+    }
+    video {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #ece7da;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: #ffffff;
+      padding: 9px 15px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="eyebrow">Hermes Agent Manifest v2 &middot; Adaptive Multi-Agent Fabric Runtime</div>
+      <div class="pill">hermes plugins doctor --ci: 0 errors, 0 warnings</div>
+    </div>
+
+    <h1><code>omni-fabric-runtime</code>: Everything in One Adaptive Hermes Plugin</h1>
+    <p class="lede">
+      One drop-in Hermes Agent plugin packaging durable <code>CAS lease_epoch</code> task fencing, disjoint
+      <code>maker &ne; checker</code> object reuse with <code>FTS5</code> RRF hybrid search, a <code>3..250</code> Macro-DAG workflow compiler,
+      parameterized <code>NodeGrid</code> + contextual RL canary optimization, progressive 4-rung neural boil-down, and a loopback swarm proxy.
+      Automatically adapts across <strong>5 operational profiles</strong> based on what your local machine can run.
+    </p>
+
+    <div class="btn-row">
+      <a class="btn btn-primary" href="https://github.com/aidonerightcorp/omni-fabric-runtime" target="_blank" rel="noopener">Open omni-fabric-runtime Repo</a>
+      <button type="button" class="btn-blue" onclick="copyInstall()">Copy hermes:// Install URI</button>
+      <a class="btn" href="hermes-submission.html">View Pinned Hackathon Entry (PR #151420)</a>
+      <a class="btn" href="quorum-forge.html">View QuorumForge Benchmarks</a>
+    </div>
+
+    <!-- Interactive Host Capability Auto-Sensor -->
+    <section>
+      <h2>1. Interactive Host Environment Simulator (<code>fabric_probe_and_configure</code>)</h2>
+      <p class="sec-sub">
+        Toggle what is installed or reachable inside your local environment to see how <code>omni-fabric-runtime</code> configures itself automatically.
+      </p>
+
+      <div class="sim-grid">
+        <div class="toggle-list">
+          <strong style="font-size:14px;margin-bottom:2px;">Simulated Local Host Environment:</strong>
+          <label class="cap-row">
+            <input type="checkbox" id="chk-disk" checked onchange="recomputeProfile()">
+            <div>
+              <strong>Writable Profile Disk (SQLite WAL + FTS5)</strong><br>
+              <span style="color:var(--muted);font-size:12.4px;">Uncheck to simulate a read-only serverless or ephemeral container.</span>
+            </div>
+          </label>
+          <label class="cap-row">
+            <input type="checkbox" id="chk-torch" checked onchange="recomputeProfile()">
+            <div>
+              <strong>Local Neural Math Stack (<code>numpy</code> + <code>torch</code> + <code>safetensors</code>)</strong><br>
+              <span style="color:var(--muted);font-size:12.4px;">Unlocks Wanda trace channel pruning (-61% to -78% RAM) &amp; 0-epoch SVD nullspace edits.</span>
+            </div>
+          </label>
+          <label class="cap-row">
+            <input type="checkbox" id="chk-runner" onchange="recomputeProfile()">
+            <div>
+              <strong>Loopback Local Model Runner (<code>127.0.0.1:11434</code>)</strong><br>
+              <span style="color:var(--muted);font-size:12.4px;">Unlocks right-sized context &amp; schema-constrained local generation inside the swarm proxy.</span>
+            </div>
+          </label>
+          <label class="cap-row">
+            <input type="checkbox" id="chk-upstream" onchange="recomputeProfile()">
+            <div>
+              <strong>Optional Remote Fabric Endpoint (<code>upstream_endpoint</code>)</strong><br>
+              <span style="color:var(--muted);font-size:12.4px;">Opt-in selective sync of <code>sync_ready</code> objects &amp; <code>unseen_only</code> frontier tasks.</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="profile-box">
+          <div class="profile-badge" id="out-badge">Selected Profile: local_neural</div>
+          <div style="font-weight:700;font-size:16px;" id="out-title">Profile 2: Local Neural &amp; Weight-Space Studio (Zero Network)</div>
+          <p style="margin:6px 0 10px;font-size:13.6px;color:var(--muted);" id="out-desc"></p>
+          <div class="cap-pills" id="out-pills"></div>
+          <pre class="code" id="out-yaml"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flagship Zero-Overlap Demo Video -->
+    <section>
+      <h2>2. Narrated 1080p30 Walkthrough (&lt;90s, Zero Text/Box Overlaps)</h2>
+      <p class="sec-sub">
+        Demonstrates all 5 adaptive profiles, real <code>hermes plugins doctor --ci</code> validation, 240-task Macro-DAG fencing, Wanda channel pruning, 0-epoch SVD nullspace surgery, and 0-token loopback swarm distillation.
+      </p>
+
+      <div class="video-wrap">
+        <div>
+          <video controls preload="metadata">
+            <source src="omni_fabric_adaptive_plugin.mp4" type="video/mp4">
+            <source src="https://github.com/aidonerightcorp/omni-fabric-runtime/releases/download/v0.2.0/omni-fabric-adaptive-plugin.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div>
+          <table class="matrix-table">
+            <thead>
+              <tr><th>Metric / Check</th><th>Measured Result</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>hermes plugins doctor --ci</code></td><td><strong>0 errors, 0 warnings</strong> (8 tools, 10 hooks)</td></tr>
+              <tr><td>Required Pip Dependencies</td><td><strong>0</strong> (pure Python 3 stdlib baseline)</td></tr>
+              <tr><td>Macro-DAG Workflow Range</td><td><strong>3..250 tasks</strong> across 6 topological phases</td></tr>
+              <tr><td>Wanda Trace Channel Pruning</td><td><strong>-60.9% to -77.9% RAM</strong>, 100% holdout pass</td></tr>
+              <tr><td>0-Epoch SVD Nullspace Edit</td><td><strong>0.0 anchor drift</strong>, 100% unseen route pass</td></tr>
+              <tr><td>Wave-2 Swarm Boil-Down</td><td><strong>0 LLM tokens</strong> (&lt;0.95 ms loopback latency)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Full 5-Mode Capability Matrix -->
+    <section>
+      <h2>3. Complete 5-Profile Capability Matrix</h2>
+      <p class="sec-sub">
+        Every module is governed by <code>config/adaptive_fabric_grid.json</code> (enforced by AST zero-magic-literal and domain-agnostic naming gates).
+      </p>
+      <div style="overflow-x:auto;">
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th>Runtime Capability</th>
+              <th>1. <code>stdlib_airgap</code></th>
+              <th>2. <code>local_neural</code></th>
+              <th>3. <code>local_runner_swarm</code></th>
+              <th>4. <code>hybrid_fabric_sync</code></th>
+              <th>5. <code>thin_remote_client</code></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Monotonic CAS <code>lease_epoch</code> Queue + 240-Task DAG</td>
+              <td>Local SQLite WAL</td>
+              <td>Local SQLite WAL</td>
+              <td>Local SQLite WAL</td>
+              <td>Local WAL + Frontier Pull</td>
+              <td>Memory + Remote Bridge</td>
+            </tr>
+            <tr>
+              <td>Disjoint <code>maker &ne; checker</code> Store + FTS5 RRF Search</td>
+              <td>Local SQLite FTS5</td>
+              <td>Local SQLite FTS5</td>
+              <td>Local SQLite FTS5</td>
+              <td><code>local_only</code> + <code>sync_ready</code></td>
+              <td>Remote Fabric Store</td>
+            </tr>
+            <tr>
+              <td>Parameterized <code>NodeGrid</code> + RL Canary Auto-Rollback</td>
+              <td>Active Locally</td>
+              <td>Active Locally</td>
+              <td>Active Locally</td>
+              <td>Local + Shared Ledger</td>
+              <td>Remote <code>/mcp</code> Bridge</td>
+            </tr>
+            <tr>
+              <td>0-Token Trace Boil-Down Compiler</td>
+              <td>Stdlib ReLU + Ridge</td>
+              <td>PyTorch + Wanda + SVD</td>
+              <td>PyTorch + Schema Runner</td>
+              <td>Full Local + Shared Reuse</td>
+              <td>Upstream Shim Cache</td>
+            </tr>
+            <tr>
+              <td>Loopback <code>127.0.0.1</code> Multi-Agent Swarm Proxy</td>
+              <td>On-Demand</td>
+              <td>On-Demand</td>
+              <td>Active w/ Local Runner</td>
+              <td>Active + Upstream Sync</td>
+              <td>Disabled (Zero Footprint)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast">Copied!</div>
+
+  <script>
+    function copyInstall() {
+      navigator.clipboard.writeText("hermes://plugin/install?repo=aidonerightcorp/omni-fabric-runtime&enable=1").then(() => {
+        const t = document.getElementById("toast");
+        t.textContent = "Copied omni-fabric-runtime install URI";
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 1800);
+      });
+    }
+
+    function recomputeProfile() {
+      const disk = document.getElementById("chk-disk").checked;
+      const torch = document.getElementById("chk-torch").checked;
+      const runner = document.getElementById("chk-runner").checked;
+      const upstream = document.getElementById("chk-upstream").checked;
+
+      let prof = "stdlib_airgap";
+      let title = "Profile 1: Pure-Python Airgapped Local Cell (0 Pip Packages)";
+      let desc = "Runs anywhere Python 3 runs with zero external packages and zero network calls. Includes SQLite WAL CAS fencing, FTS5 RRF search, 240-task DAGs, NodeGrid RL canary optimization, and the stdlib 0-epoch ReLU/ridge micro-router.";
+
+      if (!disk && upstream) {
+        prof = "thin_remote_client";
+        title = "Profile 5: Ephemeral Zero-Disk Thin Remote Client";
+        desc = "Designed for read-only containers or serverless sandboxes. Uses an in-memory buffer and bridges queue, promotion, optimization, and 21 MCP tools directly to your configured upstream_endpoint.";
+      } else if (disk && upstream) {
+        prof = "hybrid_fabric_sync";
+        title = "Profile 4: Hybrid Local Cell + Selective Federated Fabric Sync";
+        desc = "Keeps private scratch tasks (visibility='local_only'), subagent swarms, and neural distillation on local SQLite WAL while pulling unseen_only frontier work and pushing sync_ready promoted objects.";
+      } else if (disk && runner) {
+        prof = "local_runner_swarm";
+        title = "Profile 3: Loopback Multi-Agent Swarm Proxy + Local Model Runner";
+        desc = "Exposes 127.0.0.1 /v1/chat/completions and /swarm/* so Hermes subagents and external harnesses share one fenced queue, right-size context windows, and boil repetitive Wave-2 turns down to 0 LLM tokens.";
+      } else if (disk && torch) {
+        prof = "local_neural";
+        title = "Profile 2: Local Neural Synthesis, Wanda Pruning & SVD Surgery";
+        desc = "Offline local mode supercharged by NumPy/PyTorch: synthesizes multi-head .safetensors micro-networks, prunes channels from historical traces (-61% to -78% RAM), and applies 0-epoch nullspace weight edits.";
+      }
+
+      document.getElementById("out-badge").textContent = "Selected Profile: " + prof;
+      document.getElementById("out-title").textContent = title;
+      document.getElementById("out-desc").textContent = desc;
+
+      const pills = [
+        ["CAS Task Queue", true],
+        ["Maker != Checker Reuse", true],
+        ["FTS5 RRF Search", disk],
+        ["240-Task Macro-DAG", true],
+        ["NodeGrid + RL Canary", true],
+        ["Stdlib 0-Token Router", disk],
+        ["PyTorch Wanda + SVD Edit", disk && torch],
+        ["Loopback Swarm Proxy", disk && (runner || upstream)],
+        ["Selective Upstream Sync", upstream]
+      ];
+      document.getElementById("out-pills").innerHTML = pills
+        .map(([name, on]) => `<span class="cap-pill ${on ? 'on' : 'off'}">${on ? 'ACTIVE' : 'OFF'}: ${name}</span>`)
+        .join("");
+
+      const endpointVal = upstream ? '"https://your-fabric-endpoint.example"' : '""';
+      document.getElementById("out-yaml").textContent =
+`# ~/.hermes/config.yaml
+plugins:
+  entries:
+    omni-fabric-runtime:
+      enabled: true
+      config:
+        setup_profile: "auto"   # resolves -> "${prof}"
+        regime: "balanced_adaptive"
+        local_runner_url: "http://127.0.0.1:11434"
+        upstream_endpoint: ${endpointVal}
+        default_visibility: "local_only"`;
+    }
+
+    recomputeProfile();
+  </script>
+</body>
+</html>
