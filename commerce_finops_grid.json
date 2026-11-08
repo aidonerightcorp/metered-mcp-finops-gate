@@ -1,0 +1,145 @@
+{
+  "grid_id": "metered_commerce_and_finops_grid_v1",
+  "generation": 1,
+  "parameters": {
+    "unit_call_price_microusd": {
+      "kind": "integer_range",
+      "low": 100,
+      "high": 5000000,
+      "step": 100
+    },
+    "savings_fee_basis_points": {
+      "kind": "integer_range",
+      "low": 0,
+      "high": 5000,
+      "step": 50
+    },
+    "receipt_ttl_seconds": {
+      "kind": "integer_range",
+      "low": 60,
+      "high": 86400,
+      "step": 60
+    },
+    "verification_quorum": {
+      "kind": "integer_range",
+      "low": 1,
+      "high": 5,
+      "step": 1
+    },
+    "trivial_prompt_char_cap": {
+      "kind": "integer_range",
+      "low": 16,
+      "high": 256,
+      "step": 8
+    },
+    "structured_output_token_floor": {
+      "kind": "integer_range",
+      "low": 256,
+      "high": 8192,
+      "step": 128
+    },
+    "baseline_high_effort_tokens": {
+      "kind": "integer_range",
+      "low": 128,
+      "high": 16384,
+      "step": 64
+    },
+    "minimal_effort_tokens": {
+      "kind": "integer_range",
+      "low": 0,
+      "high": 512,
+      "step": 16
+    },
+    "output_token_price_microusd_per_1k": {
+      "kind": "integer_range",
+      "low": 100,
+      "high": 100000,
+      "step": 100
+    },
+    "storyboard_scene_cap": {
+      "kind": "integer_range",
+      "low": 3,
+      "high": 10,
+      "step": 1
+    },
+    "require_distinct_checker": {
+      "kind": "boolean",
+      "choices": [true, false]
+    },
+    "settlement_rail": {
+      "kind": "choice",
+      "choices": ["x402_usdc", "prepaid_credit", "order_capture", "hybrid"]
+    }
+  },
+  "constraints": [
+    {
+      "id": "distinct_checker_when_quorum_above_one",
+      "when_param": "verification_quorum",
+      "min_value": 2,
+      "require_param": "require_distinct_checker",
+      "equals": true
+    },
+    {
+      "id": "minimal_below_baseline_tokens",
+      "less_or_equal_pair": ["minimal_effort_tokens", "baseline_high_effort_tokens"]
+    }
+  ],
+  "runtime_constants": {
+    "http_status_ok": 200,
+    "http_status_payment_required": 402,
+    "basis_points_denominator": 10000,
+    "tokens_per_kilotoken": 1000,
+    "boundary_expansion_factor": 2,
+    "hmac_digest_hex_chars": 32,
+    "default_canvas_width": 1920,
+    "default_canvas_height": 1080,
+    "default_fps": 30,
+    "default_music_volume": 0.64,
+    "default_duck_db": -7.5,
+    "default_loudness_lufs": -15
+  },
+  "regimes": {
+    "micro_tool_x402": {
+      "unit_call_price_microusd": 5000,
+      "savings_fee_basis_points": 1500,
+      "receipt_ttl_seconds": 900,
+      "verification_quorum": 1,
+      "trivial_prompt_char_cap": 64,
+      "structured_output_token_floor": 1280,
+      "baseline_high_effort_tokens": 900,
+      "minimal_effort_tokens": 32,
+      "output_token_price_microusd_per_1k": 12000,
+      "storyboard_scene_cap": 5,
+      "require_distinct_checker": true,
+      "settlement_rail": "x402_usdc"
+    },
+    "enterprise_finops_share": {
+      "unit_call_price_microusd": 1000,
+      "savings_fee_basis_points": 2000,
+      "receipt_ttl_seconds": 3600,
+      "verification_quorum": 1,
+      "trivial_prompt_char_cap": 72,
+      "structured_output_token_floor": 1536,
+      "baseline_high_effort_tokens": 1280,
+      "minimal_effort_tokens": 32,
+      "output_token_price_microusd_per_1k": 15000,
+      "storyboard_scene_cap": 5,
+      "require_distinct_checker": true,
+      "settlement_rail": "prepaid_credit"
+    },
+    "escrow_commerce_quorum": {
+      "unit_call_price_microusd": 25000,
+      "savings_fee_basis_points": 1000,
+      "receipt_ttl_seconds": 7200,
+      "verification_quorum": 2,
+      "trivial_prompt_char_cap": 56,
+      "structured_output_token_floor": 2048,
+      "baseline_high_effort_tokens": 1408,
+      "minimal_effort_tokens": 48,
+      "output_token_price_microusd_per_1k": 15000,
+      "storyboard_scene_cap": 6,
+      "require_distinct_checker": true,
+      "settlement_rail": "hybrid"
+    }
+  }
+}
