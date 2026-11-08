@@ -251,7 +251,7 @@
         <div class="kpi-lbl">Frontier-Synthesized PyTorch Holdout Pass (<code>302.8 KiB</code> <code>.safetensors</code>, <code>0.37 ms/task</code>)</div>
       </div>
       <div class="card">
-        <div class="kpi-val">-79.6% RAM</div>
+        <div class="kpi-val">-77.9% RAM</div>
         <div class="kpi-lbl">Historical-Trace Channel Slicing (<code>96-d -&gt; 24-d</code>) with 0-Epoch Ridge Recalibration</div>
       </div>
       <div class="card">
@@ -333,7 +333,7 @@
     <div class="card">
       <div style="display:flex; flex-wrap:wrap; gap:10px;">
         <button class="btn" onclick="runWave(1)">1. Run Wave 1: Swarm Bootstrap (External Bots + GrokBot + Hermes)</button>
-        <button class="btn teal" onclick="runWave(2)">2. Trigger Weight Boil-Down &amp; 79.6% Channel Slice</button>
+        <button class="btn teal" onclick="runWave(2)">2. Trigger Weight Boil-Down &amp; 77.9% Channel Slice</button>
         <button class="btn primary" onclick="runWave(3)">3. Run Wave 2: Live Reverse Proxy Traffic (0 Tokens!)</button>
       </div>
       <div class="sim-log" id="sim-output">
@@ -476,7 +476,7 @@
       },
       sub_weights: {
         title: "Substrate C: Weight-Space Surgery & Historical-Trace Slicing",
-        desc: "Combines 0-epoch SVD nullspace readout edits (0.0 anchor drift) with Wanda-style activation pruning (-79.6% parameters/RAM) and 384-d -> 18-d supervised embedding compression.",
+        desc: "Combines 0-epoch SVD nullspace readout edits (0.0 anchor drift) with Wanda-style activation pruning (-77.9% parameters/RAM) and 384-d -> 18-d supervised embedding compression.",
         code: "P_null = I - V_anchor^T V_anchor;  Delta_W = P_null @ solve(H_proj^T H_proj + lambda*I, H_proj^T R)"
       }
     };
@@ -495,7 +495,7 @@
       if (step === 1) {
         el.innerHTML = "[Wave 1 · Swarm Bootstrap] Hermes delegates 6 sub-tasks -> chat-worker-01 & hermes-subagent-01 claim (CAS epoch=1) -> 6 zombie stale-epoch writes BLOCKED -> 6 self-check attempts BLOCKED -> grokbot-checker-01 & chat-checker-02 promote 6 checked objects (3,840 bootstrap tokens).";
       } else if (step === 2) {
-        el.innerHTML = "[Boil-Down Complete · 0 SGD Epochs] Compiled custom (518 x 2) float32 weights from 6 disjointly checked traces + sliced dormant hidden channels 96-d -> 24-d (-79.6% RAM) + compressed 384-d embeddings -> 18-d (21.3x smaller, 100% holdout accuracy).";
+        el.innerHTML = "[Boil-Down Complete · 0 SGD Epochs] Compiled custom (518 x 2) float32 weights from 6 disjointly checked traces + sliced dormant hidden channels 96-d -> 24-d (-77.9% RAM) + compressed 384-d embeddings -> 18-d (21.3x smaller, 100% holdout accuracy).";
       } else {
         el.innerHTML = "[Wave 2 · Live Reverse Proxy Traffic] 8 incoming requests across hermes-subagents, Frontier Chat Bots, GrokBot & local model runner -> 2 hit Rung 0 Promoted Cache + 2 hit Rung 0 Deterministic Gate + 4 unseen paraphrases hit Rung 1 Custom Compiled Weights -> 0 LLM tokens consumed (-100.0% vs 5,120 counterfactual tokens), median proxy latency 0.14 ms!";
       }
