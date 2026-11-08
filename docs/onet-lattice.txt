@@ -1,0 +1,54 @@
+AGENT INSTRUCTION: Machine-readable plain-text twin of onet-lattice.html. Filter roles and Task Objects with zero login.
+
+DURABLE TASK FABRIC — UNIVERSAL OCCUPATIONAL & DAY-TO-DAY ACTION LATTICE EXPLORER
+Taxonomy Source: U.S. DOL O*NET 31.0 (CC BY 4.0)
+
+1. TAXONOMY FACTORIZATION SUMMARY
+- Major SOC Occupational Groups: 23
+- Occupational Role Profiles: 1016 (923 tabulated + 93 duty-projected)
+- Tabulated Day-to-Day Task Statements: 18838 (24087 Task-to-DWA links)
+- Detailed Work Activities (DWAs): 2087 (97.46% shared across >=2 roles)
+- Intermediate Work Activities (IWAs): 332 (99.7% shared across >=2 roles)
+- Generalized Work Activities (GWAs): 41 (459.46x compression)
+- Tasks Mapping to Cross-Role Shared DWAs: 99.47%
+
+2. MULTI-STEP WORKFLOW BENCHMARK (WAVE 1 -> WAVE 10)
+- Sampled Multi-Step Workflows Executed: 5520 across all 23 Major SOC Groups
+- Isolated Per-Job Chat Mean Compute Tokens: 2080.62 tok/workflow (0.0% cross-role reuse)
+- Unchecked Vector Memory Final Poison Leakage: 28.0%
+- CAS-Fenced Check-Gated Lattice Mean Compute Tokens: 106.5 tok/workflow
+- Cumulative Compute Token Reduction: 94.88% (Wave 10 reduction: 95.62%)
+- CAS Stale Lease Writes Blocked: 1368 | Split-Brain Corruptions: 0
+
+3. WEIGHT-SPACE ROUTING FINE-TUNE & 10% CANARY GATE
+- Unseen Held-Out Workflows: 1150 across all 23 Major SOC Groups
+- Untuned Router Pass Rate: 71.58% -> Fine-Tuned Policy Pass Rate: 96.6% (+25.02 pts)
+- Held-Out Mean Tokens: 64.91 -> 124.42 tok/workflow
+
+Major SOC Group Breakdown:
+  [11] Management Occupations: 59 roles, 1216 tasks, 299 DWAs (82.94% cross-sector)
+  [13] Business and Financial Operations Occupations: 50 roles, 990 tasks, 252 DWAs (81.35% cross-sector)
+  [15] Computer and Mathematical Occupations: 38 roles, 772 tasks, 178 DWAs (81.46% cross-sector)
+  [17] Architecture and Engineering Occupations: 59 roles, 1240 tasks, 222 DWAs (73.42% cross-sector)
+  [19] Life, Physical, and Social Science Occupations: 66 roles, 1242 tasks, 381 DWAs (84.25% cross-sector)
+  [21] Community and Social Service Occupations: 18 roles, 299 tasks, 104 DWAs (78.85% cross-sector)
+  [23] Legal Occupations: 8 roles, 125 tasks, 51 DWAs (80.39% cross-sector)
+  [25] Educational Instruction and Library Occupations: 68 roles, 1642 tasks, 179 DWAs (81.56% cross-sector)
+  [27] Arts, Design, Entertainment, Sports, and Media Occupations: 45 roles, 811 tasks, 233 DWAs (78.97% cross-sector)
+  [29] Clinical Practitioners and Technical Occupations: 96 roles, 1736 tasks, 309 DWAs (75.4% cross-sector)
+  [31] Care Support Occupations: 20 roles, 348 tasks, 109 DWAs (81.65% cross-sector)
+  [33] Protective Service Occupations: 28 roles, 521 tasks, 197 DWAs (81.22% cross-sector)
+  [35] Food Preparation and Serving Related Occupations: 18 roles, 322 tasks, 68 DWAs (55.88% cross-sector)
+  [37] Building and Grounds Cleaning and Maintenance Occupations: 10 roles, 166 tasks, 59 DWAs (79.66% cross-sector)
+  [39] Personal Care and Service Occupations: 34 roles, 620 tasks, 174 DWAs (87.93% cross-sector)
+  [41] Sales and Related Occupations: 23 roles, 428 tasks, 129 DWAs (81.4% cross-sector)
+  [43] Office and Administrative Support Occupations: 55 roles, 979 tasks, 197 DWAs (86.29% cross-sector)
+  [45] Farming, Fishing, and Forestry Occupations: 14 roles, 227 tasks, 90 DWAs (75.56% cross-sector)
+  [47] Construction and Extraction Occupations: 65 roles, 1144 tasks, 213 DWAs (65.73% cross-sector)
+  [49] Installation, Maintenance, and Repair Occupations: 52 roles, 1018 tasks, 199 DWAs (72.36% cross-sector)
+  [51] Production Occupations: 114 roles, 2147 tasks, 300 DWAs (61.0% cross-sector)
+  [53] Transportation and Material Moving Occupations: 57 roles, 919 tasks, 258 DWAs (87.6% cross-sector)
+  [55] Defense Tactical and Air/Naval Crew Occupations: 19 roles, 109 tasks, 110 DWAs (100.0% cross-sector)
+
+Links: /onet-lattice.html | /onet-lattice.txt | Attribution: U.S. Department of Labor O*NET 31.0 (CC BY 4.0).
+Durable Task Fabric infrastructure for shared Tasks, reusable Task Objects, and durable records. Based on initial benchmark testing.

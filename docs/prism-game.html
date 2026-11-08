@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="only light">
+  <title>Signal Weaver: Meridian Optical Relay — Atelier Meridian</title>
+  <style>
+    :root {
+      color-scheme: only light;
+      --paper-bg: #f5f2ea;
+      --card-bg: #fbf9f4;
+      --vellum-bg: #faf6ec;
+      --border-warm: #dfd8c8;
+      --ink-primary: #1b2230;
+      --ink-muted: #4f5b6b;
+      --sapphire: #1d4ed8;
+      --emerald: #0f766e;
+      --amber: #b45309;
+      --crimson: #be123c;
+      --soft-sapphire: #e8effd;
+      --soft-emerald: #e4f5f2;
+      --soft-amber: #fdf2df;
+      --soft-crimson: #fde8ee;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--paper-bg);
+      color: var(--ink-primary);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+    .agent-thin-bar {
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border-warm);
+      padding: 5px 16px;
+      font-size: 11.5px;
+      color: var(--ink-muted);
+      text-align: center;
+      font-family: "JetBrains Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .game-shell {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 16px 20px 36px;
+    }
+    .instrument-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-warm);
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .title-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .back-link {
+      color: var(--ink-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 7px;
+      border: 1px solid var(--border-warm);
+      background-color: var(--paper-bg);
+    }
+    .back-link:hover { color: var(--ink-primary); border-color: var(--ink-primary); }
+    .game-title {
+      font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0;
+    }
+    .level-tabs {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .lv-btn {
+      background-color: var(--paper-bg);
+      color: var(--ink-primary);
+      border: 1px solid var(--border-warm);
+      border-radius: 8px;
+      padding: 6px 11px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .lv-btn.active {
+      background-color: var(--ink-primary);
+      color: var(--card-bg);
+      border-color: var(--ink-primary);
+    }
+    .lv-btn.cleared {
+      border-color: var(--emerald);
+    }
+    .audio-hud {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .hud-chip {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      padding: 5px 9px;
+      border-radius: 7px;
+      background-color: var(--paper-bg);
+      border: 1px solid var(--border-warm);
+    }
+    .workbench-grid {
+      display: grid;
+      grid-template-columns: 1fr 310px;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 1040px) {
+      .workbench-grid { grid-template-columns: 1fr; }
+    }
+    .board-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-warm);
+      border-radius: 14px;
+      padding: 14px;
+      position: relative;
+    }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .tool-group {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .tool-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background-color: var(--paper-bg);
+      color: var(--ink-primary);
+      border: 1px solid var(--border-warm);
+      border-radius: 9px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tool-btn.active {
+      background-color: var(--ink-primary);
+      color: var(--card-bg);
+      border-color: var(--ink-primary);
+    }
+    .tool-key {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background-color: rgba(27, 34, 48, 0.09);
+    }
+    .tool-btn.active .tool-key {
+      background-color: rgba(251, 249, 244, 0.22);
+    }
+    .action-btn {
+      background-color: var(--soft-sapphire);
+      color: var(--sapphire);
+      border: 1px solid rgba(29, 78, 216, 0.28);
+      border-radius: 9px;
+      padding: 8px 12px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .action-btn.amber {
+      background-color: var(--soft-amber);
+      color: var(--amber);
+      border-color: rgba(180, 83, 9, 0.30);
+    }
+    .action-btn.emerald {
+      background-color: var(--soft-emerald);
+      color: var(--emerald);
+      border-color: rgba(15, 118, 110, 0.30);
+    }
+    .canvas-frame {
+      position: relative;
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-warm);
+      background-color: var(--vellum-bg);
+    }
+    canvas#optical-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background-color: var(--vellum-bg);
+      cursor: crosshair;
+    }
+    .victory-banner {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background-color: var(--soft-emerald);
+      border: 1px solid var(--emerald);
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .victory-banner.visible {
+      display: flex;
+    }
+    .side-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .info-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-warm);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .info-card h2, .info-card h3 {
+      margin: 0 0 6px;
+      font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      font-size: 18px;
+    }
+    .info-sub {
+      margin: 0 0 12px;
+      font-size: 13px;
+      color: var(--ink-muted);
+      line-height: 1.45;
+    }
+    .meter-row {
+      margin-bottom: 10px;
+    }
+    .meter-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .meter-track {
+      width: 100%;
+      height: 9px;
+      border-radius: 999px;
+      background-color: var(--paper-bg);
+      border: 1px solid var(--border-warm);
+      overflow: hidden;
+    }
+    .meter-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.08s linear;
+    }
+    .controls-list {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 12.5px;
+      color: var(--ink-muted);
+      line-height: 1.65;
+    }
+    .controls-list strong { color: var(--ink-primary); }
+    .standard-footer {
+      margin-top: 28px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-warm);
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--ink-muted);
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+    .footer-links a {
+      color: var(--ink-primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="agent-thin-bar">Agent summary: Signal Weaver: Meridian Optical Relay playable 60fps HTML5 optical instrument (5 solver-checked levels, procedural WebAudio, window.renderAt(seconds) hook; studio portal at ./studio.html).</div>
+  <div class="game-shell">
+    <header class="instrument-header">
+      <div class="title-cluster">
+        <a class="back-link" href="./studio.html">&lt;- Atelier Meridian Portal</a>
+        <svg width="30" height="30" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Atelier Meridian emblem"><circle cx="32" cy="32" r="30" fill="#fbf9f4" stroke="#1b2230" stroke-width="2.2"/><circle cx="32" cy="32" r="23" stroke="#1b2230" stroke-width="1.1" stroke-dasharray="3 3"/><line x1="32" y1="2" x2="32" y2="11" stroke="#1b2230" stroke-width="1.8"/><line x1="32" y1="53" x2="32" y2="62" stroke="#1b2230" stroke-width="1.8"/><line x1="2" y1="32" x2="11" y2="32" stroke="#1b2230" stroke-width="1.8"/><line x1="53" y1="32" x2="62" y2="32" stroke="#1b2230" stroke-width="1.8"/><polygon points="32,12 49,42 15,42" fill="#fbf9f4" stroke="#1b2230" stroke-width="2.0" stroke-linejoin="round"/><polygon points="32,12 40.5,27 32,42" fill="#1d4ed8" fill-opacity="0.18"/><line x1="10" y1="31" x2="25" y2="27" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/><line x1="39" y1="24" x2="54" y2="19" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round"/><line x1="41" y1="29" x2="55" y2="30" stroke="#b45309" stroke-width="2.2" stroke-linecap="round"/><line x1="42" y1="34" x2="53" y2="41" stroke="#be123c" stroke-width="2.2" stroke-linecap="round"/><circle cx="32" cy="30" r="3.2" fill="#b45309" stroke="#1b2230" stroke-width="1.4"/></svg>
+        <h1 class="game-title">Signal Weaver: Meridian Optical Relay</h1>
+      </div>
+
+      <div class="level-tabs" id="level-tabs" role="tablist" aria-label="Select Optical Level"></div>
+
+      <div class="audio-hud">
+        <span class="hud-chip" id="fps-badge">60 FPS</span>
+        <span class="hud-chip" id="efficiency-badge">Eff: 100%</span>
+        <label style="font-size:12px;display:inline-flex;align-items:center;gap:5px;cursor:pointer;">
+          <input type="checkbox" id="auto-advance-toggle" checked> Auto-Next
+        </label>
+        <button type="button" class="lv-btn" id="mute-btn" aria-pressed="false">Sound: On</button>
+        <input type="range" id="volume-slider" min="0" max="100" value="65" style="width:76px;" aria-label="Master Volume">
+      </div>
+    </header>
+
+    <div class="workbench-grid">
+      <div class="board-card">
+        <div class="toolbar">
+          <div class="tool-group" id="tool-palette">
+            <button type="button" class="tool-btn active" data-tool="mirror" id="tool-btn-mirror">
+              <span class="tool-key">1</span> Mirror <span id="inv-mirror">(0)</span>
+            </button>
+            <button type="button" class="tool-btn" data-tool="splitter" id="tool-btn-splitter">
+              <span class="tool-key">2</span> Splitter <span id="inv-splitter">(0)</span>
+            </button>
+            <button type="button" class="tool-btn" data-tool="filter" id="tool-btn-filter">
+              <span class="tool-key">3</span> Phase Filter <span id="inv-filter">(0)</span>
+            </button>
+            <button type="button" class="tool-btn" data-tool="erase" id="tool-btn-erase">
+              <span class="tool-key">4</span> Clear Cell
+            </button>
+          </div>
+
+          <div class="tool-group">
+            <button type="button" class="action-btn" id="rotate-btn" title="Rotate 45 degrees (R or Right-Click)">
+              Rotate +45° (R) · <span id="angle-readout">45°</span>
+            </button>
+            <button type="button" class="action-btn amber" id="overdrive-btn" title="Pulse Harmonic Overdrive (Space)">
+              Overdrive (Space)
+            </button>
+            <button type="button" class="action-btn emerald" id="autosolve-btn">
+              Auto-Solve Demo
+            </button>
+            <button type="button" class="lv-btn" id="reset-btn">Reset</button>
+          </div>
+        </div>
+
+        <div class="canvas-frame">
+          <canvas id="optical-canvas" width="900" height="590"></canvas>
+        </div>
+
+        <div class="victory-banner" id="victory-banner">
+          <div>
+            <strong style="color:var(--emerald);font-size:15px;" id="victory-headline">Harmonic Lock Achieved!</strong>
+            <span style="font-size:13px;color:var(--ink-primary);margin-left:8px;" id="victory-stats"></span>
+          </div>
+          <button type="button" class="btn-next lv-btn active" id="next-level-btn">Next Level -&gt;</button>
+        </div>
+      </div>
+
+      <aside class="side-panel">
+        <div class="info-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <span style="font-size:11.5px;font-weight:700;color:var(--sapphire);text-transform:uppercase;" id="regime-label">Regime</span>
+            <code style="font-size:11px;color:var(--ink-muted);" id="solver-benchmark">Solver: 1.65s</code>
+          </div>
+          <h2 id="level-title">Meridian Calibration</h2>
+          <p class="info-sub" id="level-subtitle"></p>
+
+          <div class="meter-row">
+            <div class="meter-top">
+              <span>Optical Stability</span>
+              <span id="stability-pct">100%</span>
+            </div>
+            <div class="meter-track">
+              <div class="meter-fill" id="stability-bar" style="width:100%;background:var(--sapphire);"></div>
+            </div>
+          </div>
+
+          <div id="resonator-meters"></div>
+        </div>
+
+        <div class="info-card">
+          <h3>Tactile Optical Controls</h3>
+          <ul class="controls-list">
+            <li><strong>Click Empty Cell:</strong> Place active optical relay</li>
+            <li><strong>Click Placed Relay:</strong> Rotate +45° in place</li>
+            <li><strong>R or Right-Click:</strong> Rotate hovered/active tool +45°</li>
+            <li><strong>Keys 1 / 2 / 3 / 4:</strong> Mirror, Splitter, Filter, Clear</li>
+            <li><strong>Space:</strong> Pulse Overdrive (1.65x harmonic charge)</li>
+            <li><strong>Auto-Solve Demo:</strong> Load NodeGrid-checked relays</li>
+          </ul>
+        </div>
+
+        <div class="info-card" style="padding:13px 16px;">
+          <div style="font-size:12px;font-weight:700;margin-bottom:5px;">NodeGrid Promoted Cell</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-muted);line-height:1.6;" id="grid-spec-readout"></div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="standard-footer">
+      <div class="footer-links">
+        <a href="./studio.html">Atelier Meridian Studio</a>
+        <a href="./studio.html#design-system">Paper &amp; Ink System</a>
+        <a href="./studio.html#task-explorer">240-Task Build Explorer</a>
+        <a href="./prism-game.html">Signal Weaver</a>
+      </div>
+      <div>Atelier Meridian Independent Interactive Craft — Built on sunlit Paper &amp; Ink principles with zero external runtime scripts.</div>
+    </footer>
+  </div>
+
+  <script>
+  (function() {
+    const LEVELS = [{"levelIndex":1,"levelId":"lv_01_calibration","title":"Meridian Calibration","subtitle":"Route the Sapphire reference beam around the drafting monolith and patrolling shutter.","regime":"calibration_tier","emitters":[{"x":1,"y":3,"dir":0,"color":0}],"pillars":[{"x":4,"y":3},{"x":6,"y":1}],"shutters":[{"x0":5,"y0":2,"x1":5,"y1":4,"phase":0.0}],"resonators":[{"x":8,"y":5,"color":0,"label":"R1"}],"inventory":{"mirror":4,"splitter":0,"filter":0},"solverPlacements":[{"x":3,"y":3,"kind":"mirror","rot":1},{"x":3,"y":5,"kind":"mirror","rot":1}],"chargeRate":0.34,"decayRate":0.12,"shutterHz":0.27,"beamStepLimit":48,"stabilityHorizon":90.0,"solverLockSec":2.95},{"levelIndex":2,"levelId":"lv_02_octave","title":"Bifurcated Octave","subtitle":"Divide one Sapphire beam with a half-silvered Splitter to charge twin chambers in unison.","regime":"harmonic_split_tier","emitters":[{"x":1,"y":3,"dir":0,"color":0}],"pillars":[{"x":5,"y":3},{"x":5,"y":2}],"shutters":[{"x0":6,"y0":3,"x1":8,"y1":3,"phase":0.25}],"resonators":[{"x":8,"y":1,"color":0,"label":"R1"},{"x":8,"y":5,"color":0,"label":"R2"}],"inventory":{"mirror":4,"splitter":1,"filter":0},"solverPlacements":[{"x":3,"y":3,"kind":"splitter","rot":1},{"x":3,"y":5,"kind":"mirror","rot":1},{"x":4,"y":1,"kind":"mirror","rot":3},{"x":4,"y":3,"kind":"mirror","rot":3}],"chargeRate":0.42,"decayRate":0.09,"shutterHz":0.36,"beamStepLimit":60,"stabilityHorizon":75.0,"solverLockSec":2.4},{"levelIndex":3,"levelId":"lv_03_chromatic","title":"Chromatic Transposition","subtitle":"Split the beam and tune a Phase Filter crystal to awaken both Sapphire and Emerald resonators.","regime":"chromatic_filter_tier","emitters":[{"x":1,"y":1,"dir":0,"color":0}],"pillars":[{"x":6,"y":1},{"x":4,"y":4}],"shutters":[{"x0":5,"y0":3,"x1":7,"y1":3,"phase":0.15}],"resonators":[{"x":8,"y":2,"color":0,"label":"R1"},{"x":8,"y":5,"color":1,"label":"R2"}],"inventory":{"mirror":4,"splitter":1,"filter":1},"solverPlacements":[{"x":3,"y":1,"kind":"splitter","rot":1},{"x":3,"y":3,"kind":"filter","rot":1},{"x":3,"y":5,"kind":"mirror","rot":1},{"x":5,"y":1,"kind":"mirror","rot":1},{"x":5,"y":2,"kind":"mirror","rot":1}],"chargeRate":0.5,"decayRate":0.09,"shutterHz":0.45,"beamStepLimit":72,"stabilityHorizon":75.0,"solverLockSec":2.0},{"levelIndex":4,"levelId":"lv_04_astrolabe","title":"Tri-Chord Astrolabe","subtitle":"Cross perpendicular beams cleanly across open parchment to harmonize Sapphire, Emerald, and Crimson.","regime":"astrolabe_chord_tier","emitters":[{"x":1,"y":2,"dir":0,"color":0},{"x":1,"y":5,"dir":0,"color":2}],"pillars":[{"x":5,"y":2},{"x":8,"y":5}],"shutters":[{"x0":4,"y0":3,"x1":5,"y1":3,"phase":0.0},{"x0":4,"y0":4,"x1":5,"y1":4,"phase":0.5}],"resonators":[{"x":8,"y":1,"color":0,"label":"R1"},{"x":8,"y":6,"color":1,"label":"R2"},{"x":7,"y":0,"color":3,"label":"R3"}],"inventory":{"mirror":5,"splitter":1,"filter":2},"solverPlacements":[{"x":2,"y":1,"kind":"mirror","rot":3},{"x":2,"y":2,"kind":"splitter","rot":3},{"x":3,"y":2,"kind":"mirror","rot":1},{"x":3,"y":4,"kind":"filter","rot":1},{"x":3,"y":6,"kind":"mirror","rot":1},{"x":7,"y":3,"kind":"filter","rot":3},{"x":7,"y":5,"kind":"mirror","rot":3}],"chargeRate":0.58,"decayRate":0.06,"shutterHz":0.54,"beamStepLimit":84,"stabilityHorizon":90.0,"solverLockSec":1.75},{"levelIndex":5,"levelId":"lv_05_synthesis","title":"Grand Meridian Synthesis","subtitle":"Weave all four jewel channels across rhythmic kinetic shutters for full studio harmonic lock.","regime":"grand_synthesis_tier","emitters":[{"x":0,"y":1,"dir":0,"color":0},{"x":0,"y":5,"dir":0,"color":2}],"pillars":[{"x":4,"y":1},{"x":5,"y":5},{"x":5,"y":3}],"shutters":[{"x0":4,"y0":2,"x1":4,"y1":4,"phase":0.0},{"x0":6,"y0":2,"x1":6,"y1":4,"phase":0.5}],"resonators":[{"x":9,"y":0,"color":0,"label":"R1"},{"x":9,"y":2,"color":1,"label":"R2"},{"x":9,"y":4,"color":2,"label":"R3"},{"x":9,"y":6,"color":3,"label":"R4"}],"inventory":{"mirror":6,"splitter":2,"filter":2},"solverPlacements":[{"x":1,"y":0,"kind":"mirror","rot":3},{"x":1,"y":1,"kind":"mirror","rot":3},{"x":1,"y":5,"kind":"splitter","rot":1},{"x":1,"y":6,"kind":"mirror","rot":1},{"x":2,"y":2,"kind":"mirror","rot":3},{"x":2,"y":4,"kind":"splitter","rot":3},{"x":2,"y":5,"kind":"mirror","rot":3},{"x":3,"y":2,"kind":"filter","rot":1},{"x":3,"y":6,"kind":"filter","rot":3}],"chargeRate":0.62,"decayRate":0.06,"shutterHz":0.54,"beamStepLimit":96,"stabilityHorizon":75.0,"solverLockSec":4.25}];
+    const CFG = {"cols":10,"rows":7,"compass":[[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]],"simDt":0.05,"shutterBlockRadius":0.36,"overdriveMult":1.65,"overdriveDur":4.5,"overdriveCooldown":9.0,"channels":[{"index":0,"name":"Sapphire","hex":"#1d4ed8","glow":"#93c5fd","note_hz":523.25,"shape":"circle"},{"index":1,"name":"Emerald","hex":"#0f766e","glow":"#6ee7b7","note_hz":659.25,"shape":"diamond"},{"index":2,"name":"Spun Amber","hex":"#b45309","glow":"#fcd34d","note_hz":783.99,"shape":"triangle"},{"index":3,"name":"Crimson","hex":"#be123c","glow":"#fda4af","note_hz":880.0,"shape":"square"}],"palette":{"vellum":"#faf6ec","gridLine":"#e6decb","card":"#fbf9f4","paper":"#f5f2ea","border":"#dfd8c8","ink":"#1b2230","muted":"#4f5b6b","amber":"#b45309","emerald":"#0f766e","sapphire":"#1d4ed8","crimson":"#be123c"}};
+
+    const PENTATONIC_HZ = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51];
+
+    class MeridianAudioBus {
+      constructor() {
+        this.ctx = null;
+        this.master = null;
+        this.muted = false;
+        this.volume = 0.65;
+      }
+      ensure() {
+        if (this.muted) return null;
+        if (!this.ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return null;
+          try {
+            this.ctx = new AC();
+            this.master = this.ctx.createGain();
+            this.master.gain.value = this.volume * 0.24;
+            this.master.connect(this.ctx.destination);
+          } catch (_e) {
+            return null;
+          }
+        }
+        if (this.ctx && this.ctx.state === "suspended") {
+          this.ctx.resume().catch(function() {});
+        }
+        return this.ctx;
+      }
+      setVolume(v) {
+        this.volume = Math.max(0, Math.min(1, v));
+        if (this.master && this.ctx) {
+          this.master.gain.setValueAtTime(this.muted ? 0 : this.volume * 0.24, this.ctx.currentTime);
+        }
+      }
+      toggleMute() {
+        this.muted = !this.muted;
+        this.setVolume(this.volume);
+        return this.muted;
+      }
+      chime(freq, durSec, gainScale, waveKind, delaySec) {
+        const ctx = this.ensure();
+        if (!ctx || !this.master) return;
+        const now = ctx.currentTime + (delaySec || 0);
+        const osc = ctx.createOscillator();
+        const filt = ctx.createBiquadFilter();
+        const g = ctx.createGain();
+        osc.type = waveKind || "triangle";
+        osc.frequency.setValueAtTime(freq, now);
+        filt.type = "lowpass";
+        filt.frequency.setValueAtTime(3400, now);
+        const peak = Math.max(0.001, (gainScale || 0.35));
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.exponentialRampToValueAtTime(peak, now + 0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + (durSec || 0.24));
+        osc.connect(filt);
+        filt.connect(g);
+        g.connect(this.master);
+        osc.start(now);
+        osc.stop(now + (durSec || 0.24) + 0.02);
+      }
+      playPlace(toolKind) {
+        const idx = toolKind === "splitter" ? 2 : (toolKind === "filter" ? 4 : 0);
+        this.chime(PENTATONIC_HZ[idx], 0.18, 0.32, "triangle", 0);
+      }
+      playRotate(rotStep) {
+        const f = PENTATONIC_HZ[rotStep % PENTATONIC_HZ.length] * 1.25;
+        this.chime(f, 0.08, 0.18, "sine", 0);
+      }
+      playErase() {
+        this.chime(392.0, 0.14, 0.20, "sine", 0);
+      }
+      playMilestone(channelIdx, stepIdx) {
+        const base = PENTATONIC_HZ[(channelIdx + stepIdx) % PENTATONIC_HZ.length];
+        this.chime(base, 0.28, 0.36, "triangle", 0);
+      }
+      playOverdrive() {
+        this.chime(PENTATONIC_HZ[0], 0.30, 0.30, "triangle", 0);
+        this.chime(PENTATONIC_HZ[3], 0.35, 0.30, "triangle", 0.06);
+        this.chime(PENTATONIC_HZ[5], 0.42, 0.34, "sine", 0.12);
+      }
+      playVictory() {
+        const notes = [0, 2, 3, 5, 7];
+        for (let i = 0; i < notes.length; i++) {
+          this.chime(PENTATONIC_HZ[notes[i]], 0.46, 0.42, "triangle", i * 0.085);
+        }
+      }
+    }
+
+    const audio = new MeridianAudioBus();
+    const canvas = document.getElementById("optical-canvas");
+    const ctx = canvas.getContext("2d");
+
+    const PAD_X = 66;
+    const PAD_Y = 52;
+    const CELL_W = 78;
+    const CELL_H = 72;
+
+    let currentLevelIdx = 0;
+    let selectedTool = "mirror";
+    let activeRot = 1;
+    let placements = new Map();
+    let remainingInv = { mirror: 0, splitter: 0, filter: 0 };
+    let charges = [];
+    let milestones = [];
+    let simTime = 0;
+    let stabilityLeft = 100;
+    let overdriveTimer = 0;
+    let overdriveCooldown = 0;
+    let levelLocked = false;
+    let clearedSet = new Set();
+    let hoverCell = null;
+    let lastSelectedKey = null;
+    let particles = [];
+    let lastFrameMs = performance.now();
+    let fpsSmooth = 60;
+    let autoAdvanceTimer = null;
+    let lastTrace = { segments: [], shutters: [], lit: new Set() };
+
+    function keyOf(x, y) { return x + "," + y; }
+
+    function currentLevel() { return LEVELS[currentLevelIdx]; }
+
+    function isFixedCell(lv, x, y) {
+      for (const e of lv.emitters) if (e.x === x && e.y === y) return true;
+      for (const p of lv.pillars) if (p.x === x && p.y === y) return true;
+      for (const r of lv.resonators) if (r.x === x && r.y === y) return true;
+      return false;
+    }
+
+    function loadLevel(idx, keepAudioCue) {
+      if (autoAdvanceTimer) {
+        clearTimeout(autoAdvanceTimer);
+        autoAdvanceTimer = null;
+      }
+      currentLevelIdx = ((idx % LEVELS.length) + LEVELS.length) % LEVELS.length;
+      const lv = currentLevel();
+      placements = new Map();
+      remainingInv = {
+        mirror: lv.inventory.mirror,
+        splitter: lv.inventory.splitter,
+        filter: lv.inventory.filter
+      };
+      charges = lv.resonators.map(function() { return 0; });
+      milestones = lv.resonators.map(function() { return 0; });
+      simTime = 0;
+      stabilityLeft = lv.stabilityHorizon;
+      overdriveTimer = 0;
+      overdriveCooldown = 0;
+      levelLocked = false;
+      particles = [];
+      lastSelectedKey = null;
+
+      if (remainingInv[selectedTool] === 0 && selectedTool !== "erase") {
+        if (remainingInv.mirror > 0) selectedTool = "mirror";
+        else if (remainingInv.splitter > 0) selectedTool = "splitter";
+        else if (remainingInv.filter > 0) selectedTool = "filter";
+      }
+
+      document.getElementById("level-title").textContent = "Lv " + lv.levelIndex + " · " + lv.title;
+      document.getElementById("level-subtitle").textContent = lv.subtitle;
+      document.getElementById("regime-label").textContent = lv.regime.replace(/_/g, " ");
+      document.getElementById("solver-benchmark").textContent = "Solver Lock: " + lv.solverLockSec.toFixed(2) + "s";
+      document.getElementById("grid-spec-readout").innerHTML =
+        "charge_rate: " + (lv.chargeRate * 100).toFixed(0) + "%/s<br>" +
+        "shutter_freq: " + lv.shutterHz.toFixed(2) + " Hz<br>" +
+        "step_cap: " + lv.beamStepLimit + " cells · horizon: " + lv.stabilityHorizon + "s";
+      document.getElementById("victory-banner").classList.remove("visible");
+
+      lastTrace = traceOpticalBoard(lv, placements, simTime);
+      syncToolbarUI();
+      renderLevelTabs();
+      renderResonatorMeters();
+      if (keepAudioCue) audio.chime(PENTATONIC_HZ[currentLevelIdx % PENTATONIC_HZ.length], 0.16, 0.22, "sine", 0);
+    }
+
+    function computeShutters(lv, tSec) {
+      const twoPi = Math.PI * 2;
+      return lv.shutters.map(function(sh) {
+        const tau = twoPi * ((lv.shutterHz * tSec) + (sh.phase || 0));
+        const alpha = 0.5 * (1 - Math.cos(tau));
+        return {
+          sx: sh.x0 + alpha * (sh.x1 - sh.x0),
+          sy: sh.y0 + alpha * (sh.y1 - sh.y0),
+          x0: sh.x0, y0: sh.y0, x1: sh.x1, y1: sh.y1
+        };
+      });
+    }
+
+    function traceOpticalBoard(lv, relayMap, tSec) {
+      const shutters = computeShutters(lv, tSec);
+      const segments = [];
+      const lit = new Set();
+      const pillarSet = new Set(lv.pillars.map(function(p) { return keyOf(p.x, p.y); }));
+      const emitterSet = new Set(lv.emitters.map(function(e) { return keyOf(e.x, e.y); }));
+      const resMap = new Map();
+      lv.resonators.forEach(function(r, idx) { resMap.set(keyOf(r.x, r.y), { idx: idx, spec: r }); });
+
+      function blockedByShutter(cx, cy) {
+        for (let i = 0; i < shutters.length; i++) {
+          if (Math.hypot(cx - shutters[i].sx, cy - shutters[i].sy) <= CFG.shutterBlockRadius) return true;
+        }
+        return false;
+      }
+
+      for (let eIdx = 0; eIdx < lv.emitters.length; eIdx++) {
+        const em = lv.emitters[eIdx];
+        const queue = [[em.x, em.y, em.dir % 8, em.color % 4, 0]];
+        const visited = new Set();
+
+        while (queue.length > 0) {
+          const cur = queue.shift();
+          const x = cur[0], y = cur[1], d = cur[2], col = cur[3], steps = cur[4];
+          if (steps >= lv.beamStepLimit) continue;
+          const vKey = x + "," + y + "," + d + "," + col;
+          if (visited.has(vKey)) continue;
+          visited.add(vKey);
+
+          const vec = CFG.compass[d];
+          const nx = x + vec[0], ny = y + vec[1];
+          if (nx < 0 || nx >= CFG.cols || ny < 0 || ny >= CFG.rows) {
+            segments.push({ x0: x, y0: y, x1: x + 0.48 * vec[0], y1: y + 0.48 * vec[1], col: col, hit: false });
+            continue;
+          }
+          const nKey = keyOf(nx, ny);
+          if (pillarSet.has(nKey) || emitterSet.has(nKey) || blockedByShutter(nx, ny)) {
+            segments.push({ x0: x, y0: y, x1: nx, y1: ny, col: col, hit: true });
+            continue;
+          }
+
+          segments.push({ x0: x, y0: y, x1: nx, y1: ny, col: col, hit: false });
+
+          if (resMap.has(nKey)) {
+            const rm = resMap.get(nKey);
+            if (rm.spec.color === col) lit.add(rm.idx);
+            continue;
+          }
+
+          const rel = relayMap.get(nKey);
+          if (!rel) {
+            queue.push([nx, ny, d, col, steps + 1]);
+            continue;
+          }
+
+          const rot = ((rel.rot % 8) + 8) % 8;
+          if (rel.kind === "mirror") {
+            if ((d % 4) === (rot % 4)) {
+              queue.push([nx, ny, d, col, steps + 1]);
+            } else {
+              const dOut = (((2 * rot - d) % 8) + 8) % 8;
+              queue.push([nx, ny, dOut, col, steps + 1]);
+            }
+          } else if (rel.kind === "splitter") {
+            if ((d % 4) === (rot % 4)) {
+              queue.push([nx, ny, (d + 7) % 8, col, steps + 1]);
+              queue.push([nx, ny, (d + 1) % 8, col, steps + 1]);
+            } else {
+              const dRefl = (((2 * rot - d) % 8) + 8) % 8;
+              queue.push([nx, ny, d, col, steps + 1]);
+              queue.push([nx, ny, dRefl, col, steps + 1]);
+            }
+          } else if (rel.kind === "filter") {
+            queue.push([nx, ny, d, rot % 4, steps + 1]);
+          }
+        }
+      }
+      return { segments: segments, shutters: shutters, lit: lit };
+    }
+
+    function spawnVictoryBurst() {
+      const lv = currentLevel();
+      lv.resonators.forEach(function(r) {
+        const px = PAD_X + (r.x + 0.5) * CELL_W;
+        const py = PAD_Y + (r.y + 0.5) * CELL_H;
+        const ch = CFG.channels[r.color];
+        for (let k = 0; k < 18; k++) {
+          const ang = (Math.PI * 2 * k) / 18;
+          const spd = 42 + (k % 3) * 28;
+          particles.push({
+            x: px, y: py,
+            vx: Math.cos(ang) * spd,
+            vy: Math.sin(ang) * spd,
+            life: 1.0,
+            color: ch.hex
+          });
+        }
+      });
+    }
+
+    function stepPhysics(dt, allowAudio) {
+      const lv = currentLevel();
+      if (overdriveTimer > 0) overdriveTimer = Math.max(0, overdriveTimer - dt);
+      if (overdriveCooldown > 0) overdriveCooldown = Math.max(0, overdriveCooldown - dt);
+
+      if (!levelLocked) {
+        if (placements.size > 0 && stabilityLeft > 0) {
+          stabilityLeft = Math.max(0, stabilityLeft - dt);
+        }
+        lastTrace = traceOpticalBoard(lv, placements, simTime);
+        const mult = overdriveTimer > 0 ? CFG.overdriveMult : 1.0;
+
+        for (let i = 0; i < charges.length; i++) {
+          if (lastTrace.lit.has(i) && stabilityLeft > 0) {
+            charges[i] = Math.min(1.0, charges[i] + lv.chargeRate * mult * dt);
+          } else {
+            charges[i] = Math.max(0.0, charges[i] - lv.decayRate * dt);
+          }
+          const mStep = Math.floor(charges[i] * 4);
+          if (allowAudio && mStep > milestones[i]) {
+            milestones[i] = mStep;
+            audio.playMilestone(lv.resonators[i].color, mStep);
+          } else if (mStep < milestones[i]) {
+            milestones[i] = mStep;
+          }
+        }
+
+        simTime += dt;
+
+        if (charges.length > 0 && charges.every(function(c) { return c >= 1.0; })) {
+          levelLocked = true;
+          clearedSet.add(currentLevelIdx);
+          renderLevelTabs();
+          if (allowAudio) {
+            audio.playVictory();
+            spawnVictoryBurst();
+          }
+          const marginPct = Math.round((stabilityLeft / lv.stabilityHorizon) * 100);
+          const banner = document.getElementById("victory-banner");
+          document.getElementById("victory-headline").textContent =
+            "Lv " + lv.levelIndex + " Harmonic Lock Complete!";
+          document.getElementById("victory-stats").textContent =
+            "Locked in " + simTime.toFixed(2) + "s · Stability Reserve " + marginPct + "% · " + placements.size + " Relays Used";
+          banner.classList.add("visible");
+
+          const autoNext = document.getElementById("auto-advance-toggle");
+          if (allowAudio && autoNext && autoNext.checked && currentLevelIdx < LEVELS.length - 1) {
+            autoAdvanceTimer = setTimeout(function() {
+              loadLevel(currentLevelIdx + 1, true);
+            }, 2400);
+          }
+        }
+      } else {
+        simTime += dt;
+        lastTrace = traceOpticalBoard(lv, placements, simTime);
+      }
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt * 0.9;
+        if (p.life <= 0) particles.splice(i, 1);
+      }
+    }
+
+    function cellCenter(gx, gy) {
+      return {
+        x: PAD_X + (gx + 0.5) * CELL_W,
+        y: PAD_Y + (gy + 0.5) * CELL_H
+      };
+    }
+
+    function drawChannelGlyph(cx, cy, r, shape, strokeStyle, fillStyle) {
+      ctx.save();
+      ctx.strokeStyle = strokeStyle;
+      ctx.fillStyle = fillStyle;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      if (shape === "diamond") {
+        ctx.moveTo(cx, cy - r);
+        ctx.lineTo(cx + r, cy);
+        ctx.lineTo(cx, cy + r);
+        ctx.lineTo(cx - r, cy);
+        ctx.closePath();
+      } else if (shape === "triangle") {
+        ctx.moveTo(cx, cy - r);
+        ctx.lineTo(cx + r * 0.92, cy + r * 0.78);
+        ctx.lineTo(cx - r * 0.92, cy + r * 0.78);
+        ctx.closePath();
+      } else if (shape === "square") {
+        ctx.rect(cx - r * 0.78, cy - r * 0.78, r * 1.56, r * 1.56);
+      } else {
+        ctx.arc(cx, cy, r * 0.85, 0, Math.PI * 2);
+      }
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawRelayGlyph(cx, cy, kind, rot, alpha) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(cx, cy);
+      const rad = (rot * Math.PI) / 4;
+
+      ctx.fillStyle = CFG.palette.card;
+      ctx.strokeStyle = CFG.palette.border;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.arc(0, 0, 23, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      if (kind === "mirror") {
+        ctx.rotate(rad);
+        ctx.strokeStyle = CFG.palette.ink;
+        ctx.lineWidth = 5.0;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(-16, 0);
+        ctx.lineTo(16, 0);
+        ctx.stroke();
+
+        ctx.strokeStyle = "#94a3b8";
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(-15, -2.2);
+        ctx.lineTo(15, -2.2);
+        ctx.stroke();
+      } else if (kind === "splitter") {
+        ctx.rotate(rad);
+        ctx.fillStyle = "rgba(29, 78, 216, 0.11)";
+        ctx.strokeStyle = CFG.palette.sapphire;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(0, -17);
+        ctx.lineTo(17, 0);
+        ctx.lineTo(0, 17);
+        ctx.lineTo(-17, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.strokeStyle = CFG.palette.ink;
+        ctx.lineWidth = 2.4;
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath();
+        ctx.moveTo(-15, 0);
+        ctx.lineTo(15, 0);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else if (kind === "filter") {
+        const ch = CFG.channels[rot % 4];
+        ctx.strokeStyle = ch.hex;
+        ctx.lineWidth = 2.6;
+        ctx.beginPath();
+        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+        ctx.stroke();
+        drawChannelGlyph(0, 0, 8.5, ch.shape, CFG.palette.ink, ch.hex);
+      }
+      ctx.restore();
+    }
+
+    function renderCanvas() {
+      const lv = currentLevel();
+      const W = canvas.width;
+      const H = canvas.height;
+
+      ctx.fillStyle = CFG.palette.vellum;
+      ctx.fillRect(0, 0, W, H);
+
+      const boardW = CFG.cols * CELL_W;
+      const boardH = CFG.rows * CELL_H;
+
+      ctx.save();
+      ctx.strokeStyle = "rgba(210, 198, 174, 0.38)";
+      ctx.lineWidth = 1.1;
+      ctx.beginPath();
+      ctx.arc(PAD_X + boardW * 0.5, PAD_Y + boardH * 0.5, 138, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(PAD_X + boardW * 0.5, PAD_Y + boardH * 0.5, 92, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.strokeStyle = CFG.palette.gridLine;
+      ctx.lineWidth = 1;
+      ctx.font = '600 11px "JetBrains Mono", monospace';
+      ctx.fillStyle = CFG.palette.muted;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      for (let c = 0; c <= CFG.cols; c++) {
+        const gx = PAD_X + c * CELL_W;
+        ctx.beginPath();
+        ctx.moveTo(gx, PAD_Y);
+        ctx.lineTo(gx, PAD_Y + boardH);
+        ctx.stroke();
+        if (c < CFG.cols) {
+          const colChar = String.fromCharCode(65 + c);
+          ctx.fillText(colChar, gx + CELL_W * 0.5, PAD_Y - 18);
+        }
+      }
+      for (let r = 0; r <= CFG.rows; r++) {
+        const gy = PAD_Y + r * CELL_H;
+        ctx.beginPath();
+        ctx.moveTo(PAD_X, gy);
+        ctx.lineTo(PAD_X + boardW, gy);
+        ctx.stroke();
+        if (r < CFG.rows) {
+          ctx.fillText(String(r + 1), PAD_X - 22, gy + CELL_H * 0.5);
+        }
+      }
+
+      ctx.strokeStyle = CFG.palette.border;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(PAD_X, PAD_Y, boardW, boardH);
+
+      if (hoverCell && !isFixedCell(lv, hoverCell.x, hoverCell.y)) {
+        const hx = PAD_X + hoverCell.x * CELL_W;
+        const hy = PAD_Y + hoverCell.y * CELL_H;
+        ctx.fillStyle = "rgba(29, 78, 216, 0.05)";
+        ctx.fillRect(hx + 1, hy + 1, CELL_W - 2, CELL_H - 2);
+        const hKey = keyOf(hoverCell.x, hoverCell.y);
+        if (!placements.has(hKey) && selectedTool !== "erase" && remainingInv[selectedTool] > 0) {
+          const hc = cellCenter(hoverCell.x, hoverCell.y);
+          drawRelayGlyph(hc.x, hc.y, selectedTool, activeRot, 0.42);
+        }
+      }
+
+      lv.shutters.forEach(function(sh) {
+        const p0 = cellCenter(sh.x0, sh.y0);
+        const p1 = cellCenter(sh.x1, sh.y1);
+        ctx.save();
+        ctx.strokeStyle = "#d4c8b0";
+        ctx.lineWidth = 8;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(p0.x, p0.y);
+        ctx.lineTo(p1.x, p1.y);
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      for (let i = 0; i < lastTrace.segments.length; i++) {
+        const seg = lastTrace.segments[i];
+        const a = cellCenter(seg.x0, seg.y0);
+        const b = cellCenter(seg.x1, seg.y1);
+        const ch = CFG.channels[seg.col];
+        const boost = overdriveTimer > 0 ? 1.35 : 1.0;
+
+        ctx.save();
+        ctx.lineCap = "round";
+        ctx.strokeStyle = ch.glow;
+        ctx.globalAlpha = 0.34;
+        ctx.lineWidth = 11 * boost;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+
+        ctx.globalAlpha = 0.94;
+        ctx.strokeStyle = ch.hex;
+        ctx.lineWidth = 3.6 * boost;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+
+        const phase = (simTime * 2.8) % 1;
+        const mx = a.x + (b.x - a.x) * phase;
+        const my = a.y + (b.y - a.y) * phase;
+        ctx.fillStyle = CFG.palette.card;
+        ctx.beginPath();
+        ctx.arc(mx, my, 2.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (seg.hit) {
+          ctx.fillStyle = ch.hex;
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, 5.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      lv.pillars.forEach(function(p) {
+        const px = PAD_X + p.x * CELL_W + 9;
+        const py = PAD_Y + p.y * CELL_H + 8;
+        const pw = CELL_W - 18;
+        const ph = CELL_H - 16;
+        ctx.save();
+        ctx.fillStyle = "#efe8d8";
+        ctx.strokeStyle = CFG.palette.ink;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.roundRect(px, py, pw, ph, 7);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.strokeStyle = "#cbbfa6";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(px + 8, py + ph - 8);
+        ctx.lineTo(px + pw - 8, py + 8);
+        ctx.moveTo(px + 8, py + ph * 0.55);
+        ctx.lineTo(px + pw * 0.55, py + 8);
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      lastTrace.shutters.forEach(function(sh) {
+        const sc = cellCenter(sh.sx, sh.sy);
+        ctx.save();
+        ctx.fillStyle = "#fdf4e3";
+        ctx.strokeStyle = CFG.palette.amber;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.roundRect(sc.x - 19, sc.y - 17, 38, 34, 8);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = CFG.palette.amber;
+        ctx.beginPath();
+        ctx.arc(sc.x, sc.y, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      placements.forEach(function(rel, k) {
+        const parts = k.split(",");
+        const gx = parseInt(parts[0], 10);
+        const gy = parseInt(parts[1], 10);
+        const cc = cellCenter(gx, gy);
+        drawRelayGlyph(cc.x, cc.y, rel.kind, rel.rot, 1.0);
+      });
+
+      lv.emitters.forEach(function(em) {
+        const ec = cellCenter(em.x, em.y);
+        const ch = CFG.channels[em.color];
+        ctx.save();
+        ctx.translate(ec.x, ec.y);
+        ctx.fillStyle = CFG.palette.card;
+        ctx.strokeStyle = CFG.palette.ink;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.roundRect(-24, -22, 48, 44, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        if (overdriveTimer > 0) {
+          ctx.strokeStyle = CFG.palette.amber;
+          ctx.lineWidth = 2.0;
+          ctx.beginPath();
+          ctx.arc(0, 0, 29 + Math.sin(simTime * 10) * 2, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        drawChannelGlyph(0, 0, 10, ch.shape, CFG.palette.ink, ch.hex);
+        const vec = CFG.compass[em.dir % 8];
+        ctx.fillStyle = ch.hex;
+        ctx.beginPath();
+        ctx.arc(vec[0] * 18, vec[1] * 16, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      lv.resonators.forEach(function(res, idx) {
+        const rc = cellCenter(res.x, res.y);
+        const ch = CFG.channels[res.color];
+        const pct = charges[idx] || 0;
+
+        ctx.save();
+        ctx.fillStyle = CFG.palette.card;
+        ctx.strokeStyle = CFG.palette.border;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.arc(rc.x, rc.y, 26, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.strokeStyle = ch.hex;
+        ctx.lineWidth = 4.5;
+        ctx.beginPath();
+        ctx.arc(rc.x, rc.y, 22, -Math.PI * 0.5, -Math.PI * 0.5 + Math.PI * 2 * pct);
+        ctx.stroke();
+
+        drawChannelGlyph(rc.x, rc.y - 4, 7.5, ch.shape, CFG.palette.ink, pct >= 1 ? ch.hex : CFG.palette.paper);
+        ctx.fillStyle = CFG.palette.ink;
+        ctx.font = '700 10.5px "JetBrains Mono", monospace';
+        ctx.textAlign = "center";
+        ctx.fillText(Math.round(pct * 100) + "%", rc.x, rc.y + 13);
+        ctx.restore();
+      });
+
+      particles.forEach(function(p) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3.6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+    }
+
+    function syncToolbarUI() {
+      document.getElementById("inv-mirror").textContent = "(" + remainingInv.mirror + ")";
+      document.getElementById("inv-splitter").textContent = "(" + remainingInv.splitter + ")";
+      document.getElementById("inv-filter").textContent = "(" + remainingInv.filter + ")";
+      document.getElementById("angle-readout").textContent = ((activeRot % 8) * 45) + "°";
+
+      Array.from(document.querySelectorAll(".tool-btn")).forEach(function(b) {
+        b.classList.toggle("active", b.getAttribute("data-tool") === selectedTool);
+      });
+    }
+
+    function renderLevelTabs() {
+      const wrap = document.getElementById("level-tabs");
+      wrap.innerHTML = LEVELS.map(function(lv, i) {
+        const cls = "lv-btn" + (i === currentLevelIdx ? " active" : "") + (clearedSet.has(i) ? " cleared" : "");
+        const check = clearedSet.has(i) ? " ✓" : "";
+        return '<button type="button" class="' + cls + '" data-lv="' + i + '">Lv ' + lv.levelIndex + check + "</button>";
+      }).join("");
+
+      Array.from(wrap.querySelectorAll("button")).forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          loadLevel(parseInt(btn.getAttribute("data-lv") || "0", 10), true);
+        });
+      });
+    }
+
+    function renderResonatorMeters() {
+      const lv = currentLevel();
+      const box = document.getElementById("resonator-meters");
+      box.innerHTML = lv.resonators.map(function(r, idx) {
+        const ch = CFG.channels[r.color];
+        const pct = Math.round((charges[idx] || 0) * 100);
+        return (
+          '<div class="meter-row">' +
+          '<div class="meter-top"><span>' + r.label + " · " + ch.name + '</span><span id="res-txt-' + idx + '">' + pct + '%</span></div>' +
+          '<div class="meter-track"><div class="meter-fill" id="res-bar-' + idx + '" style="width:' + pct + '%;background:' + ch.hex + ';"></div></div>' +
+          '</div>'
+        );
+      }).join("");
+    }
+
+    function updateHUD() {
+      const lv = currentLevel();
+      const stabPct = Math.round((stabilityLeft / lv.stabilityHorizon) * 100);
+      document.getElementById("stability-pct").textContent = stabPct + "%";
+      document.getElementById("stability-bar").style.width = stabPct + "%";
+
+      for (let i = 0; i < charges.length; i++) {
+        const pct = Math.round(charges[i] * 100);
+        const bt = document.getElementById("res-txt-" + i);
+        const bb = document.getElementById("res-bar-" + i);
+        if (bt) bt.textContent = pct + "%";
+        if (bb) bb.style.width = pct + "%";
+      }
+
+      const litRatio = lv.resonators.length > 0 ? (lastTrace.lit.size / lv.resonators.length) : 1;
+      const eff = Math.min(100, Math.round(litRatio * 100));
+      document.getElementById("efficiency-badge").textContent = "Eff: " + eff + "%";
+      document.getElementById("fps-badge").textContent = Math.round(fpsSmooth) + " FPS";
+
+      const odBtn = document.getElementById("overdrive-btn");
+      if (overdriveTimer > 0) {
+        odBtn.textContent = "Overdrive Active (" + overdriveTimer.toFixed(1) + "s)";
+      } else if (overdriveCooldown > 0) {
+        odBtn.textContent = "Cooldown (" + overdriveCooldown.toFixed(1) + "s)";
+      } else {
+        odBtn.textContent = "Overdrive (Space)";
+      }
+    }
+
+    function canvasEventToCell(ev) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const px = (ev.clientX - rect.left) * scaleX;
+      const py = (ev.clientY - rect.top) * scaleY;
+      const gx = Math.floor((px - PAD_X) / CELL_W);
+      const gy = Math.floor((py - PAD_Y) / CELL_H);
+      if (gx < 0 || gx >= CFG.cols || gy < 0 || gy >= CFG.rows) return null;
+      return { x: gx, y: gy };
+    }
+
+    function rotateAtKeyOrActive(targetKey) {
+      if (targetKey && placements.has(targetKey)) {
+        const item = placements.get(targetKey);
+        item.rot = (item.rot + 1) % 8;
+        activeRot = item.rot;
+        audio.playRotate(item.rot);
+      } else {
+        activeRot = (activeRot + 1) % 8;
+        audio.playRotate(activeRot);
+      }
+      lastTrace = traceOpticalBoard(currentLevel(), placements, simTime);
+      syncToolbarUI();
+    }
+
+    canvas.addEventListener("mousemove", function(ev) {
+      hoverCell = canvasEventToCell(ev);
+    });
+    canvas.addEventListener("mouseleave", function() {
+      hoverCell = null;
+    });
+
+    canvas.addEventListener("click", function(ev) {
+      const pt = canvasEventToCell(ev);
+      if (!pt) return;
+      const lv = currentLevel();
+      if (isFixedCell(lv, pt.x, pt.y)) return;
+      const k = keyOf(pt.x, pt.y);
+
+      if (selectedTool === "erase") {
+        if (placements.has(k)) {
+          const old = placements.get(k);
+          remainingInv[old.kind] += 1;
+          placements.delete(k);
+          audio.playErase();
+          lastTrace = traceOpticalBoard(lv, placements, simTime);
+          syncToolbarUI();
+        }
+        return;
+      }
+
+      if (placements.has(k)) {
+        lastSelectedKey = k;
+        rotateAtKeyOrActive(k);
+        return;
+      }
+
+      if (remainingInv[selectedTool] <= 0) return;
+      remainingInv[selectedTool] -= 1;
+      placements.set(k, { kind: selectedTool, rot: activeRot });
+      lastSelectedKey = k;
+      audio.playPlace(selectedTool);
+      lastTrace = traceOpticalBoard(lv, placements, simTime);
+      syncToolbarUI();
+    });
+
+    canvas.addEventListener("contextmenu", function(ev) {
+      ev.preventDefault();
+      const pt = canvasEventToCell(ev);
+      if (pt) {
+        const k = keyOf(pt.x, pt.y);
+        if (placements.has(k)) {
+          rotateAtKeyOrActive(k);
+          return;
+        }
+      }
+      rotateAtKeyOrActive(lastSelectedKey);
+    });
+
+    Array.from(document.querySelectorAll(".tool-btn")).forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        selectedTool = btn.getAttribute("data-tool") || "mirror";
+        syncToolbarUI();
+      });
+    });
+
+    document.getElementById("rotate-btn").addEventListener("click", function() {
+      const hKey = hoverCell ? keyOf(hoverCell.x, hoverCell.y) : lastSelectedKey;
+      rotateAtKeyOrActive(hKey);
+    });
+
+    function triggerOverdrive() {
+      if (overdriveTimer <= 0 && overdriveCooldown <= 0) {
+        overdriveTimer = CFG.overdriveDur;
+        overdriveCooldown = CFG.overdriveCooldown;
+        audio.playOverdrive();
+      }
+    }
+
+    document.getElementById("overdrive-btn").addEventListener("click", triggerOverdrive);
+
+    function applyAutoSolve() {
+      const lv = currentLevel();
+      loadLevel(currentLevelIdx, false);
+      lv.solverPlacements.forEach(function(sp, idx) {
+        const k = keyOf(sp.x, sp.y);
+        if (remainingInv[sp.kind] > 0) {
+          remainingInv[sp.kind] -= 1;
+          placements.set(k, { kind: sp.kind, rot: sp.rot });
+        }
+        audio.chime(PENTATONIC_HZ[idx % PENTATONIC_HZ.length], 0.14, 0.22, "triangle", idx * 0.04);
+      });
+      lastTrace = traceOpticalBoard(lv, placements, simTime);
+      syncToolbarUI();
+    }
+
+    document.getElementById("autosolve-btn").addEventListener("click", applyAutoSolve);
+    document.getElementById("reset-btn").addEventListener("click", function() {
+      loadLevel(currentLevelIdx, true);
+    });
+    document.getElementById("next-level-btn").addEventListener("click", function() {
+      loadLevel(currentLevelIdx + 1, true);
+    });
+
+    const muteBtn = document.getElementById("mute-btn");
+    muteBtn.addEventListener("click", function() {
+      const isMuted = audio.toggleMute();
+      muteBtn.textContent = isMuted ? "Sound: Muted" : "Sound: On";
+      muteBtn.setAttribute("aria-pressed", String(isMuted));
+    });
+    document.getElementById("volume-slider").addEventListener("input", function(ev) {
+      audio.setVolume(parseFloat(ev.target.value || "65") / 100);
+    });
+
+    window.addEventListener("keydown", function(ev) {
+      if (ev.target && (ev.target.tagName === "INPUT" || ev.target.tagName === "SELECT")) return;
+      if (ev.key === "1") { selectedTool = "mirror"; syncToolbarUI(); }
+      else if (ev.key === "2") { selectedTool = "splitter"; syncToolbarUI(); }
+      else if (ev.key === "3") { selectedTool = "filter"; syncToolbarUI(); }
+      else if (ev.key === "4") { selectedTool = "erase"; syncToolbarUI(); }
+      else if (ev.key === "r" || ev.key === "R") {
+        const hKey = hoverCell ? keyOf(hoverCell.x, hoverCell.y) : lastSelectedKey;
+        rotateAtKeyOrActive(hKey);
+      } else if (ev.code === "Space") {
+        ev.preventDefault();
+        triggerOverdrive();
+      }
+    });
+
+    function sampleCanvasLuminance() {
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      let sum = 0;
+      let count = 0;
+      for (let i = 0; i < data.length; i += 64) {
+        const r = data[i] / 255;
+        const g = data[i + 1] / 255;
+        const b = data[i + 2] / 255;
+        sum += 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        count += 1;
+      }
+      return count > 0 ? Number((sum / count).toFixed(4)) : 0.9;
+    }
+
+    window.renderAt = function(targetSeconds) {
+      const lv = currentLevel();
+      const savedPlacements = new Map();
+      placements.forEach(function(v, k) { savedPlacements.set(k, { kind: v.kind, rot: v.rot }); });
+
+      charges = lv.resonators.map(function() { return 0; });
+      milestones = lv.resonators.map(function() { return 0; });
+      simTime = 0;
+      stabilityLeft = lv.stabilityHorizon;
+      levelLocked = false;
+      placements = savedPlacements;
+
+      const steps = Math.max(0, Math.round(targetSeconds / CFG.simDt));
+      for (let s = 0; s < steps; s++) {
+        stepPhysics(CFG.simDt, false);
+      }
+      lastTrace = traceOpticalBoard(lv, placements, simTime);
+      renderCanvas();
+      updateHUD();
+
+      const lockedCount = charges.filter(function(c) { return c >= 1.0; }).length;
+      return {
+        levelIndex: lv.levelIndex,
+        timeSeconds: Number(simTime.toFixed(4)),
+        locked: levelLocked,
+        resonatorsLocked: lockedCount,
+        totalResonators: charges.length,
+        charges: charges.map(function(c) { return Number(c.toFixed(4)); }),
+        activeSegments: lastTrace.segments.length,
+        stabilityPct: Number(((stabilityLeft / lv.stabilityHorizon) * 100).toFixed(2)),
+        placedCount: placements.size,
+        meanCanvasLuminance: sampleCanvasLuminance()
+      };
+    };
+
+    window.meridianGame = {
+      loadLevel: function(lvOneBased) { loadLevel(lvOneBased - 1, false); },
+      applyAutoSolve: applyAutoSolve,
+      triggerOverdrive: triggerOverdrive,
+      getState: function() { return window.renderAt(simTime); }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const qLv = parseInt(params.get("level") || "1", 10);
+    loadLevel((isNaN(qLv) ? 1 : qLv) - 1, false);
+
+    function frameLoop(nowMs) {
+      const rawDt = Math.min(0.05, Math.max(0.001, (nowMs - lastFrameMs) / 1000));
+      lastFrameMs = nowMs;
+      fpsSmooth = fpsSmooth * 0.9 + (1 / rawDt) * 0.1;
+
+      stepPhysics(rawDt, true);
+      renderCanvas();
+      updateHUD();
+      requestAnimationFrame(frameLoop);
+    }
+    requestAnimationFrame(frameLoop);
+  })();
+  </script>
+</body>
+</html>
