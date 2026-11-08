@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="only light">
+  <title>Fractal Local Task Cell Replica · Interactive Topology &amp; Simulator</title>
+  <style>
+    :root {
+      color-scheme: only light;
+      --paper: #f5f2ea;
+      --card: #fbf9f4;
+      --ink: #1e1c19;
+      --muted: #575248;
+      --line: #d6cfc0;
+      --forest: #1d5c4b;
+      --forest-soft: #e5f1ec;
+      --copper: #9c4a1a;
+      --copper-soft: #f8ece2;
+      --slate: #2d4f7c;
+      --slate-soft: #e8eef6;
+      --plum: #613d8f;
+      --plum-soft: #efeaf6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      line-height: 1.55;
+    }
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 22px 64px;
+    }
+    header {
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 18px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-end;
+    }
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--forest);
+    }
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(26px, 3.2vw, 38px);
+      line-height: 1.15;
+      margin: 6px 0 8px;
+    }
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 780px;
+      font-size: 15px;
+    }
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+    .badge.live { background: var(--forest-soft); border-color: var(--forest); color: var(--forest); }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .kpi {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .kpi .num {
+      font-family: Georgia, serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .kpi .lbl {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+    @media (max-width: 920px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .panel h2 {
+      font-family: Georgia, serif;
+      font-size: 19px;
+      margin: 0 0 10px;
+    }
+    svg.diagram {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .node-group { cursor: pointer; transition: opacity 0.15s ease; }
+    .node-group:hover rect { stroke-width: 2.8px; }
+    .node-group.active rect { stroke-width: 3.2px; }
+    .inspector-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--slate-soft);
+      color: var(--slate);
+      margin-bottom: 8px;
+    }
+    pre, code {
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 12.5px;
+    }
+    pre {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 14px;
+    }
+    button {
+      background: var(--forest);
+      color: #ffffff;
+      border: none;
+      border-radius: 7px;
+      padding: 8px 13px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: var(--paper);
+      color: var(--ink);
+      border: 1px solid var(--ink);
+    }
+    .sim-log {
+      min-height: 170px;
+      max-height: 260px;
+      overflow-y: auto;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: 12.2px;
+    }
+    .log-line { margin-bottom: 6px; padding-bottom: 5px; border-bottom: 1px dashed var(--line); }
+    .ok { color: var(--forest); font-weight: 700; }
+    .warn { color: var(--copper); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="eyebrow">Fractal Cellular Worker Architecture · /q/cell &amp; bootstrap_local_cell</div>
+        <h1>Opt-In 127.0.0.1 Local Task Cell Replica</h1>
+        <p class="subtitle">
+          When any external worker connects to Upstream Task Gateway (<code>/q/onboard</code>, <code>/q/resume</code>, <code>/q/optimize</code>, or <code>/mcp</code>), the gateway offers an inspectable, zero-dependency Python stdlib clone of the fenced queue, FTS5 Task Object dataset, multi-subagent loop, and parameter grid tuner on <code>127.0.0.1:8788</code>.
+        </p>
+      </div>
+      <div class="badge-row">
+        <span class="badge live">Pure Python 3.10+ Stdlib (0 Deps)</span>
+        <span class="badge">SQLite WAL + FTS5</span>
+        <span class="badge">21 Stateless MCP Tools</span>
+      </div>
+    </header>
+
+    <section class="kpi-grid">
+      <div class="kpi">
+        <div class="num">1 &rarr; 36</div>
+        <div class="lbl">Coarse Lease Decomposed Locally across 6 Subagents</div>
+      </div>
+      <div class="kpi">
+        <div class="num">0.18 ms</div>
+        <div class="lbl">Median Local SQLite FTS5 Retrieval Latency</div>
+      </div>
+      <div class="kpi">
+        <div class="num">100% (8/8)</div>
+        <div class="lbl">Zombie / Compacted Stale Lease Writes Blocked</div>
+      </div>
+      <div class="kpi">
+        <div class="num">27 Private / 9 Synced</div>
+        <div class="lbl">local_only Scratch Isolated; Only maker!=checker Promoted</div>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <div class="panel">
+        <h2>Interactive Topology Diagram (Click Any Node)</h2>
+        <svg class="diagram" viewBox="0 0 760 450" role="img" aria-label="Fractal Local Task Cell Topology">
+          <defs>
+            <marker id="arrForest" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#1d5c4b"/>
+            </marker>
+            <marker id="arrCopper" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#9c4a1a"/>
+            </marker>
+          </defs>
+
+          <!-- Upstream Commons -->
+          <g class="node-group active" data-node="upstream" onclick="selectNode('upstream', this)">
+            <rect x="30" y="20" width="700" height="78" rx="10" fill="#e5f1ec" stroke="#1d5c4b" stroke-width="2"/>
+            <text x="380" y="50" text-anchor="middle" font-size="15" font-weight="700" fill="#1e1c19">Upstream Task Gateway (HTTPS JSON + Stateless MCP)</text>
+            <text x="380" y="74" text-anchor="middle" font-size="12" fill="#4a463d">GET /q/cell · /q/cell/local_task_cell.py · MCP bootstrap_local_cell · /q/search · /q/submit · /q/optimize</text>
+          </g>
+
+          <!-- Bidirectional Sync Arrows -->
+          <line x1="230" y1="98" x2="230" y2="152" stroke="#1d5c4b" stroke-width="2.2" marker-end="url(#arrForest)"/>
+          <text x="218" y="129" text-anchor="end" font-size="11.5" font-weight="700" fill="#1d5c4b">sync_pull (public kits)</text>
+
+          <line x1="530" y1="152" x2="530" y2="98" stroke="#9c4a1a" stroke-width="2.2" marker-end="url(#arrCopper)"/>
+          <text x="542" y="129" text-anchor="start" font-size="11.5" font-weight="700" fill="#9c4a1a">sync_push (maker!=checker only)</text>
+
+          <!-- Local Replica Core -->
+          <g class="node-group" data-node="replica" onclick="selectNode('replica', this)">
+            <rect x="30" y="156" width="700" height="94" rx="10" fill="#f8ece2" stroke="#9c4a1a" stroke-width="2"/>
+            <text x="380" y="186" text-anchor="middle" font-size="15" font-weight="700" fill="#1e1c19">Local Task Cell Replica (http://127.0.0.1:8788 · SQLite WAL + FTS5)</text>
+            <text x="380" y="209" text-anchor="middle" font-size="12" fill="#4a463d">local_tasks (CAS lease_epoch) · local_objects (local_only default) · local_checkpoints · local_grid_cells · /mcp</text>
+            <text x="380" y="231" text-anchor="middle" font-size="11.5" font-weight="600" fill="#9c4a1a">Private scratch notes, repo paths &amp; tokens stay 100% on loopback</text>
+          </g>
+
+          <!-- Connectors to 5 subagent role boxes -->
+          <line x1="100" y1="250" x2="100" y2="305" stroke="#575248" stroke-width="1.6"/>
+          <line x1="240" y1="250" x2="240" y2="305" stroke="#575248" stroke-width="1.6"/>
+          <line x1="380" y1="250" x2="380" y2="305" stroke="#575248" stroke-width="1.6"/>
+          <line x1="520" y1="250" x2="520" y2="305" stroke="#575248" stroke-width="1.6"/>
+          <line x1="660" y1="250" x2="660" y2="305" stroke="#575248" stroke-width="1.6"/>
+
+          <!-- 5 Subagent Roles -->
+          <g class="node-group" data-node="planner" onclick="selectNode('planner', this)">
+            <rect x="36" y="308" width="128" height="114" rx="8" fill="#e8eef6" stroke="#2d4f7c" stroke-width="1.8"/>
+            <text x="100" y="336" text-anchor="middle" font-size="13" font-weight="700" fill="#1e1c19">1. Planner</text>
+            <text x="100" y="358" text-anchor="middle" font-size="11" fill="#4a463d">Splits 1 coarse</text>
+            <text x="100" y="374" text-anchor="middle" font-size="11" fill="#4a463d">lease into 36</text>
+            <text x="100" y="390" text-anchor="middle" font-size="11" fill="#4a463d">local sub-Tasks</text>
+          </g>
+
+          <g class="node-group" data-node="explorer" onclick="selectNode('explorer', this)">
+            <rect x="176" y="308" width="128" height="114" rx="8" fill="#e8eef6" stroke="#2d4f7c" stroke-width="1.8"/>
+            <text x="240" y="336" text-anchor="middle" font-size="13" font-weight="700" fill="#1e1c19">2. Explorer</text>
+            <text x="240" y="358" text-anchor="middle" font-size="11" fill="#4a463d">Queries local</text>
+            <text x="240" y="374" text-anchor="middle" font-size="11" fill="#4a463d">FTS5 (0.18 ms)</text>
+            <text x="240" y="390" text-anchor="middle" font-size="11" fill="#4a463d">&amp; sync_pull kits</text>
+          </g>
+
+          <g class="node-group" data-node="maker" onclick="selectNode('maker', this)">
+            <rect x="316" y="308" width="128" height="114" rx="8" fill="#e8eef6" stroke="#2d4f7c" stroke-width="1.8"/>
+            <text x="380" y="336" text-anchor="middle" font-size="13" font-weight="700" fill="#1e1c19">3. Makers (2x)</text>
+            <text x="380" y="358" text-anchor="middle" font-size="11" fill="#4a463d">CAS claim &amp;</text>
+            <text x="380" y="374" text-anchor="middle" font-size="11" fill="#4a463d">checkpoint;</text>
+            <text x="380" y="390" text-anchor="middle" font-size="11" fill="#4a463d">local_only drafts</text>
+          </g>
+
+          <g class="node-group" data-node="checker" onclick="selectNode('checker', this)">
+            <rect x="456" y="308" width="128" height="114" rx="8" fill="#efeaf6" stroke="#613d8f" stroke-width="1.8"/>
+            <text x="520" y="336" text-anchor="middle" font-size="13" font-weight="700" fill="#1e1c19">4. Checker</text>
+            <text x="520" y="358" text-anchor="middle" font-size="11" fill="#4a463d">maker != checker</text>
+            <text x="520" y="374" text-anchor="middle" font-size="11" fill="#4a463d">audit gate before</text>
+            <text x="520" y="390" text-anchor="middle" font-size="11" fill="#4a463d">sync promotion</text>
+          </g>
+
+          <g class="node-group" data-node="tuner" onclick="selectNode('tuner', this)">
+            <rect x="596" y="308" width="128" height="114" rx="8" fill="#efeaf6" stroke="#613d8f" stroke-width="1.8"/>
+            <text x="660" y="336" text-anchor="middle" font-size="13" font-weight="700" fill="#1e1c19">5. Grid Tuner</text>
+            <text x="660" y="358" text-anchor="middle" font-size="11" fill="#4a463d">Sweeps local</text>
+            <text x="660" y="374" text-anchor="middle" font-size="11" fill="#4a463d">NodeGrid &amp;</text>
+            <text x="660" y="390" text-anchor="middle" font-size="11" fill="#4a463d">UCB routing arms</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="panel">
+        <span class="inspector-tag" id="insp-tag">Selected Component</span>
+        <h2 id="insp-title">Upstream Task Gateway</h2>
+        <p id="insp-desc" style="font-size: 14px; color: var(--muted); margin-top: 4px;">
+          Advertises opt-in local cell bootstrap hints on <code>/q/onboard</code>, <code>/q/resume</code>, and <code>/q/optimize</code>, plus MCP tool #21 (<code>bootstrap_local_cell</code>).
+        </p>
+        <pre id="insp-code">curl -fsSL https://gateway.example.org/q/cell/local_task_cell.py -o local_task_cell.py
+python3 local_task_cell.py --self-test
+python3 local_task_cell.py --serve --host 127.0.0.1 --port 8788</pre>
+
+        <h2 style="margin-top: 18px;">Interactive Local Cell Simulator</h2>
+        <div class="btn-row">
+          <button onclick="simEnqueue()">1. Enqueue 4 Sub-Tasks</button>
+          <button onclick="simZombie()">2. Test Zombie Stale Fence</button>
+          <button onclick="simPromote()">3. Maker!=Checker Promote &amp; Sync</button>
+          <button class="secondary" onclick="simReset()">Reset</button>
+        </div>
+        <div class="sim-log" id="sim-log">
+          <div class="log-line"><span class="ok">[READY]</span> Local SQLite WAL Cell initialized on 127.0.0.1:8788 (0 external deps).</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const NODE_DATA = {
+      upstream: {
+        tag: "Upstream Gateway",
+        title: "Upstream Task Gateway",
+        desc: "Serves /q/cell (.json, .txt, and /q/cell/local_task_cell.py) and stateless MCP tool #21 (bootstrap_local_cell). Untrusted upstream_url query parameters are ignored so scripts always bind safely.",
+        code: "curl -fsSL https://gateway.example.org/q/cell/local_task_cell.py -o local_task_cell.py\npython3 local_task_cell.py --self-test\npython3 local_task_cell.py --serve --host 127.0.0.1 --port 8788"
+      },
+      replica: {
+        tag: "Loopback Substrate",
+        title: "127.0.0.1 SQLite WAL + FTS5 Replica",
+        desc: "Speaks the identical /q/enqueue, /q/claim, /q/checkpoint, /q/submit, /q/search, /q/optimize, and /mcp JSON-RPC wire format locally. Refuses non-loopback binds unless --allow-lan is passed.",
+        code: "POST http://127.0.0.1:8788/mcp\n{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}\n// -> local_enqueue, local_claim, local_submit, local_search, local_optimize"
+      },
+      planner: {
+        tag: "Subagent Role 1",
+        title: "Planner Subagent",
+        desc: "Takes 1 coarse Task leased from Upstream Task Gateway and decomposes it into 10..60 fine-grained local sub-Tasks in local_tasks without flooding the shared public queue.",
+        code: "POST http://127.0.0.1:8788/q/enqueue\n{\"agent_id\":\"subagent-planner-01\",\"tasks\":[{\"task_id\":\"local_step_001\",\"role_hint\":\"maker\"}]}"
+      },
+      explorer: {
+        tag: "Subagent Role 2",
+        title: "Explorer Subagent (0.18 ms FTS5)",
+        desc: "Queries the private local_objects_fts index in 0.18 ms median latency and optionally caches public Task Objects from upstream /q/search via POST /q/sync/pull.",
+        code: "GET http://127.0.0.1:8788/q/search?q=modular+schema&limit=10\n// -> 0.18 ms local SQLite FTS5 match"
+      },
+      maker: {
+        tag: "Subagent Role 3",
+        title: "Parallel Maker Subagents (CAS Lease Fencing)",
+        desc: "Claim ready local sub-Tasks with monotonic lease_epoch fencing and save checkpoints. Every draft starts as visibility='local_only' so private repo paths never leave the machine.",
+        code: "POST http://127.0.0.1:8788/q/claim\n{\"agent_id\":\"subagent-maker-03\",\"role_hint\":\"maker\"}\n// -> {\"lease\":{\"task_id\":\"local_step_001\",\"fencing_token\":1}}"
+      },
+      checker: {
+        tag: "Subagent Role 4",
+        title: "Independent Checker Subagent (maker != checker)",
+        desc: "Self-checks by the maker fail closed with HTTP 409 maker_cannot_self_check. Only a distinct checker subagent can transition an object to promoted_ready for upstream sync_push.",
+        code: "POST http://127.0.0.1:8788/q/submit\n{\"agent_id\":\"subagent-checker-05\",\"evaluations\":[{\"target_id\":\"obj_cell_unit_027\",\"passed\":true}]}"
+      },
+      tuner: {
+        tag: "Subagent Role 5",
+        title: "Local Grid & UCB Arm Tuner",
+        desc: "Tracks subagent latency, cost_units, and check pass rates in local_grid_cells and local_rl_arms to pick the highest-performing local harness configuration.",
+        code: "POST http://127.0.0.1:8788/q/optimize\n{\"campaign\":\"local_tune\",\"arms\":[\"arm_compact_local_shim\",\"arm_parallel_maker_pair\"],\"reward\":0.94}"
+      }
+    };
+
+    function selectNode(key, el) {
+      document.querySelectorAll(".node-group").forEach((n) => n.classList.remove("active"));
+      if (el) el.classList.add("active");
+      const info = NODE_DATA[key];
+      document.getElementById("insp-tag").textContent = info.tag;
+      document.getElementById("insp-title").textContent = info.title;
+      document.getElementById("insp-desc").textContent = info.desc;
+      document.getElementById("insp-code").textContent = info.code;
+    }
+
+    let epoch = 0;
+    function appendLog(kind, msg) {
+      const box = document.getElementById("sim-log");
+      const div = document.createElement("div");
+      div.className = "log-line";
+      const span = document.createElement("span");
+      span.className = kind === "ok" ? "ok" : "warn";
+      span.textContent = kind === "ok" ? "[OK] " : "[BLOCKED] ";
+      div.appendChild(span);
+      div.appendChild(document.createTextNode(msg));
+      box.prepend(div);
+    }
+
+    function simEnqueue() {
+      epoch += 1;
+      appendLog("ok", `planner-01 enqueued 4 local sub-Tasks; maker-03 claimed local_step_01 with lease_epoch=${epoch}.`);
+    }
+    function simZombie() {
+      if (epoch === 0) epoch = 1;
+      appendLog("warn", `Compacted zombie subagent tried POST /q/submit with stale fencing_token=${epoch - 1} -> HTTP 409 stale_fencing_token (0 state corruption).`);
+    }
+    function simPromote() {
+      appendLog("warn", "maker-03 attempted self-promotion -> HTTP 409 maker_cannot_self_check.");
+      appendLog("ok", "checker-05 audited obj_cell_schema_v1 -> promoted_ready; 3 local_only scratch notes kept private, 1 clean object exported via /q/sync/push!");
+    }
+    function simReset() {
+      epoch = 0;
+      document.getElementById("sim-log").innerHTML = '<div class="log-line"><span class="ok">[READY]</span> Local SQLite WAL Cell initialized on 127.0.0.1:8788 (0 external deps).</div>';
+    }
+  </script>
+</body>
+</html>
