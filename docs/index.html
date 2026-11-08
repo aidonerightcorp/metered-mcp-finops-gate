@@ -75,7 +75,7 @@
     border-color: var(--ink);
   }
   button.primary:hover { opacity: 0.9; }
-  button.active-pill {
+  button.active-pill, button.active-pill:hover {
     background: var(--teal);
     color: var(--surface);
     border-color: var(--teal);
@@ -172,11 +172,11 @@
     top: 0;
     background: var(--surface-alt);
     border-bottom: 2px solid var(--border-strong);
-    padding: 11px 10px;
+    padding: 10px 8px;
     text-align: left;
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
     color: var(--ink);
     cursor: pointer;
     user-select: none;
@@ -188,8 +188,8 @@
   tbody tr.main-row:hover { background: var(--surface-alt); }
   tbody tr.main-row.done-row { opacity: 0.58; background: #f4f1ea; }
   tbody tr.main-row.knapsack-hit { background: var(--teal-bg); }
-  tbody td { padding: 11px 10px; vertical-align: top; }
-  .title-cell { min-width: 290px; max-width: 430px; }
+  tbody td { padding: 10px 8px; vertical-align: top; }
+  .title-cell { min-width: 245px; max-width: 360px; }
   .item-title {
     font-weight: 700;
     font-size: 0.94rem;
