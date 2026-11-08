@@ -1,0 +1,3316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="only light">
+  <title>2D Spatial Tactical Arena — Fenced Loop Grid PolicyNode Swarm</title>
+  <style>
+    :root {
+      color-scheme: only light;
+      --bg-parchment: #f5f2ea;
+      --bg-contour: #ebe6da;
+      --grid-line: #dfd9c8;
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --card-solid: #ffffff;
+      --border-warm: #d4cec0;
+      --border-strong: #b8b09f;
+      --ink-primary: #1c2127;
+      --ink-secondary: #4a535e;
+      --ink-muted: #6c7580;
+      --accent-canopy: #1b4d3e;
+      --accent-crate: #b45309;
+      --accent-canister: #991b1b;
+      --accent-bunker: #475569;
+      --accent-shield: #0284c7;
+      --accent-health: #15803d;
+      --accent-amber: #d97706;
+      --shadow-card: 0 4px 18px rgba(28, 33, 39, 0.08);
+      --radius-lg: 10px;
+      --radius-sm: 6px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-parchment);
+      color: var(--ink-primary);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    #arena-stage {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: var(--bg-parchment);
+      overflow: hidden;
+    }
+
+    #arena-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-parchment);
+      cursor: crosshair;
+    }
+
+    /* Thin agent instruction ribbon at top */
+    #agent-note {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 22px;
+      background: rgba(245, 242, 234, 0.92);
+      border-bottom: 1px solid var(--border-warm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      font-size: 11px;
+      color: var(--ink-secondary);
+      z-index: 25;
+      pointer-events: auto;
+    }
+
+    #agent-note a {
+      color: var(--ink-primary);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    .hud-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      color: var(--ink-primary);
+      z-index: 20;
+    }
+
+    /* Top-left arena overview card */
+    #hud-left {
+      position: fixed;
+      top: 32px;
+      left: 14px;
+      width: 268px;
+      padding: 11px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    .arena-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--bg-contour);
+      border: 1px solid var(--border-warm);
+      color: var(--ink-primary);
+    }
+
+    .mode-badge.human-active {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #14532d;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-crate);
+      display: inline-block;
+    }
+
+    .mode-badge.human-active .status-dot {
+      background: var(--accent-health);
+    }
+
+    .phase-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-top: 4px;
+      border-top: 1px solid var(--grid-line);
+    }
+
+    .row-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-contour);
+      border: 1px solid var(--border-warm);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent-amber);
+      width: 0%;
+      transition: width 0.12s linear;
+    }
+
+    .legend-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px 8px;
+      padding-top: 4px;
+      border-top: 1px solid var(--grid-line);
+      font-size: 11px;
+      color: var(--ink-secondary);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* Top-center primary mode & speed bar */
+    #hud-top-center {
+      position: fixed;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--card-solid);
+      color: var(--ink-primary);
+      padding: 6px 11px;
+      transition: background 0.12s ease, transform 0.06s ease, border-color 0.12s ease;
+    }
+
+    button:hover {
+      background: var(--bg-contour);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    #btn-play-toggle {
+      background: var(--ink-primary);
+      color: #ffffff;
+      border-color: var(--ink-primary);
+      padding: 7px 14px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    #btn-play-toggle:hover {
+      background: #2d353f;
+    }
+
+    #btn-play-toggle.playing-human {
+      background: var(--accent-health);
+      border-color: #14532d;
+      color: #ffffff;
+    }
+
+    .speed-group {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-parchment);
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .speed-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      padding: 0 6px;
+    }
+
+    .speed-btn {
+      border: 1px solid transparent;
+      background: transparent;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-secondary);
+      border-radius: 4px;
+    }
+
+    .speed-btn.active {
+      background: var(--card-solid);
+      color: var(--ink-primary);
+      border-color: var(--border-strong);
+      box-shadow: 0 1px 2px rgba(28, 33, 39, 0.08);
+    }
+
+    /* Top-right minimap + live feed + policy grid card */
+    #hud-right {
+      position: fixed;
+      top: 32px;
+      right: 14px;
+      width: 278px;
+      padding: 11px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: calc(100vh - 68px);
+      overflow-y: auto;
+    }
+
+    .minimap-wrap {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      background: var(--bg-parchment);
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+    }
+
+    #minimap-canvas {
+      width: 244px;
+      height: 184px;
+      display: block;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .alive-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .stat-pill {
+      background: var(--bg-parchment);
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-sm);
+      padding: 5px 8px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-pill .lbl {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+      font-weight: 700;
+    }
+
+    .stat-pill .val {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--ink-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .section-hdr {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--ink-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #elim-feed {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-height: 68px;
+      max-height: 82px;
+      overflow: hidden;
+      background: var(--bg-parchment);
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-sm);
+      padding: 5px 7px;
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #elim-feed li {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--ink-secondary);
+    }
+
+    #elim-feed li strong {
+      color: var(--ink-primary);
+    }
+
+    .policy-box {
+      border-top: 1px solid var(--grid-line);
+      padding-top: 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .policy-select-row {
+      display: flex;
+      gap: 4px;
+    }
+
+    .cell-chip {
+      flex: 1;
+      padding: 3px 5px;
+      font-size: 10px;
+      font-weight: 700;
+      text-align: center;
+      border-radius: 4px;
+      background: var(--bg-parchment);
+      border: 1px solid var(--border-warm);
+      color: var(--ink-secondary);
+    }
+
+    .cell-chip.active {
+      background: var(--bg-contour);
+      border-color: var(--ink-primary);
+      color: var(--ink-primary);
+    }
+
+    .metric-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--ink-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-row span.m-val {
+      font-weight: 700;
+      color: var(--ink-primary);
+    }
+
+    /* Bottom-center loadout & vitals bar */
+    #hud-bottom {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 9px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 540px;
+    }
+
+    .vitals-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .unit-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ink-primary);
+      min-width: 128px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .bar-wrap {
+      position: relative;
+      height: 11px;
+      background: var(--bg-contour);
+      border: 1px solid var(--border-warm);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill-shield {
+      height: 100%;
+      background: var(--accent-shield);
+      width: 50%;
+      transition: width 0.08s linear;
+    }
+
+    .bar-fill-hp {
+      height: 100%;
+      background: var(--accent-health);
+      width: 100%;
+      transition: width 0.08s linear;
+    }
+
+    .slots-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .slot-card {
+      background: var(--bg-parchment);
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-sm);
+      padding: 5px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      cursor: pointer;
+    }
+
+    .slot-card.active {
+      background: var(--card-solid);
+      border: 2px solid var(--ink-primary);
+      padding: 4px 7px;
+    }
+
+    .slot-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-muted);
+    }
+
+    .slot-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-primary);
+    }
+
+    .slot-sub {
+      font-size: 10px;
+      color: var(--ink-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .controls-hint {
+      font-size: 10.5px;
+      color: var(--ink-muted);
+      text-align: center;
+      border-top: 1px solid var(--grid-line);
+      padding-top: 4px;
+    }
+
+    /* Match complete light modal card */
+    #match-banner {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 18px 24px;
+      text-align: center;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 320px;
+      z-index: 30;
+    }
+
+    #match-banner.visible {
+      display: flex;
+    }
+
+    /* Standard thin Paper & Ink footer */
+    #page-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 22px;
+      background: rgba(245, 242, 234, 0.94);
+      border-top: 1px solid var(--border-warm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      font-size: 10.5px;
+      color: var(--ink-secondary);
+      z-index: 25;
+    }
+
+    #page-footer nav {
+      display: flex;
+      gap: 12px;
+    }
+
+    #page-footer a {
+      color: var(--ink-primary);
+      text-decoration: none;
+    }
+
+    #page-footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1180px) {
+      #hud-left { width: 220px; }
+      #hud-right { width: 236px; }
+      #minimap-canvas { width: 204px; height: 154px; }
+      #hud-bottom { min-width: 440px; }
+    }
+  </style>
+</head>
+<body>
+  <header id="agent-note">
+    <span>Agents: inspect live 2D spatial arena telemetry via <code>window.ARENA_TELEMETRY</code> or toggle autonomous swarm policy cells directly.</span>
+    <span>Fenced Loop Grid · Clean-Room Procedural Vector Arena</span>
+  </header>
+
+  <main id="arena-stage">
+    <canvas id="arena-canvas"></canvas>
+  </main>
+
+  <!-- Top-Left Arena & Storm Phase Overview -->
+  <aside id="hud-left" class="hud-card" aria-label="Arena Overview">
+    <div>
+      <div class="eyebrow">Fenced Loop Grid · PolicyNode Swarm</div>
+      <div class="arena-title">2D Spatial Tactical Arena</div>
+    </div>
+
+    <div id="mode-pill" class="mode-badge">
+      <span class="status-dot"></span>
+      <span id="mode-pill-text">Autonomous Swarm · 1x</span>
+    </div>
+
+    <div class="phase-box">
+      <div class="row-between">
+        <span style="font-weight:700;font-size:11.5px;" id="phase-label">Safe Ring · Phase 1 / 5</span>
+        <span style="font-size:11px;color:var(--ink-secondary);font-variant-numeric:tabular-nums;" id="phase-timer">00:18</span>
+      </div>
+      <div class="progress-track">
+        <div id="phase-progress" class="progress-fill"></div>
+      </div>
+      <div class="row-between" style="font-size:10.5px;color:var(--ink-muted);">
+        <span id="ring-radius-lbl">Radius: 1080 m</span>
+        <span id="spectate-hint">Click minimap to focus unit</span>
+      </div>
+    </div>
+
+    <div class="legend-grid">
+      <div class="legend-item"><span class="swatch" style="background:#1b4d3e;border-radius:50%;"></span>Timber Canopy</div>
+      <div class="legend-item"><span class="swatch" style="background:#b45309;"></span>Supply Crate</div>
+      <div class="legend-item"><span class="swatch" style="background:#991b1b;border-radius:50%;"></span>Volatile Canister</div>
+      <div class="legend-item"><span class="swatch" style="background:#475569;"></span>Stone Bunker</div>
+    </div>
+  </aside>
+
+  <!-- Top-Center Mode & Speed Controls -->
+  <section id="hud-top-center" class="hud-card" aria-label="Simulation Controls">
+    <button id="btn-play-toggle" type="button">Drop In &amp; Play (WASD + Mouse)</button>
+    <div class="speed-group" role="group" aria-label="Autonomous Swarm Speed">
+      <span class="speed-label">Autonomous Swarm Mode</span>
+      <button id="btn-speed-1" class="speed-btn active" type="button" data-speed="1">1x</button>
+      <button id="btn-speed-2" class="speed-btn" type="button" data-speed="2">2x</button>
+      <button id="btn-speed-4" class="speed-btn" type="button" data-speed="4">4x</button>
+    </div>
+    <button id="btn-new-match" type="button">New Match</button>
+  </section>
+
+  <!-- Top-Right Minimap, Feed & Policy Grid Telemetry -->
+  <aside id="hud-right" class="hud-card" aria-label="Tactical Radar and Policy Grid">
+    <div class="section-hdr">
+      <span>Tactical Radar</span>
+      <span id="fps-readout">60 FPS</span>
+    </div>
+    <div class="minimap-wrap">
+      <canvas id="minimap-canvas" width="244" height="184"></canvas>
+    </div>
+
+    <div class="alive-strip">
+      <div class="stat-pill">
+        <span class="lbl">Remaining</span>
+        <span class="val" id="alive-counter">24 / 24</span>
+      </div>
+      <div class="stat-pill">
+        <span class="lbl">Eliminations</span>
+        <span class="val" id="focus-elims">0</span>
+      </div>
+    </div>
+
+    <div class="section-hdr">
+      <span>Live Elimination Feed</span>
+      <span id="clock-readout">00:00</span>
+    </div>
+    <ul id="elim-feed">
+      <li><strong>Swarm Live:</strong> 24 contenders deployed</li>
+    </ul>
+
+    <div class="policy-box">
+      <div class="section-hdr">
+        <span>Self-Tuning Policy Grid</span>
+        <span id="grid-gen-tag" style="color:var(--ink-primary);">Gen 3</span>
+      </div>
+      <div class="policy-select-row">
+        <button type="button" class="cell-chip active" data-cell="G3_BALANCED">G3·Balanced</button>
+        <button type="button" class="cell-chip" data-cell="G3_RAIDER">G3·Raider</button>
+        <button type="button" class="cell-chip" data-cell="G3_BASTION">G3·Bastion</button>
+      </div>
+      <div class="metric-row"><span>Cover Seek Weight</span><span class="m-val" id="pol-cover">0.78</span></div>
+      <div class="metric-row"><span>Resource Affinity</span><span class="m-val" id="pol-resource">0.66</span></div>
+      <div class="metric-row"><span>Strafe Cadence</span><span class="m-val" id="pol-strafe">2.4 Hz</span></div>
+      <div class="metric-row"><span>Delta Snapshot Stream</span><span class="m-val" id="pol-bandwidth">14.2 KB/s</span></div>
+      <div class="metric-row"><span>Deterministic Seed</span><span class="m-val" id="pol-seed">#482910</span></div>
+    </div>
+  </aside>
+
+  <!-- Bottom-Center Active Contender Loadout & Vitals -->
+  <section id="hud-bottom" class="hud-card" aria-label="Unit Loadout">
+    <div class="vitals-row">
+      <div class="unit-label" id="focus-unit-title">Agent #01 (Swarm)</div>
+      <div class="bar-group">
+        <div class="row-between" style="font-size:10.5px;">
+          <span style="color:var(--accent-shield);font-weight:700;" id="shield-text">Shield 50 / 50</span>
+          <span style="color:var(--accent-health);font-weight:700;" id="hp-text">Health 100 / 100</span>
+        </div>
+        <div class="bar-wrap" style="height:7px;">
+          <div id="bar-shield" class="bar-fill-shield"></div>
+        </div>
+        <div class="bar-wrap">
+          <div id="bar-hp" class="bar-fill-hp"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slots-row">
+      <div class="slot-card active" id="slot-1" data-slot="0">
+        <div class="slot-top"><span>[1]</span><span id="slot-1-tier">Mk.I</span></div>
+        <div class="slot-name">Pulse Carbine</div>
+        <div class="slot-sub" id="slot-1-ammo">30 / 120</div>
+      </div>
+      <div class="slot-card" id="slot-2" data-slot="1">
+        <div class="slot-top"><span>[2]</span><span id="slot-2-tier">Mk.I</span></div>
+        <div class="slot-name">Scatter Array</div>
+        <div class="slot-sub" id="slot-2-ammo">8 / 32</div>
+      </div>
+      <div class="slot-card" id="slot-3" data-slot="2">
+        <div class="slot-top"><span>[3]</span><span id="slot-3-tier">Mk.I</span></div>
+        <div class="slot-name">Precision Rail</div>
+        <div class="slot-sub" id="slot-3-ammo">5 / 20</div>
+      </div>
+      <div class="slot-card" id="slot-4" data-slot="3">
+        <div class="slot-top"><span>[4 / E]</span><span>Supply</span></div>
+        <div class="slot-name">Field Medkit</div>
+        <div class="slot-sub" id="slot-4-count">x1 Ready</div>
+      </div>
+    </div>
+
+    <div class="controls-hint" id="controls-strip">
+      Space: Toggle Human / Swarm · WASD / Arrows: Move · Mouse: Aim &amp; Hold Fire · 1–3: Weapons · 4/E: Medkit · F: Pick Up · R: Reload
+    </div>
+  </section>
+
+  <!-- Match Winner Banner -->
+  <div id="match-banner" class="hud-card" role="status">
+    <div class="eyebrow">Arena Cycle Complete</div>
+    <div style="font-size:18px;font-weight:800;" id="winner-headline">Agent #01 Prevails</div>
+    <div style="font-size:12px;color:var(--ink-secondary);" id="winner-details">Eliminations: 6 · Next seeded cycle in 4s</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:4px;">
+      <button type="button" id="btn-banner-play" style="background:var(--ink-primary);color:#fff;border-color:var(--ink-primary);">Drop In Next Match</button>
+      <button type="button" id="btn-banner-swarm">Watch Next Swarm</button>
+    </div>
+  </div>
+
+  <footer id="page-footer">
+    <nav aria-label="Surface Links">
+      <a href="https://fencedgridlabs.com">Open Systems Lab</a>
+      <a href="https://fabric.fencedgridlabs.com">Fenced Loop Grid</a>
+      <a href="https://fencedgridlabs.com/disclaimer/">Disclaimer</a>
+    </nav>
+    <span>Fenced Policy Grid Spatial Arena · Paper &amp; Ink Light Surface · Initial Testing Simulation</span>
+  </footer>
+
+  <script>
+  (function () {
+    "use strict";
+
+    // =========================================================================
+    // 1. DECLARATIVE CONFIGURATION SETTINGS GRID & BOUNDS CLAMPING
+    // =========================================================================
+    const PARAMETER_BOUNDS = {
+      contenderCount: { low: 8, high: 48 },
+      coverSeek: { low: 0.1, high: 1.0 },
+      resourceAffinity: { low: 0.1, high: 1.0 },
+      strafeCadenceHz: { low: 0.6, high: 4.5 },
+      retreatThreshold: { low: 0.15, high: 0.75 },
+      simSpeedMultiplier: { choices: [1, 2, 4] }
+    };
+
+    function clampRange(val, bounds) {
+      return Math.max(bounds.low, Math.min(bounds.high, val));
+    }
+
+    const ARENA_GRID_CONFIG = {
+      world: {
+        width: 2400,
+        height: 2400,
+        gridSpacing: 150,
+        sectorCount: 4,
+        wallPadding: 44,
+        contourCount: 7
+      },
+      simulation: {
+        fixedStepSec: 1 / 60,
+        maxFrameDeltaSec: 0.05,
+        contenderCount: 24,
+        humanAgentIndex: 0,
+        snapshotHz: 20,
+        bytesPerEntityDelta: 26,
+        bytesPerProjDelta: 12,
+        packetHeaderBytes: 48,
+        autoRestartDelaySec: 4.5,
+        initialSeed: 482910,
+        seedStep: 13709
+      },
+      unit: {
+        radius: 18,
+        baseSpeed: 238,
+        accel: 14.0,
+        damping: 10.5,
+        maxHp: 100,
+        maxShield: 50,
+        startShield: 35,
+        humanDropShield: 50,
+        medkitHeal: 48,
+        medkitCooldownSec: 1.1,
+        pickupRadius: 56,
+        autoPickupRadius: 30,
+        knockbackDecay: 8.5,
+        spawnRingRatio: 0.34,
+        spawnJitter: 210
+      },
+      obstacles: {
+        bunkerCount: 16,
+        bunkerMinW: 86,
+        bunkerMaxW: 164,
+        bunkerThickness: 34,
+        canopyCount: 22,
+        canopyRadiusMin: 68,
+        canopyRadiusMax: 94,
+        canopyTrunkRadius: 13,
+        canopyConcealAlpha: 0.30,
+        crateCount: 38,
+        crateRadius: 24,
+        crateMaxHp: 75,
+        crateMinScale: 0.66,
+        canisterCount: 14,
+        canisterRadius: 19,
+        canisterMaxHp: 46,
+        canisterBlastRadius: 205,
+        canisterBlastDamage: 68,
+        canisterKnockback: 460
+      },
+      stormPhases: [
+        { holdSec: 10, shrinkSec: 14, targetRatio: 0.35, dps: 3.5 },
+        { holdSec: 8,  shrinkSec: 13, targetRatio: 0.25, dps: 6.5 },
+        { holdSec: 7,  shrinkSec: 12, targetRatio: 0.17, dps: 10.0 },
+        { holdSec: 6,  shrinkSec: 11, targetRatio: 0.10, dps: 15.0 },
+        { holdSec: 5,  shrinkSec: 10, targetRatio: 0.045, dps: 22.0 }
+      ],
+      weapons: [
+        {
+          id: "carbine",
+          name: "Pulse Carbine",
+          color: "#0369a1",
+          fireIntervalSec: 0.125,
+          reloadSec: 1.25,
+          magSize: 30,
+          startReserve: 120,
+          projSpeed: 920,
+          projRange: 690,
+          damage: 14,
+          pellets: 1,
+          baseSpreadRad: 0.032,
+          bloomPerShot: 0.022,
+          maxBloom: 0.14,
+          bloomDecay: 0.34,
+          barrelLen: 26,
+          barrelWidth: 6,
+          knockback: 42,
+          tierBonusMult: 0.16
+        },
+        {
+          id: "scatter",
+          name: "Scatter Array",
+          color: "#b45309",
+          fireIntervalSec: 0.62,
+          reloadSec: 1.55,
+          magSize: 8,
+          startReserve: 32,
+          projSpeed: 780,
+          projRange: 370,
+          damage: 9.5,
+          pellets: 7,
+          baseSpreadRad: 0.19,
+          bloomPerShot: 0.08,
+          maxBloom: 0.28,
+          bloomDecay: 0.42,
+          barrelLen: 22,
+          barrelWidth: 9,
+          knockback: 32,
+          tierBonusMult: 0.15
+        },
+        {
+          id: "rail",
+          name: "Precision Rail",
+          color: "#6d28d9",
+          fireIntervalSec: 0.78,
+          reloadSec: 1.75,
+          magSize: 5,
+          startReserve: 20,
+          projSpeed: 1420,
+          projRange: 1040,
+          damage: 44,
+          pellets: 1,
+          baseSpreadRad: 0.006,
+          bloomPerShot: 0.055,
+          maxBloom: 0.16,
+          bloomDecay: 0.30,
+          barrelLen: 34,
+          barrelWidth: 5,
+          knockback: 115,
+          tierBonusMult: 0.18
+        }
+      ],
+      policyCells: {
+        G3_BALANCED: {
+          cellCode: "G3-BALANCED",
+          generation: "Gen 3",
+          coverSeek: 0.78,
+          resourceAffinity: 0.66,
+          strafeCadenceHz: 2.4,
+          retreatThreshold: 0.42,
+          preferredDist: 255
+        },
+        G3_RAIDER: {
+          cellCode: "G3-RAIDER",
+          generation: "Gen 3",
+          coverSeek: 0.46,
+          resourceAffinity: 0.82,
+          strafeCadenceHz: 3.3,
+          retreatThreshold: 0.28,
+          preferredDist: 175
+        },
+        G3_BASTION: {
+          cellCode: "G3-BASTION",
+          generation: "Gen 3",
+          coverSeek: 0.94,
+          resourceAffinity: 0.54,
+          strafeCadenceHz: 1.8,
+          retreatThreshold: 0.56,
+          preferredDist: 330
+        }
+      },
+      palette: {
+        parchment: "#f5f2ea",
+        contour: "#ebe6da",
+        grid: "#dfd9c8",
+        ink: "#1c2127",
+        bunkerFill: "#475569",
+        bunkerStroke: "#334155",
+        crateFill: "#b45309",
+        crateTrim: "#78350f",
+        canisterFill: "#991b1b",
+        canisterRing: "#fecaca",
+        canopyFill: "#1b4d3e",
+        canopyHighlight: "#25634f",
+        trunkFill: "#5c4033",
+        stormFill: "rgba(185, 28, 28, 0.12)",
+        stormStroke: "#b91c1c",
+        targetStroke: "#d97706"
+      }
+    };
+
+    // =========================================================================
+    // 2. DETERMINISTIC PRNG (MULBERRY-STYLE 32-BIT)
+    // =========================================================================
+    function createSeededRng(seedValue) {
+      let state = (seedValue >>> 0) || 1;
+      return function nextFloat() {
+        state = (state + 1831565813) >>> 0;
+        let t = Math.imul(state ^ (state >>> 15), 1 | state);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    // =========================================================================
+    // 3. DOM REFERENCES & CANVAS INITIALIZATION
+    // =========================================================================
+    const canvas = document.getElementById("arena-canvas");
+    const ctx = canvas.getContext("2d", { alpha: false });
+    const miniCanvas = document.getElementById("minimap-canvas");
+    const miniCtx = miniCanvas.getContext("2d", { alpha: false });
+
+    const ui = {
+      modePill: document.getElementById("mode-pill"),
+      modePillText: document.getElementById("mode-pill-text"),
+      phaseLabel: document.getElementById("phase-label"),
+      phaseTimer: document.getElementById("phase-timer"),
+      phaseProgress: document.getElementById("phase-progress"),
+      ringRadiusLbl: document.getElementById("ring-radius-lbl"),
+      spectateHint: document.getElementById("spectate-hint"),
+      btnPlayToggle: document.getElementById("btn-play-toggle"),
+      btnNewMatch: document.getElementById("btn-new-match"),
+      speedBtns: Array.from(document.querySelectorAll(".speed-btn")),
+      cellChips: Array.from(document.querySelectorAll(".cell-chip")),
+      fpsReadout: document.getElementById("fps-readout"),
+      aliveCounter: document.getElementById("alive-counter"),
+      focusElims: document.getElementById("focus-elims"),
+      clockReadout: document.getElementById("clock-readout"),
+      elimFeed: document.getElementById("elim-feed"),
+      polCover: document.getElementById("pol-cover"),
+      polResource: document.getElementById("pol-resource"),
+      polStrafe: document.getElementById("pol-strafe"),
+      polBandwidth: document.getElementById("pol-bandwidth"),
+      polSeed: document.getElementById("pol-seed"),
+      focusUnitTitle: document.getElementById("focus-unit-title"),
+      shieldText: document.getElementById("shield-text"),
+      hpText: document.getElementById("hp-text"),
+      barShield: document.getElementById("bar-shield"),
+      barHp: document.getElementById("bar-hp"),
+      slotCards: [
+        document.getElementById("slot-1"),
+        document.getElementById("slot-2"),
+        document.getElementById("slot-3"),
+        document.getElementById("slot-4")
+      ],
+      slotTiers: [
+        document.getElementById("slot-1-tier"),
+        document.getElementById("slot-2-tier"),
+        document.getElementById("slot-3-tier")
+      ],
+      slotAmmos: [
+        document.getElementById("slot-1-ammo"),
+        document.getElementById("slot-2-ammo"),
+        document.getElementById("slot-3-ammo")
+      ],
+      slot4Count: document.getElementById("slot-4-count"),
+      matchBanner: document.getElementById("match-banner"),
+      winnerHeadline: document.getElementById("winner-headline"),
+      winnerDetails: document.getElementById("winner-details"),
+      btnBannerPlay: document.getElementById("btn-banner-play"),
+      btnBannerSwarm: document.getElementById("btn-banner-swarm")
+    };
+
+    let viewW = window.innerWidth;
+    let viewH = window.innerHeight;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function resizeViewport() {
+      viewW = window.innerWidth;
+      viewH = window.innerHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(viewW * dpr);
+      canvas.height = Math.floor(viewH * dpr);
+      miniCanvas.width = Math.floor(244 * dpr);
+      miniCanvas.height = Math.floor(184 * dpr);
+    }
+    window.addEventListener("resize", resizeViewport);
+    resizeViewport();
+
+    // =========================================================================
+    // 4. RUNTIME ARENA STATE
+    // =========================================================================
+    const input = {
+      keys: Object.create(null),
+      mouseX: viewW * 0.5,
+      mouseY: viewH * 0.5,
+      mouseDown: false
+    };
+
+    const state = {
+      seed: ARENA_GRID_CONFIG.simulation.initialSeed,
+      rng: createSeededRng(ARENA_GRID_CONFIG.simulation.initialSeed),
+      humanMode: false,
+      simSpeed: 1,
+      activePolicyKey: "G3_BALANCED",
+      matchTimeSec: 0,
+      matchEnded: false,
+      restartCountdownSec: 0,
+      winnerUnit: null,
+      spectateId: 0,
+      camera: {
+        x: ARENA_GRID_CONFIG.world.width * 0.5,
+        y: ARENA_GRID_CONFIG.world.height * 0.5,
+        zoom: 1.0,
+        shake: 0
+      },
+      contours: [],
+      bunkers: [],
+      crates: [],
+      canisters: [],
+      canopies: [],
+      loots: [],
+      projectiles: [],
+      particles: [],
+      floatTexts: [],
+      shockwaves: [],
+      scorchMarks: [],
+      units: [],
+      feedItems: [],
+      storm: {
+        phaseIdx: 0,
+        inShrink: false,
+        timerSec: 0,
+        phaseDurationSec: 12,
+        cx: 1200,
+        cy: 1200,
+        radius: 1320,
+        startCx: 1200,
+        startCy: 1200,
+        startRadius: 1320,
+        targetCx: 1200,
+        targetCy: 1200,
+        targetRadius: 1030,
+        dps: 3.5
+      },
+      metrics: {
+        fps: 60,
+        framesRendered: 0,
+        simTicks: 0,
+        bandwidthKBps: 14.2
+      }
+    };
+
+    function activePolicy() {
+      const raw = ARENA_GRID_CONFIG.policyCells[state.activePolicyKey];
+      return {
+        cellCode: raw.cellCode,
+        generation: raw.generation,
+        coverSeek: clampRange(raw.coverSeek, PARAMETER_BOUNDS.coverSeek),
+        resourceAffinity: clampRange(raw.resourceAffinity, PARAMETER_BOUNDS.resourceAffinity),
+        strafeCadenceHz: clampRange(raw.strafeCadenceHz, PARAMETER_BOUNDS.strafeCadenceHz),
+        retreatThreshold: clampRange(raw.retreatThreshold, PARAMETER_BOUNDS.retreatThreshold),
+        preferredDist: raw.preferredDist
+      };
+    }
+
+    // =========================================================================
+    // 5. GEOMETRY & COLLISION PRIMITIVES
+    // =========================================================================
+    function distSq(ax, ay, bx, by) {
+      const dx = bx - ax;
+      const dy = by - ay;
+      return dx * dx + dy * dy;
+    }
+
+    function circleIntersectsRect(cx, cy, cr, rx, ry, rw, rh) {
+      const nx = Math.max(rx, Math.min(rx + rw, cx));
+      const ny = Math.max(ry, Math.min(ry + rh, cy));
+      const dx = cx - nx;
+      const dy = cy - ny;
+      return (dx * dx + dy * dy) < (cr * cr);
+    }
+
+    function resolveCircleRect(ent, rect) {
+      const nx = Math.max(rect.x, Math.min(rect.x + rect.w, ent.x));
+      const ny = Math.max(rect.y, Math.min(rect.y + rect.h, ent.y));
+      let dx = ent.x - nx;
+      let dy = ent.y - ny;
+      const d2 = dx * dx + dy * dy;
+      if (d2 >= ent.r * ent.r) return;
+      const d = Math.sqrt(d2);
+      if (d > 0.0001) {
+        const push = ent.r - d;
+        ent.x += (dx / d) * push;
+        ent.y += (dy / d) * push;
+      } else {
+        const leftPen = Math.abs(ent.x - rect.x);
+        const rightPen = Math.abs(rect.x + rect.w - ent.x);
+        const topPen = Math.abs(ent.y - rect.y);
+        const botPen = Math.abs(rect.y + rect.h - ent.y);
+        const minPen = Math.min(leftPen, rightPen, topPen, botPen);
+        if (minPen === leftPen) ent.x = rect.x - ent.r;
+        else if (minPen === rightPen) ent.x = rect.x + rect.w + ent.r;
+        else if (minPen === topPen) ent.y = rect.y - ent.r;
+        else ent.y = rect.y + rect.h + ent.r;
+      }
+    }
+
+    function resolveCircleCircle(ent, cx, cy, cr) {
+      const dx = ent.x - cx;
+      const dy = ent.y - cy;
+      const minD = ent.r + cr;
+      const d2 = dx * dx + dy * dy;
+      if (d2 >= minD * minD) return;
+      const d = Math.sqrt(d2) || 0.01;
+      const overlap = minD - d;
+      ent.x += (dx / d) * overlap;
+      ent.y += (dy / d) * overlap;
+    }
+
+    // Liang-Barsky segment vs AABB check for AI line-of-sight
+    function segmentBlockedByRect(x0, y0, x1, y1, rx, ry, rw, rh) {
+      let t0 = 0.0;
+      let t1 = 1.0;
+      const dx = x1 - x0;
+      const dy = y1 - y0;
+      const checks = [
+        [-dx, x0 - rx],
+        [dx, rx + rw - x0],
+        [-dy, y0 - ry],
+        [dy, ry + rh - y0]
+      ];
+      for (let i = 0; i < checks.length; i++) {
+        const p = checks[i][0];
+        const q = checks[i][1];
+        if (Math.abs(p) < 1e-6) {
+          if (q < 0) return false;
+        } else {
+          const r = q / p;
+          if (p < 0) {
+            if (r > t1) return false;
+            if (r > t0) t0 = r;
+          } else {
+            if (r < t0) return false;
+            if (r < t1) t1 = r;
+          }
+        }
+      }
+      return t0 <= t1;
+    }
+
+    function hasLineOfSight(x0, y0, x1, y1) {
+      for (let i = 0; i < state.bunkers.length; i++) {
+        const b = state.bunkers[i];
+        if (segmentBlockedByRect(x0, y0, x1, y1, b.x, b.y, b.w, b.h)) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // =========================================================================
+    // 6. WORLD GENERATION & MATCH INITIALIZATION
+    // =========================================================================
+    function formatUnitTag(idx) {
+      return "#" + String(idx + 1).padStart(2, "0");
+    }
+
+    function pushFeed(htmlText) {
+      state.feedItems.unshift(htmlText);
+      if (state.feedItems.length > 5) state.feedItems.length = 5;
+      ui.elimFeed.innerHTML = state.feedItems.map(function (item) {
+        return "<li>" + item + "</li>";
+      }).join("");
+    }
+
+    function createUnitInventory(isStarterFull) {
+      const wCfg = ARENA_GRID_CONFIG.weapons;
+      return {
+        weapons: [
+          { unlocked: true, tier: 1, mag: wCfg[0].magSize, reserve: wCfg[0].startReserve },
+          { unlocked: isStarterFull, tier: 1, mag: wCfg[1].magSize, reserve: isStarterFull ? wCfg[1].startReserve : 16 },
+          { unlocked: isStarterFull, tier: 1, mag: wCfg[2].magSize, reserve: isStarterFull ? wCfg[2].startReserve : 10 }
+        ],
+        medkits: 1
+      };
+    }
+
+    function overlapsExisting(cx, cy, pad) {
+      for (let i = 0; i < state.bunkers.length; i++) {
+        const b = state.bunkers[i];
+        if (circleIntersectsRect(cx, cy, pad, b.x - 14, b.y - 14, b.w + 28, b.h + 28)) return true;
+      }
+      for (let i = 0; i < state.crates.length; i++) {
+        const c = state.crates[i];
+        if (distSq(cx, cy, c.x, c.y) < (pad + c.r + 14) * (pad + c.r + 14)) return true;
+      }
+      for (let i = 0; i < state.canisters.length; i++) {
+        const v = state.canisters[i];
+        if (distSq(cx, cy, v.x, v.y) < (pad + v.r + 16) * (pad + v.r + 16)) return true;
+      }
+      return false;
+    }
+
+    function initMatch(newSeed, startHuman) {
+      state.seed = newSeed >>> 0;
+      state.rng = createSeededRng(state.seed);
+      const rng = state.rng;
+      const W = ARENA_GRID_CONFIG.world.width;
+      const H = ARENA_GRID_CONFIG.world.height;
+      const obsCfg = ARENA_GRID_CONFIG.obstacles;
+
+      state.humanMode = Boolean(startHuman);
+      if (state.humanMode) {
+        setSimSpeed(1);
+      }
+      state.matchTimeSec = 0;
+      state.matchEnded = false;
+      state.restartCountdownSec = 0;
+      state.winnerUnit = null;
+      ui.matchBanner.classList.remove("visible");
+
+      state.contours = [];
+      state.bunkers = [];
+      state.crates = [];
+      state.canisters = [];
+      state.canopies = [];
+      state.loots = [];
+      state.projectiles = [];
+      state.particles = [];
+      state.floatTexts = [];
+      state.shockwaves = [];
+      state.scorchMarks = [];
+      state.units = [];
+      state.feedItems = [];
+
+      // Topographic contour zones
+      for (let i = 0; i < ARENA_GRID_CONFIG.world.contourCount; i++) {
+        const angle = (i / ARENA_GRID_CONFIG.world.contourCount) * Math.PI * 2 + rng() * 0.5;
+        const dist = (i === 0) ? 0 : (280 + rng() * 620);
+        state.contours.push({
+          x: W * 0.5 + Math.cos(angle) * dist,
+          y: H * 0.5 + Math.sin(angle) * dist,
+          rx: 180 + rng() * 190,
+          ry: 140 + rng() * 165,
+          rot: rng() * Math.PI
+        });
+      }
+
+      // Stone Bunkers (architectural L-blocks and straight cover walls)
+      for (let i = 0; i < obsCfg.bunkerCount; i++) {
+        const ring = (i < 4) ? 230 : (460 + rng() * 540);
+        const theta = (i / obsCfg.bunkerCount) * Math.PI * 2 + (rng() - 0.5) * 0.28;
+        const bx = Math.round(W * 0.5 + Math.cos(theta) * ring);
+        const by = Math.round(H * 0.5 + Math.sin(theta) * ring);
+        const horizontal = rng() > 0.5;
+        const len = Math.round(obsCfg.bunkerMinW + rng() * (obsCfg.bunkerMaxW - obsCfg.bunkerMinW));
+        const thick = obsCfg.bunkerThickness;
+        const w = horizontal ? len : thick;
+        const h = horizontal ? thick : len;
+        state.bunkers.push({ x: bx - w * 0.5, y: by - h * 0.5, w: w, h: h });
+        if (i % 3 === 0) {
+          const armLen = Math.round(len * 0.62);
+          const aw = horizontal ? thick : armLen;
+          const ah = horizontal ? armLen : thick;
+          state.bunkers.push({
+            x: bx - w * 0.5,
+            y: by - h * 0.5 + (horizontal ? thick : 0),
+            w: aw,
+            h: ah
+          });
+        }
+      }
+
+      // Supply Crates
+      for (let i = 0; i < obsCfg.crateCount; i++) {
+        for (let attempt = 0; attempt < 25; attempt++) {
+          const cx = 180 + rng() * (W - 360);
+          const cy = 180 + rng() * (H - 360);
+          if (!overlapsExisting(cx, cy, obsCfg.crateRadius + 10)) {
+            state.crates.push({
+              id: i,
+              x: cx,
+              y: cy,
+              r: obsCfg.crateRadius,
+              hp: obsCfg.crateMaxHp,
+              maxHp: obsCfg.crateMaxHp,
+              hitFlash: 0
+            });
+            break;
+          }
+        }
+      }
+
+      // Volatile Canisters
+      for (let i = 0; i < obsCfg.canisterCount; i++) {
+        for (let attempt = 0; attempt < 25; attempt++) {
+          const cx = 240 + rng() * (W - 480);
+          const cy = 240 + rng() * (H - 480);
+          if (!overlapsExisting(cx, cy, obsCfg.canisterRadius + 16)) {
+            state.canisters.push({
+              id: i,
+              x: cx,
+              y: cy,
+              r: obsCfg.canisterRadius,
+              hp: obsCfg.canisterMaxHp,
+              maxHp: obsCfg.canisterMaxHp,
+              hitFlash: 0
+            });
+            break;
+          }
+        }
+      }
+
+      // Timber Canopies (precompute crown vertices for 60fps rendering)
+      for (let i = 0; i < obsCfg.canopyCount; i++) {
+        for (let attempt = 0; attempt < 25; attempt++) {
+          const cx = 190 + rng() * (W - 380);
+          const cy = 190 + rng() * (H - 380);
+          if (!overlapsExisting(cx, cy, obsCfg.canopyTrunkRadius + 18)) {
+            const cRad = obsCfg.canopyRadiusMin + rng() * (obsCfg.canopyRadiusMax - obsCfg.canopyRadiusMin);
+            const sAng = rng() * Math.PI * 2;
+            const poly = [];
+            const segs = 36;
+            const lobes = 7;
+            for (let a = 0; a < segs; a++) {
+              const ang = (a / segs) * Math.PI * 2;
+              const wave = 1 + 0.08 * Math.sin(ang * lobes + sAng);
+              poly.push([Math.cos(ang) * cRad * wave, Math.sin(ang) * cRad * wave]);
+            }
+            state.canopies.push({
+              id: i,
+              x: cx,
+              y: cy,
+              trunkR: obsCfg.canopyTrunkRadius,
+              canopyR: cRad,
+              alpha: 1.0,
+              poly: poly
+            });
+            break;
+          }
+        }
+      }
+
+      // Initial loose supply orbs near central arena to spark immediate skirmishes
+      const lootKinds = ["carbine", "scatter", "rail", "shield", "medkit", "ammo"];
+      for (let i = 0; i < 16; i++) {
+        const ang = (i / 16) * Math.PI * 2 + rng() * 0.25;
+        const rad = 140 + rng() * 480;
+        const lx = W * 0.5 + Math.cos(ang) * rad;
+        const ly = H * 0.5 + Math.sin(ang) * rad;
+        if (!overlapsExisting(lx, ly, 18)) {
+          spawnLootOrb(lx, ly, lootKinds[i % lootKinds.length], 0, 0);
+        }
+      }
+
+      // Spawn 24 Concurrent Contenders
+      const totalUnits = clampRange(
+        ARENA_GRID_CONFIG.simulation.contenderCount,
+        PARAMETER_BOUNDS.contenderCount
+      );
+      const uCfg = ARENA_GRID_CONFIG.unit;
+      for (let i = 0; i < totalUnits; i++) {
+        const angle = (i / totalUnits) * Math.PI * 2 + (rng() - 0.5) * 0.14;
+        const baseRad = W * uCfg.spawnRingRatio + (rng() - 0.5) * uCfg.spawnJitter;
+        let sx = W * 0.5 + Math.cos(angle) * baseRad;
+        let sy = H * 0.5 + Math.sin(angle) * baseRad;
+        for (let tries = 0; tries < 20; tries++) {
+          if (!overlapsExisting(sx, sy, uCfg.radius + 8)) break;
+          sx += (rng() - 0.5) * 90;
+          sy += (rng() - 0.5) * 90;
+        }
+        const isHumanSlot = (i === ARENA_GRID_CONFIG.simulation.humanAgentIndex);
+        const inv = createUnitInventory(isHumanSlot && state.humanMode);
+        // Give a few swarm contenders varied starter weapons so battles show all archetypes early
+        if (!isHumanSlot && i % 5 === 1) inv.weapons[1].unlocked = true;
+        if (!isHumanSlot && i % 7 === 2) inv.weapons[2].unlocked = true;
+
+        state.units.push({
+          id: i,
+          tag: formatUnitTag(i),
+          alive: true,
+          x: sx,
+          y: sy,
+          vx: 0,
+          vy: 0,
+          kx: 0,
+          ky: 0,
+          r: uCfg.radius,
+          aimAngle: angle + Math.PI,
+          hp: uCfg.maxHp,
+          maxHp: uCfg.maxHp,
+          shield: (isHumanSlot && state.humanMode) ? uCfg.humanDropShield : uCfg.startShield,
+          maxShield: uCfg.maxShield,
+          activeSlot: 0,
+          inv: inv,
+          fireCooldown: rng() * 0.25,
+          reloadTimer: 0,
+          medkitTimer: 0,
+          bloom: 0,
+          barrelKick: 0,
+          hitFlash: 0,
+          eliminations: 0,
+          strafePhase: rng() * Math.PI * 2,
+          aiGoalX: W * 0.5,
+          aiGoalY: H * 0.5,
+          aiRetargetTimer: rng() * 0.35
+        });
+      }
+
+      state.spectateId = ARENA_GRID_CONFIG.simulation.humanAgentIndex;
+      const focus = state.units[state.spectateId];
+      state.camera.x = focus.x;
+      state.camera.y = focus.y;
+
+      // Initialize Monotonic Safe-Zone Ring (Phase 1 / 5)
+      const p0 = ARENA_GRID_CONFIG.stormPhases[0];
+      const initR = W * 0.45;
+      const nextR = W * p0.targetRatio;
+      const driftX = W * 0.5 + (rng() - 0.5) * 240;
+      const driftY = H * 0.5 + (rng() - 0.5) * 240;
+      state.storm = {
+        phaseIdx: 0,
+        inShrink: false,
+        timerSec: p0.holdSec,
+        phaseDurationSec: p0.holdSec,
+        cx: W * 0.5,
+        cy: H * 0.5,
+        radius: initR,
+        startCx: W * 0.5,
+        startCy: H * 0.5,
+        startRadius: initR,
+        targetCx: driftX,
+        targetCy: driftY,
+        targetRadius: nextR,
+        dps: p0.dps
+      };
+
+      ui.polSeed.textContent = "#" + String(state.seed);
+      pushFeed("<strong>Seed #" + state.seed + ":</strong> 24 PolicyNode units active");
+      syncModeButtons();
+    }
+
+    // =========================================================================
+    // 7. LOOT, PROJECTILES, CRATE BURSTS & CANISTER SHOCKWAVES
+    // =========================================================================
+    const LOOT_META = {
+      carbine: { label: "Pulse Carbine Upgrade", color: "#0369a1", short: "CARB+" },
+      scatter: { label: "Scatter Array Core", color: "#b45309", short: "SCAT" },
+      rail:    { label: "Precision Rail Core", color: "#6d28d9", short: "RAIL" },
+      shield:  { label: "Shield Cell (+25)", color: "#0284c7", short: "SHLD" },
+      medkit:  { label: "Field Medkit (+1)", color: "#15803d", short: "MED" },
+      ammo:    { label: "Ballistic Reserve", color: "#334155", short: "AMMO" }
+    };
+
+    function spawnLootOrb(x, y, kind, vx, vy) {
+      state.loots.push({
+        x: x,
+        y: y,
+        vx: vx || 0,
+        vy: vy || 0,
+        r: 12,
+        kind: kind,
+        bobPhase: state.rng() * Math.PI * 2,
+        age: 0
+      });
+    }
+
+    function burstLootFromPoint(x, y, count) {
+      const table = ["scatter", "rail", "carbine", "shield", "medkit", "ammo"];
+      for (let i = 0; i < count; i++) {
+        const ang = (i / count) * Math.PI * 2 + state.rng() * 0.9;
+        const spd = 95 + state.rng() * 90;
+        const kind = table[Math.floor(state.rng() * table.length)];
+        spawnLootOrb(x, y, kind, Math.cos(ang) * spd, Math.sin(ang) * spd);
+      }
+    }
+
+    function applyLootToUnit(unit, orb) {
+      const wCfg = ARENA_GRID_CONFIG.weapons;
+      if (orb.kind === "shield") {
+        if (unit.shield >= unit.maxShield) return false;
+        unit.shield = Math.min(unit.maxShield, unit.shield + 25);
+        spawnFloatText(unit.x, unit.y - 20, "+25 SHD", "#0284c7");
+        return true;
+      }
+      if (orb.kind === "medkit") {
+        if (unit.inv.medkits >= 4) return false;
+        unit.inv.medkits += 1;
+        spawnFloatText(unit.x, unit.y - 20, "+1 MEDKIT", "#15803d");
+        return true;
+      }
+      if (orb.kind === "ammo") {
+        for (let s = 0; s < 3; s++) {
+          unit.inv.weapons[s].reserve += Math.ceil(wCfg[s].magSize * 1.5);
+        }
+        spawnFloatText(unit.x, unit.y - 20, "+AMMO", "#334155");
+        return true;
+      }
+      const slotMap = { carbine: 0, scatter: 1, rail: 2 };
+      const slotIdx = slotMap[orb.kind];
+      if (slotIdx !== undefined) {
+        const wSlot = unit.inv.weapons[slotIdx];
+        if (!wSlot.unlocked) {
+          wSlot.unlocked = true;
+          wSlot.tier = 1;
+          wSlot.mag = wCfg[slotIdx].magSize;
+          wSlot.reserve += wCfg[slotIdx].magSize * 2;
+          spawnFloatText(unit.x, unit.y - 22, wCfg[slotIdx].name, wCfg[slotIdx].color);
+        } else {
+          wSlot.tier = Math.min(3, wSlot.tier + 1);
+          wSlot.reserve += wCfg[slotIdx].magSize;
+          spawnFloatText(unit.x, unit.y - 22, wCfg[slotIdx].name + " Mk." + romanTier(wSlot.tier), wCfg[slotIdx].color);
+        }
+        return true;
+      }
+      return false;
+    }
+
+    function romanTier(t) {
+      return t === 1 ? "I" : (t === 2 ? "II" : "III");
+    }
+
+    function spawnParticles(x, y, color, count, speedMax, size) {
+      for (let i = 0; i < count; i++) {
+        const a = state.rng() * Math.PI * 2;
+        const s = (0.25 + state.rng() * 0.75) * speedMax;
+        state.particles.push({
+          x: x,
+          y: y,
+          vx: Math.cos(a) * s,
+          vy: Math.sin(a) * s,
+          life: 0.26 + state.rng() * 0.28,
+          maxLife: 0.54,
+          color: color,
+          r: size || (2 + state.rng() * 2.5)
+        });
+      }
+    }
+
+    function spawnFloatText(x, y, text, color) {
+      let yOffset = 0;
+      for (let i = state.floatTexts.length - 1; i >= 0; i--) {
+        const prev = state.floatTexts[i];
+        if (Math.abs(prev.x - x) < 42 && Math.abs(prev.y - (y - yOffset)) < 15) {
+          yOffset += 15;
+        }
+      }
+      state.floatTexts.push({
+        x: x + (state.rng() - 0.5) * 10,
+        y: y - yOffset,
+        vy: -38,
+        life: 0.72,
+        maxLife: 0.72,
+        text: text,
+        color: color || "#1c2127"
+      });
+    }
+
+    function damageUnit(victim, amount, attacker, sourceLabel, knockAngle, knockImpulse) {
+      if (!victim.alive) return;
+      let remaining = amount;
+      if (victim.shield > 0) {
+        const absorbed = Math.min(victim.shield, remaining);
+        victim.shield -= absorbed;
+        remaining -= absorbed;
+      }
+      if (remaining > 0) {
+        victim.hp -= remaining;
+      }
+      victim.hitFlash = 0.14;
+      if (knockImpulse > 0) {
+        victim.kx += Math.cos(knockAngle) * knockImpulse;
+        victim.ky += Math.sin(knockAngle) * knockImpulse;
+      }
+      if (amount >= 4) {
+        spawnFloatText(
+          victim.x,
+          victim.y - 22,
+          "-" + Math.round(amount),
+          amount >= 32 ? "#991b1b" : "#1c2127"
+        );
+      }
+
+      if (victim.hp <= 0) {
+        victim.hp = 0;
+        victim.alive = false;
+        spawnParticles(victim.x, victim.y, "#991b1b", 16, 190, 3.4);
+        burstLootFromPoint(victim.x, victim.y, 4);
+        if (attacker && attacker !== victim) {
+          attacker.eliminations += 1;
+          pushFeed(
+            "<strong>Agent " + attacker.tag + "</strong> &rarr; Agent " +
+            victim.tag + " [" + sourceLabel + "]"
+          );
+        } else {
+          pushFeed("<strong>Agent " + victim.tag + "</strong> eliminated [" + sourceLabel + "]");
+        }
+        // If spectated unit was eliminated in swarm mode, smoothly focus attacker or next contender
+        if (!state.humanMode && state.spectateId === victim.id) {
+          if (attacker && attacker.alive) {
+            state.spectateId = attacker.id;
+          } else {
+            const nextAlive = state.units.find(function (u) { return u.alive; });
+            if (nextAlive) state.spectateId = nextAlive.id;
+          }
+        }
+      }
+    }
+
+    function ruptureCanister(canister, attacker) {
+      const cfg = ARENA_GRID_CONFIG.obstacles;
+      state.scorchMarks.push({ x: canister.x, y: canister.y, r: cfg.canisterBlastRadius * 0.44 });
+      state.shockwaves.push({
+        x: canister.x,
+        y: canister.y,
+        r: 18,
+        maxR: cfg.canisterBlastRadius,
+        alpha: 0.9
+      });
+      spawnParticles(canister.x, canister.y, "#991b1b", 22, 260, 4.0);
+      spawnParticles(canister.x, canister.y, "#d97706", 14, 190, 3.2);
+
+      const camDist = Math.hypot(canister.x - state.camera.x, canister.y - state.camera.y);
+      if (camDist < 720) {
+        state.camera.shake = Math.min(12, state.camera.shake + 8.5 * (1 - camDist / 720));
+      }
+
+      // Affect units in blast radius
+      const R = cfg.canisterBlastRadius;
+      for (let i = 0; i < state.units.length; i++) {
+        const u = state.units[i];
+        if (!u.alive) continue;
+        const d = Math.hypot(u.x - canister.x, u.y - canister.y);
+        if (d < R) {
+          const falloff = 1 - (d / R) * 0.72;
+          const ang = Math.atan2(u.y - canister.y, u.x - canister.x);
+          damageUnit(
+            u,
+            cfg.canisterBlastDamage * falloff,
+            attacker,
+            "Canister Shockwave",
+            ang,
+            cfg.canisterKnockback * falloff
+          );
+        }
+      }
+
+      // Damage nearby crates
+      for (let i = state.crates.length - 1; i >= 0; i--) {
+        const c = state.crates[i];
+        const d = Math.hypot(c.x - canister.x, c.y - canister.y);
+        if (d < R) {
+          c.hp -= cfg.canisterBlastDamage * (1 - d / R);
+          c.hitFlash = 0.16;
+          if (c.hp <= 0) {
+            spawnParticles(c.x, c.y, "#b45309", 12, 150, 3.0);
+            burstLootFromPoint(c.x, c.y, 3);
+            state.crates.splice(i, 1);
+          }
+        }
+      }
+    }
+
+    // =========================================================================
+    // 8. WEAPON FIRING, RELOAD & MEDKIT ACTIONS
+    // =========================================================================
+    function startReload(unit) {
+      const slot = unit.inv.weapons[unit.activeSlot];
+      const wCfg = ARENA_GRID_CONFIG.weapons[unit.activeSlot];
+      if (!slot.unlocked || unit.reloadTimer > 0) return;
+      if (slot.mag >= wCfg.magSize || slot.reserve <= 0) return;
+      unit.reloadTimer = wCfg.reloadSec;
+      unit.medkitTimer = 0;
+    }
+
+    function triggerMedkit(unit) {
+      if (unit.inv.medkits <= 0 || unit.medkitTimer > 0) return false;
+      if (unit.hp >= unit.maxHp) return false;
+      unit.medkitTimer = ARENA_GRID_CONFIG.unit.medkitCooldownSec;
+      unit.reloadTimer = 0;
+      return true;
+    }
+
+    function attemptFire(unit) {
+      if (!unit.alive || unit.reloadTimer > 0 || unit.medkitTimer > 0) return;
+      if (unit.fireCooldown > 0) return;
+
+      const wIdx = unit.activeSlot;
+      const slot = unit.inv.weapons[wIdx];
+      const wCfg = ARENA_GRID_CONFIG.weapons[wIdx];
+      if (!slot.unlocked) return;
+
+      if (slot.mag <= 0) {
+        startReload(unit);
+        return;
+      }
+
+      slot.mag -= 1;
+      unit.fireCooldown = wCfg.fireIntervalSec / (1 + (slot.tier - 1) * 0.08);
+      unit.barrelKick = 1.0;
+
+      const tierDamageMult = 1 + (slot.tier - 1) * wCfg.tierBonusMult;
+      const muzzleDist = unit.r + wCfg.barrelLen * 0.85;
+      const mx = unit.x + Math.cos(unit.aimAngle) * muzzleDist;
+      const my = unit.y + Math.sin(unit.aimAngle) * muzzleDist;
+
+      for (let p = 0; p < wCfg.pellets; p++) {
+        const spread = wCfg.baseSpreadRad + unit.bloom;
+        const jitter = (state.rng() - 0.5) * 2 * spread;
+        const shotAngle = unit.aimAngle + jitter;
+        const speed = wCfg.projSpeed * (wCfg.pellets > 1 ? (0.92 + state.rng() * 0.16) : 1.0);
+        state.projectiles.push({
+          ownerId: unit.id,
+          weaponName: wCfg.name,
+          color: wCfg.color,
+          x: mx,
+          y: my,
+          prevX: mx,
+          prevY: my,
+          vx: Math.cos(shotAngle) * speed,
+          vy: Math.sin(shotAngle) * speed,
+          traveled: 0,
+          maxRange: wCfg.projRange,
+          damage: wCfg.damage * tierDamageMult,
+          knockback: wCfg.knockback,
+          radius: wIdx === 2 ? 3.5 : 2.6
+        });
+      }
+
+      unit.bloom = Math.min(wCfg.maxBloom, unit.bloom + wCfg.bloomPerShot);
+      spawnParticles(mx, my, wCfg.color, 3, 95, 2.0);
+
+      if (state.humanMode && unit.id === ARENA_GRID_CONFIG.simulation.humanAgentIndex && wIdx === 2) {
+        state.camera.shake = Math.min(6, state.camera.shake + 2.6);
+      }
+      if (slot.mag === 0 && slot.reserve > 0) {
+        startReload(unit);
+      }
+    }
+
+    function tryManualPickup(unit) {
+      let bestIdx = -1;
+      let bestD2 = ARENA_GRID_CONFIG.unit.pickupRadius * ARENA_GRID_CONFIG.unit.pickupRadius;
+      for (let i = 0; i < state.loots.length; i++) {
+        const orb = state.loots[i];
+        const d2 = distSq(unit.x, unit.y, orb.x, orb.y);
+        if (d2 < bestD2) {
+          bestD2 = d2;
+          bestIdx = i;
+        }
+      }
+      if (bestIdx >= 0) {
+        const orb = state.loots[bestIdx];
+        if (applyLootToUnit(unit, orb)) {
+          state.loots.splice(bestIdx, 1);
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // =========================================================================
+    // 9. AUTONOMOUS OMNINODE SWARM AI CONTROLLER (POLICY-GRID GOVERNED)
+    // =========================================================================
+    function stepAutonomousAgent(unit, dt, policy) {
+      const storm = state.storm;
+      const distFromSafe = Math.hypot(unit.x - storm.targetCx, unit.y - storm.targetCy);
+      const outsideCurrent = Math.hypot(unit.x - storm.cx, unit.y - storm.cy) > storm.radius - 36;
+
+      // 1. Tactical Field Medkit decision
+      if ((unit.hp / unit.maxHp) < policy.retreatThreshold && unit.inv.medkits > 0 && unit.medkitTimer <= 0) {
+        triggerMedkit(unit);
+      }
+
+      // 2. Scan nearest visible rival contender
+      let nearestRival = null;
+      let bestRivalScore = Infinity;
+      for (let i = 0; i < state.units.length; i++) {
+        const other = state.units[i];
+        if (!other.alive || other.id === unit.id) continue;
+        const d = Math.hypot(other.x - unit.x, other.y - unit.y);
+        if (d > 860) continue;
+        const visible = hasLineOfSight(unit.x, unit.y, other.x, other.y);
+        const score = visible ? d : d * 1.95;
+        if (score < bestRivalScore) {
+          bestRivalScore = score;
+          nearestRival = { unit: other, dist: d, visible: visible };
+        }
+      }
+
+      // 3. Scan nearby supply orbs & destructible crates
+      let bestOrb = null;
+      let bestOrbDist = 360 * policy.resourceAffinity + 120;
+      for (let i = 0; i < state.loots.length; i++) {
+        const orb = state.loots[i];
+        if (orb.kind === "shield" && unit.shield >= unit.maxShield) continue;
+        if (orb.kind === "medkit" && unit.inv.medkits >= 3) continue;
+        const d = Math.hypot(orb.x - unit.x, orb.y - unit.y);
+        if (d < bestOrbDist) {
+          bestOrbDist = d;
+          bestOrb = orb;
+        }
+      }
+
+      let nearestCrate = null;
+      let bestCrateDist = 310 * policy.resourceAffinity + 90;
+      for (let i = 0; i < state.crates.length; i++) {
+        const c = state.crates[i];
+        const d = Math.hypot(c.x - unit.x, c.y - unit.y);
+        if (d < bestCrateDist && hasLineOfSight(unit.x, unit.y, c.x, c.y)) {
+          bestCrateDist = d;
+          nearestCrate = c;
+        }
+      }
+
+      // Opportunistic volatile canister check near rival
+      let trapCanister = null;
+      if (nearestRival && nearestRival.dist < 650) {
+        for (let i = 0; i < state.canisters.length; i++) {
+          const can = state.canisters[i];
+          const rivalToCan = Math.hypot(nearestRival.unit.x - can.x, nearestRival.unit.y - can.y);
+          const selfToCan = Math.hypot(unit.x - can.x, unit.y - can.y);
+          if (rivalToCan < 175 && selfToCan > 215 && hasLineOfSight(unit.x, unit.y, can.x, can.y)) {
+            trapCanister = can;
+            break;
+          }
+        }
+      }
+
+      // 4. Weapon Selection by Engagement Range
+      if (nearestRival) {
+        if (nearestRival.dist < 210 && unit.inv.weapons[1].unlocked && unit.inv.weapons[1].mag + unit.inv.weapons[1].reserve > 0) {
+          unit.activeSlot = 1;
+        } else if (nearestRival.dist > 440 && unit.inv.weapons[2].unlocked && unit.inv.weapons[2].mag + unit.inv.weapons[2].reserve > 0) {
+          unit.activeSlot = 2;
+        } else {
+          unit.activeSlot = 0;
+        }
+      } else {
+        unit.activeSlot = 0;
+      }
+
+      // 5. Compute Desired Movement Vector
+      let moveX = 0;
+      let moveY = 0;
+      unit.strafePhase += dt * policy.strafeCadenceHz * Math.PI * 2;
+
+      const lowVitals = ((unit.hp + unit.shield) / (unit.maxHp + unit.maxShield)) < policy.retreatThreshold;
+
+      if (outsideCurrent || distFromSafe > storm.targetRadius * 0.94) {
+        // Move smoothly inside contracting safe ring
+        const angToCenter = Math.atan2(storm.targetCy - unit.y, storm.targetCx - unit.x);
+        moveX = Math.cos(angToCenter) + Math.cos(angToCenter + Math.PI * 0.5) * 0.32 * Math.sin(unit.strafePhase);
+        moveY = Math.sin(angToCenter) + Math.sin(angToCenter + Math.PI * 0.5) * 0.32 * Math.sin(unit.strafePhase);
+      } else if (lowVitals && nearestRival && state.bunkers.length > 0 && policy.coverSeek > 0.45) {
+        // Seek nearest stone bunker cover away from rival
+        let bestBunker = state.bunkers[0];
+        let bestBD = Infinity;
+        for (let i = 0; i < state.bunkers.length; i++) {
+          const b = state.bunkers[i];
+          const bx = b.x + b.w * 0.5;
+          const by = b.y + b.h * 0.5;
+          const d = distSq(unit.x, unit.y, bx, by);
+          if (d < bestBD) {
+            bestBD = d;
+            bestBunker = b;
+          }
+        }
+        const bCx = bestBunker.x + bestBunker.w * 0.5;
+        const bCy = bestBunker.y + bestBunker.h * 0.5;
+        const awayAng = Math.atan2(bCy - nearestRival.unit.y, bCx - nearestRival.unit.x);
+        const coverX = bCx + Math.cos(awayAng) * 58;
+        const coverY = bCy + Math.sin(awayAng) * 58;
+        moveX = coverX - unit.x;
+        moveY = coverY - unit.y;
+      } else if (bestOrb && (!nearestRival || nearestRival.dist > 250 || bestOrbDist < 120)) {
+        moveX = bestOrb.x - unit.x;
+        moveY = bestOrb.y - unit.y;
+        if (bestOrbDist < ARENA_GRID_CONFIG.unit.pickupRadius) {
+          tryManualPickup(unit);
+        }
+      } else if (nearestRival) {
+        const rx = nearestRival.unit.x - unit.x;
+        const ry = nearestRival.unit.y - unit.y;
+        const ang = Math.atan2(ry, rx);
+        const radialWeight = (nearestRival.dist - policy.preferredDist) / 140;
+        const clampedRadial = Math.max(-0.85, Math.min(0.95, radialWeight));
+        const strafeDir = Math.sin(unit.strafePhase);
+        moveX = Math.cos(ang) * clampedRadial + Math.cos(ang + Math.PI * 0.5) * strafeDir * 0.92;
+        moveY = Math.sin(ang) * clampedRadial + Math.sin(ang + Math.PI * 0.5) * strafeDir * 0.92;
+      } else if (nearestCrate) {
+        const ang = Math.atan2(nearestCrate.y - unit.y, nearestCrate.x - unit.x);
+        const keepDist = nearestCrate.r + 74;
+        if (bestCrateDist > keepDist) {
+          moveX = Math.cos(ang);
+          moveY = Math.sin(ang);
+        } else {
+          moveX = Math.cos(ang + Math.PI * 0.5) * Math.sin(unit.strafePhase);
+          moveY = Math.sin(ang + Math.PI * 0.5) * Math.sin(unit.strafePhase);
+        }
+      } else {
+        unit.aiRetargetTimer -= dt;
+        if (unit.aiRetargetTimer <= 0 || distSq(unit.x, unit.y, unit.aiGoalX, unit.aiGoalY) < 6400) {
+          const a = state.rng() * Math.PI * 2;
+          const r = state.rng() * storm.targetRadius * 0.78;
+          unit.aiGoalX = storm.targetCx + Math.cos(a) * r;
+          unit.aiGoalY = storm.targetCy + Math.sin(a) * r;
+          unit.aiRetargetTimer = 2.4 + state.rng() * 2.0;
+        }
+        moveX = unit.aiGoalX - unit.x;
+        moveY = unit.aiGoalY - unit.y;
+      }
+
+      // Avoid hugging volatile canisters
+      for (let i = 0; i < state.canisters.length; i++) {
+        const can = state.canisters[i];
+        const dx = unit.x - can.x;
+        const dy = unit.y - can.y;
+        const d = Math.hypot(dx, dy);
+        if (d < 135 && d > 0.1) {
+          moveX += (dx / d) * 1.4;
+          moveY += (dy / d) * 1.4;
+        }
+      }
+
+      const mLen = Math.hypot(moveX, moveY);
+      const speed = ARENA_GRID_CONFIG.unit.baseSpeed * (unit.medkitTimer > 0 ? 0.55 : 1.0);
+      const targetVx = mLen > 0.001 ? (moveX / mLen) * speed : 0;
+      const targetVy = mLen > 0.001 ? (moveY / mLen) * speed : 0;
+      const blend = Math.min(1, dt * ARENA_GRID_CONFIG.unit.accel);
+      unit.vx += (targetVx - unit.vx) * blend;
+      unit.vy += (targetVy - unit.vy) * blend;
+
+      // 6. Predictive Ballistic Aim & Fire
+      const wCfg = ARENA_GRID_CONFIG.weapons[unit.activeSlot];
+      let targetAimAngle = unit.aimAngle;
+      let shouldFire = false;
+
+      if (trapCanister) {
+        targetAimAngle = Math.atan2(trapCanister.y - unit.y, trapCanister.x - unit.x);
+        shouldFire = true;
+      } else if (nearestRival && nearestRival.visible && nearestRival.dist < wCfg.projRange * 0.96) {
+        const leadT = nearestRival.dist / wCfg.projSpeed;
+        const predX = nearestRival.unit.x + nearestRival.unit.vx * leadT * 0.72;
+        const predY = nearestRival.unit.y + nearestRival.unit.vy * leadT * 0.72;
+        targetAimAngle = Math.atan2(predY - unit.y, predX - unit.x);
+        shouldFire = true;
+      } else if (nearestCrate && bestCrateDist < 360) {
+        targetAimAngle = Math.atan2(nearestCrate.y - unit.y, nearestCrate.x - unit.x);
+        shouldFire = true;
+      } else if (mLen > 0.01) {
+        targetAimAngle = Math.atan2(moveY, moveX);
+      }
+
+      // Smooth angular turn
+      let diff = targetAimAngle - unit.aimAngle;
+      while (diff > Math.PI) diff -= Math.PI * 2;
+      while (diff < -Math.PI) diff += Math.PI * 2;
+      unit.aimAngle += diff * Math.min(1, dt * 14);
+
+      if (shouldFire && Math.abs(diff) < 0.28) {
+        attemptFire(unit);
+      }
+    }
+
+    // =========================================================================
+    // 10. HUMAN PLAYER CONTROLLER
+    // =========================================================================
+    function stepHumanPlayer(unit, dt) {
+      let ix = 0;
+      let iy = 0;
+      if (input.keys["KeyW"] || input.keys["ArrowUp"]) iy -= 1;
+      if (input.keys["KeyS"] || input.keys["ArrowDown"]) iy += 1;
+      if (input.keys["KeyA"] || input.keys["ArrowLeft"]) ix -= 1;
+      if (input.keys["KeyD"] || input.keys["ArrowRight"]) ix += 1;
+
+      const len = Math.hypot(ix, iy);
+      const speed = ARENA_GRID_CONFIG.unit.baseSpeed * 1.05 * (unit.medkitTimer > 0 ? 0.58 : 1.0);
+      const targetVx = len > 0 ? (ix / len) * speed : 0;
+      const targetVy = len > 0 ? (iy / len) * speed : 0;
+      const accelRate = len > 0 ? ARENA_GRID_CONFIG.unit.accel : ARENA_GRID_CONFIG.unit.damping;
+      const blend = Math.min(1, dt * accelRate);
+      unit.vx += (targetVx - unit.vx) * blend;
+      unit.vy += (targetVy - unit.vy) * blend;
+
+      const worldMouse = screenToWorld(input.mouseX, input.mouseY);
+      unit.aimAngle = Math.atan2(worldMouse.y - unit.y, worldMouse.x - unit.x);
+
+      if (input.mouseDown) {
+        attemptFire(unit);
+      }
+    }
+
+    function screenToWorld(sx, sy) {
+      return {
+        x: state.camera.x + (sx - viewW * 0.5) / state.camera.zoom,
+        y: state.camera.y + (sy - viewH * 0.5) / state.camera.zoom
+      };
+    }
+
+    // =========================================================================
+    // 11. FIXED-TIMESTEP SIMULATION TICK
+    // =========================================================================
+    function stepSimulation(dt) {
+      state.metrics.simTicks += 1;
+      state.matchTimeSec += dt;
+      const W = ARENA_GRID_CONFIG.world.width;
+      const H = ARENA_GRID_CONFIG.world.height;
+      const pad = ARENA_GRID_CONFIG.world.wallPadding;
+      const policy = activePolicy();
+
+      // 1. Update Monotonic Safe-Zone Contraction Ring
+      const storm = state.storm;
+      const phases = ARENA_GRID_CONFIG.stormPhases;
+      if (storm.phaseIdx < phases.length) {
+        storm.timerSec -= dt;
+        if (storm.inShrink) {
+          const p = phases[storm.phaseIdx];
+          const frac = 1 - Math.max(0, storm.timerSec) / p.shrinkSec;
+          storm.cx = storm.startCx + (storm.targetCx - storm.startCx) * frac;
+          storm.cy = storm.startCy + (storm.targetCy - storm.startCy) * frac;
+          storm.radius = storm.startRadius + (storm.targetRadius - storm.startRadius) * frac;
+          if (storm.timerSec <= 0) {
+            storm.cx = storm.targetCx;
+            storm.cy = storm.targetCy;
+            storm.radius = storm.targetRadius;
+            storm.phaseIdx += 1;
+            storm.inShrink = false;
+            if (storm.phaseIdx < phases.length) {
+              const nextP = phases[storm.phaseIdx];
+              storm.timerSec = nextP.holdSec;
+              storm.phaseDurationSec = nextP.holdSec;
+              storm.dps = nextP.dps;
+              storm.startCx = storm.cx;
+              storm.startCy = storm.cy;
+              storm.startRadius = storm.radius;
+              const nextR = W * nextP.targetRatio;
+              const maxOffset = Math.max(0, (storm.radius - nextR) * 0.55);
+              const driftAng = state.rng() * Math.PI * 2;
+              storm.targetCx = storm.cx + Math.cos(driftAng) * maxOffset * state.rng();
+              storm.targetCy = storm.cy + Math.sin(driftAng) * maxOffset * state.rng();
+              storm.targetRadius = nextR;
+            }
+          }
+        } else if (storm.timerSec <= 0) {
+          const p = phases[storm.phaseIdx];
+          storm.inShrink = true;
+          storm.timerSec = p.shrinkSec;
+          storm.phaseDurationSec = p.shrinkSec;
+          storm.startCx = storm.cx;
+          storm.startCy = storm.cy;
+          storm.startRadius = storm.radius;
+        }
+      }
+
+      // 2. Update Contenders
+      let aliveCount = 0;
+      let lastAliveUnit = null;
+      const humanIdx = ARENA_GRID_CONFIG.simulation.humanAgentIndex;
+
+      for (let i = 0; i < state.units.length; i++) {
+        const u = state.units[i];
+        if (!u.alive) continue;
+        aliveCount += 1;
+        lastAliveUnit = u;
+
+        const wCfg = ARENA_GRID_CONFIG.weapons[u.activeSlot];
+        u.fireCooldown = Math.max(0, u.fireCooldown - dt);
+        u.bloom = Math.max(0, u.bloom - wCfg.bloomDecay * dt);
+        u.barrelKick = Math.max(0, u.barrelKick - dt * 8.5);
+        u.hitFlash = Math.max(0, u.hitFlash - dt);
+
+        if (u.reloadTimer > 0) {
+          u.reloadTimer -= dt;
+          if (u.reloadTimer <= 0) {
+            u.reloadTimer = 0;
+            const slot = u.inv.weapons[u.activeSlot];
+            const needed = wCfg.magSize - slot.mag;
+            const loaded = Math.min(needed, slot.reserve);
+            slot.mag += loaded;
+            slot.reserve -= loaded;
+          }
+        }
+
+        if (u.medkitTimer > 0) {
+          u.medkitTimer -= dt;
+          if (u.medkitTimer <= 0) {
+            u.medkitTimer = 0;
+            if (u.inv.medkits > 0) {
+              u.inv.medkits -= 1;
+              u.hp = Math.min(u.maxHp, u.hp + ARENA_GRID_CONFIG.unit.medkitHeal);
+              spawnFloatText(u.x, u.y - 24, "+" + ARENA_GRID_CONFIG.unit.medkitHeal + " HP", "#15803d");
+              spawnParticles(u.x, u.y, "#15803d", 8, 85, 2.5);
+            }
+          }
+        }
+
+        if (state.humanMode && u.id === humanIdx) {
+          stepHumanPlayer(u, dt);
+        } else {
+          stepAutonomousAgent(u, dt, policy);
+        }
+
+        // Integrate velocity + knockback
+        u.x += (u.vx + u.kx) * dt;
+        u.y += (u.vy + u.ky) * dt;
+        const kbDecay = Math.exp(-ARENA_GRID_CONFIG.unit.knockbackDecay * dt);
+        u.kx *= kbDecay;
+        u.ky *= kbDecay;
+
+        // World bounds
+        u.x = Math.max(pad, Math.min(W - pad, u.x));
+        u.y = Math.max(pad, Math.min(H - pad, u.y));
+
+        // Collide against Stone Bunkers, Crates, Canisters, Canopy Trunks
+        for (let b = 0; b < state.bunkers.length; b++) {
+          resolveCircleRect(u, state.bunkers[b]);
+        }
+        for (let c = 0; c < state.crates.length; c++) {
+          const cr = state.crates[c];
+          const scale = ARENA_GRID_CONFIG.obstacles.crateMinScale +
+            (1 - ARENA_GRID_CONFIG.obstacles.crateMinScale) * (cr.hp / cr.maxHp);
+          resolveCircleCircle(u, cr.x, cr.y, cr.r * scale);
+        }
+        for (let v = 0; v < state.canisters.length; v++) {
+          resolveCircleCircle(u, state.canisters[v].x, state.canisters[v].y, state.canisters[v].r);
+        }
+        for (let t = 0; t < state.canopies.length; t++) {
+          resolveCircleCircle(u, state.canopies[t].x, state.canopies[t].y, state.canopies[t].trunkR);
+        }
+
+        // Auto-pickup shield/ammo orbs on walk-over
+        for (let l = state.loots.length - 1; l >= 0; l--) {
+          const orb = state.loots[l];
+          const autoR = ARENA_GRID_CONFIG.unit.autoPickupRadius;
+          if (distSq(u.x, u.y, orb.x, orb.y) < autoR * autoR) {
+            if (orb.kind === "shield" || orb.kind === "ammo" || !state.humanMode || u.id !== humanIdx) {
+              if (applyLootToUnit(u, orb)) {
+                state.loots.splice(l, 1);
+              }
+            }
+          }
+        }
+
+        // Storm contraction damage outside crimson boundary
+        const stormDist = Math.hypot(u.x - storm.cx, u.y - storm.cy);
+        if (stormDist > storm.radius) {
+          u.hp -= storm.dps * dt;
+          if (u.hp <= 0) {
+            damageUnit(u, 1, null, "Outer Storm", 0, 0);
+          }
+        }
+      }
+
+      // Contender-vs-contender soft separation
+      for (let i = 0; i < state.units.length; i++) {
+        const a = state.units[i];
+        if (!a.alive) continue;
+        for (let j = i + 1; j < state.units.length; j++) {
+          const b = state.units[j];
+          if (!b.alive) continue;
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const minD = a.r + b.r;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < minD * minD) {
+            const d = Math.sqrt(d2) || 0.01;
+            const push = (minD - d) * 0.5;
+            const nx = dx / d;
+            const ny = dy / d;
+            a.x -= nx * push;
+            a.y -= ny * push;
+            b.x += nx * push;
+            b.y += ny * push;
+          }
+        }
+      }
+
+      // 3. Update Projectiles & Ballistic Collisions
+      for (let i = state.projectiles.length - 1; i >= 0; i--) {
+        const p = state.projectiles[i];
+        p.prevX = p.x;
+        p.prevY = p.y;
+        const stepX = p.vx * dt;
+        const stepY = p.vy * dt;
+        p.x += stepX;
+        p.y += stepY;
+        p.traveled += Math.hypot(stepX, stepY);
+
+        if (p.traveled >= p.maxRange || p.x < 0 || p.x > W || p.y < 0 || p.y > H) {
+          state.projectiles.splice(i, 1);
+          continue;
+        }
+
+        let hit = false;
+
+        // Stone Bunkers
+        for (let b = 0; b < state.bunkers.length; b++) {
+          const bk = state.bunkers[b];
+          if (circleIntersectsRect(p.x, p.y, p.radius, bk.x, bk.y, bk.w, bk.h)) {
+            spawnParticles(p.x, p.y, "#64748b", 4, 110, 2.0);
+            hit = true;
+            break;
+          }
+        }
+        if (hit) {
+          state.projectiles.splice(i, 1);
+          continue;
+        }
+
+        // Canopy Trunks
+        for (let t = 0; t < state.canopies.length; t++) {
+          const tr = state.canopies[t];
+          if (distSq(p.x, p.y, tr.x, tr.y) < (p.radius + tr.trunkR) * (p.radius + tr.trunkR)) {
+            spawnParticles(p.x, p.y, "#5c4033", 4, 90, 2.0);
+            hit = true;
+            break;
+          }
+        }
+        if (hit) {
+          state.projectiles.splice(i, 1);
+          continue;
+        }
+
+        // Supply Crates (shrink with damage & burst into orbs)
+        for (let c = state.crates.length - 1; c >= 0; c--) {
+          const cr = state.crates[c];
+          const scale = ARENA_GRID_CONFIG.obstacles.crateMinScale +
+            (1 - ARENA_GRID_CONFIG.obstacles.crateMinScale) * (cr.hp / cr.maxHp);
+          const effR = cr.r * scale;
+          if (distSq(p.x, p.y, cr.x, cr.y) < (p.radius + effR) * (p.radius + effR)) {
+            cr.hp -= p.damage;
+            cr.hitFlash = 0.12;
+            spawnParticles(p.x, p.y, "#b45309", 4, 120, 2.3);
+            if (cr.hp <= 0) {
+              spawnParticles(cr.x, cr.y, "#b45309", 14, 165, 3.2);
+              burstLootFromPoint(cr.x, cr.y, 3);
+              state.crates.splice(c, 1);
+            }
+            hit = true;
+            break;
+          }
+        }
+        if (hit) {
+          state.projectiles.splice(i, 1);
+          continue;
+        }
+
+        // Volatile Canisters
+        for (let v = state.canisters.length - 1; v >= 0; v--) {
+          const vc = state.canisters[v];
+          if (distSq(p.x, p.y, vc.x, vc.y) < (p.radius + vc.r) * (p.radius + vc.r)) {
+            vc.hp -= p.damage;
+            vc.hitFlash = 0.14;
+            spawnParticles(p.x, p.y, "#fca5a5", 4, 130, 2.2);
+            if (vc.hp <= 0) {
+              const owner = state.units[p.ownerId] || null;
+              state.canisters.splice(v, 1);
+              ruptureCanister(vc, owner);
+            }
+            hit = true;
+            break;
+          }
+        }
+        if (hit) {
+          state.projectiles.splice(i, 1);
+          continue;
+        }
+
+        // Contenders
+        for (let uIdx = 0; uIdx < state.units.length; uIdx++) {
+          const u = state.units[uIdx];
+          if (!u.alive || u.id === p.ownerId) continue;
+          if (distSq(p.x, p.y, u.x, u.y) < (p.radius + u.r) * (p.radius + u.r)) {
+            const owner = state.units[p.ownerId] || null;
+            const hitAngle = Math.atan2(p.vy, p.vx);
+            spawnParticles(p.x, p.y, u.shield > 0 ? "#0284c7" : "#991b1b", 5, 135, 2.3);
+            damageUnit(u, p.damage, owner, p.weaponName, hitAngle, p.knockback);
+            hit = true;
+            break;
+          }
+        }
+        if (hit) {
+          state.projectiles.splice(i, 1);
+        }
+      }
+
+      // 4. Update Loot Orbs, Particles, Shockwaves & Canopy Concealment
+      for (let i = 0; i < state.loots.length; i++) {
+        const orb = state.loots[i];
+        orb.age += dt;
+        orb.x = Math.max(pad, Math.min(W - pad, orb.x + orb.vx * dt));
+        orb.y = Math.max(pad, Math.min(H - pad, orb.y + orb.vy * dt));
+        const drag = Math.exp(-6.5 * dt);
+        orb.vx *= drag;
+        orb.vy *= drag;
+      }
+
+      for (let i = 0; i < state.crates.length; i++) {
+        state.crates[i].hitFlash = Math.max(0, state.crates[i].hitFlash - dt);
+      }
+      for (let i = 0; i < state.canisters.length; i++) {
+        state.canisters[i].hitFlash = Math.max(0, state.canisters[i].hitFlash - dt);
+      }
+
+      for (let i = state.particles.length - 1; i >= 0; i--) {
+        const pt = state.particles[i];
+        pt.life -= dt;
+        if (pt.life <= 0) {
+          state.particles.splice(i, 1);
+          continue;
+        }
+        pt.x += pt.vx * dt;
+        pt.y += pt.vy * dt;
+        pt.vx *= Math.exp(-5.0 * dt);
+        pt.vy *= Math.exp(-5.0 * dt);
+      }
+
+      for (let i = state.floatTexts.length - 1; i >= 0; i--) {
+        const ft = state.floatTexts[i];
+        ft.life -= dt;
+        if (ft.life <= 0) {
+          state.floatTexts.splice(i, 1);
+          continue;
+        }
+        ft.y += ft.vy * dt;
+      }
+
+      for (let i = state.shockwaves.length - 1; i >= 0; i--) {
+        const sw = state.shockwaves[i];
+        sw.r += 560 * dt;
+        sw.alpha -= 2.4 * dt;
+        if (sw.alpha <= 0 || sw.r >= sw.maxR) {
+          state.shockwaves.splice(i, 1);
+        }
+      }
+
+      // Canopy concealment transparency for focused unit
+      const focusUnit = getFocusedUnit();
+      for (let i = 0; i < state.canopies.length; i++) {
+        const cp = state.canopies[i];
+        let under = false;
+        if (focusUnit && focusUnit.alive) {
+          const d = Math.hypot(focusUnit.x - cp.x, focusUnit.y - cp.y);
+          under = d < (cp.canopyR + focusUnit.r * 0.6);
+        }
+        const targetAlpha = under ? ARENA_GRID_CONFIG.obstacles.canopyConcealAlpha : 0.94;
+        cp.alpha += (targetAlpha - cp.alpha) * Math.min(1, dt * 10);
+      }
+
+      // Camera smooth tracking
+      if (focusUnit) {
+        let lookX = focusUnit.x;
+        let lookY = focusUnit.y;
+        if (state.humanMode && focusUnit.alive) {
+          lookX += (input.mouseX - viewW * 0.5) * 0.14;
+          lookY += (input.mouseY - viewH * 0.5) * 0.14;
+        }
+        state.camera.x += (lookX - state.camera.x) * Math.min(1, dt * 8.5);
+        state.camera.y += (lookY - state.camera.y) * Math.min(1, dt * 8.5);
+      }
+      state.camera.shake = Math.max(0, state.camera.shake - dt * 24);
+
+      // Compute Delta Snapshot Telemetry Bandwidth (KB/s)
+      const simCfg = ARENA_GRID_CONFIG.simulation;
+      const rawBytesPerSnap = simCfg.packetHeaderBytes +
+        aliveCount * simCfg.bytesPerEntityDelta +
+        state.projectiles.length * simCfg.bytesPerProjDelta;
+      const compressedBytesPerSec = rawBytesPerSnap * 0.58 * simCfg.snapshotHz * state.simSpeed;
+      state.metrics.bandwidthKBps = compressedBytesPerSec / 1024;
+
+      // 5. Check Match Completion
+      if (!state.matchEnded && aliveCount <= 1) {
+        state.matchEnded = true;
+        state.winnerUnit = lastAliveUnit;
+        state.restartCountdownSec = simCfg.autoRestartDelaySec;
+        const winName = lastAliveUnit ? ("Agent " + lastAliveUnit.tag + " Prevails") : "Simultaneous Elimination";
+        ui.winnerHeadline.textContent = winName;
+        ui.matchBanner.classList.add("visible");
+      } else if (state.matchEnded) {
+        state.restartCountdownSec -= dt / Math.max(1, state.simSpeed);
+        const secs = Math.max(1, Math.ceil(state.restartCountdownSec));
+        const elims = state.winnerUnit ? state.winnerUnit.eliminations : 0;
+        ui.winnerDetails.textContent = "Eliminations: " + elims + " · Next seeded cycle in " + secs + "s";
+        if (state.restartCountdownSec <= 0) {
+          initMatch(state.seed + simCfg.seedStep, state.humanMode);
+        }
+      }
+    }
+
+    function getFocusedUnit() {
+      if (state.humanMode) {
+        return state.units[ARENA_GRID_CONFIG.simulation.humanAgentIndex];
+      }
+      const u = state.units[state.spectateId];
+      if (u && u.alive) return u;
+      return state.units.find(function (item) { return item.alive; }) || state.units[0];
+    }
+
+    // =========================================================================
+    // 12. HIGH-DPI PAPER & INK PROCEDURAL VECTOR RENDERER
+    // =========================================================================
+    function renderArena() {
+      const pal = ARENA_GRID_CONFIG.palette;
+      const W = ARENA_GRID_CONFIG.world.width;
+      const H = ARENA_GRID_CONFIG.world.height;
+
+      ctx.save();
+      ctx.scale(dpr, dpr);
+
+      // Base warm parchment fill
+      ctx.fillStyle = pal.parchment;
+      ctx.fillRect(0, 0, viewW, viewH);
+
+      const shakeX = state.camera.shake > 0 ? (Math.random() - 0.5) * state.camera.shake : 0;
+      const shakeY = state.camera.shake > 0 ? (Math.random() - 0.5) * state.camera.shake : 0;
+
+      ctx.save();
+      ctx.translate(viewW * 0.5 + shakeX, viewH * 0.5 + shakeY);
+      ctx.scale(state.camera.zoom, state.camera.zoom);
+      ctx.translate(-state.camera.x, -state.camera.y);
+
+      const halfW = (viewW * 0.5) / state.camera.zoom + 120;
+      const halfH = (viewH * 0.5) / state.camera.zoom + 120;
+      const minX = state.camera.x - halfW;
+      const maxX = state.camera.x + halfW;
+      const minY = state.camera.y - halfH;
+      const maxY = state.camera.y + halfH;
+
+      // 1. Topographic Contour Zones (#ebe6da)
+      ctx.fillStyle = pal.contour;
+      ctx.strokeStyle = pal.grid;
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < state.contours.length; i++) {
+        const c = state.contours[i];
+        ctx.save();
+        ctx.translate(c.x, c.y);
+        ctx.rotate(c.rot);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, c.rx, c.ry, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(0, 0, c.rx * 0.68, c.ry * 0.68, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 2. Subtle Coordinate Gridlines (#dfd9c8)
+      const step = ARENA_GRID_CONFIG.world.gridSpacing;
+      ctx.strokeStyle = pal.grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      const gx0 = Math.max(0, Math.floor(minX / step) * step);
+      const gx1 = Math.min(W, Math.ceil(maxX / step) * step);
+      const gy0 = Math.max(0, Math.floor(minY / step) * step);
+      const gy1 = Math.min(H, Math.ceil(maxY / step) * step);
+      for (let x = gx0; x <= gx1; x += step) {
+        ctx.moveTo(x, Math.max(0, minY));
+        ctx.lineTo(x, Math.min(H, maxY));
+      }
+      for (let y = gy0; y <= gy1; y += step) {
+        ctx.moveTo(Math.max(0, minX), y);
+        ctx.lineTo(Math.min(W, maxX), y);
+      }
+      ctx.stroke();
+
+      // Arena Outer Architectural Border
+      ctx.strokeStyle = "#b8b09f";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(0, 0, W, H);
+
+      // Scorch decals from ruptured canisters
+      for (let i = 0; i < state.scorchMarks.length; i++) {
+        const sm = state.scorchMarks[i];
+        ctx.fillStyle = "rgba(28, 33, 39, 0.09)";
+        ctx.beginPath();
+        ctx.arc(sm.x, sm.y, sm.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 3. Collectible Supply Orbs
+      for (let i = 0; i < state.loots.length; i++) {
+        const orb = state.loots[i];
+        if (orb.x < minX || orb.x > maxX || orb.y < minY || orb.y > maxY) continue;
+        const meta = LOOT_META[orb.kind];
+        const pulse = 1 + Math.sin(state.matchTimeSec * 4.5 + orb.bobPhase) * 0.08;
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.92)";
+        ctx.strokeStyle = meta.color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.arc(orb.x, orb.y, orb.r * pulse, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = meta.color;
+        ctx.font = "700 8.5px ui-sans-serif, system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(meta.short, orb.x, orb.y + 0.5);
+      }
+
+      // Pickup prompt if human player is near an orb
+      if (state.humanMode) {
+        const hu = state.units[ARENA_GRID_CONFIG.simulation.humanAgentIndex];
+        if (hu && hu.alive) {
+          let nearOrb = null;
+          let nearD2 = ARENA_GRID_CONFIG.unit.pickupRadius * ARENA_GRID_CONFIG.unit.pickupRadius;
+          for (let i = 0; i < state.loots.length; i++) {
+            const d2 = distSq(hu.x, hu.y, state.loots[i].x, state.loots[i].y);
+            if (d2 < nearD2) {
+              nearD2 = d2;
+              nearOrb = state.loots[i];
+            }
+          }
+          if (nearOrb) {
+            const lbl = "[F] " + LOOT_META[nearOrb.kind].label;
+            ctx.font = "700 11px ui-sans-serif, system-ui, sans-serif";
+            const tw = ctx.measureText(lbl).width + 14;
+            ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+            ctx.strokeStyle = "#1c2127";
+            ctx.lineWidth = 1.2;
+            ctx.fillRect(nearOrb.x - tw * 0.5, nearOrb.y - 34, tw, 20);
+            ctx.strokeRect(nearOrb.x - tw * 0.5, nearOrb.y - 34, tw, 20);
+            ctx.fillStyle = "#1c2127";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(lbl, nearOrb.x, nearOrb.y - 24);
+          }
+        }
+      }
+
+      // 4. Supply Crates (#b45309, shrink smoothly as damaged)
+      for (let i = 0; i < state.crates.length; i++) {
+        const cr = state.crates[i];
+        if (cr.x < minX || cr.x > maxX || cr.y < minY || cr.y > maxY) continue;
+        const scale = ARENA_GRID_CONFIG.obstacles.crateMinScale +
+          (1 - ARENA_GRID_CONFIG.obstacles.crateMinScale) * (cr.hp / cr.maxHp);
+        const half = cr.r * scale;
+
+        ctx.save();
+        ctx.translate(cr.x, cr.y);
+        ctx.fillStyle = cr.hitFlash > 0 ? "#f59e0b" : pal.crateFill;
+        ctx.strokeStyle = pal.crateTrim;
+        ctx.lineWidth = 2.4;
+        ctx.fillRect(-half, -half, half * 2, half * 2);
+        ctx.strokeRect(-half, -half, half * 2, half * 2);
+
+        // Diagonal timber cross-brace
+        ctx.beginPath();
+        ctx.moveTo(-half + 3, -half + 3);
+        ctx.lineTo(half - 3, half - 3);
+        ctx.moveTo(half - 3, -half + 3);
+        ctx.lineTo(-half + 3, half - 3);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 5. Volatile Canisters (#991b1b)
+      for (let i = 0; i < state.canisters.length; i++) {
+        const vc = state.canisters[i];
+        if (vc.x < minX || vc.x > maxX || vc.y < minY || vc.y > maxY) continue;
+        ctx.fillStyle = vc.hitFlash > 0 ? "#ef4444" : pal.canisterFill;
+        ctx.strokeStyle = "#450a0a";
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.arc(vc.x, vc.y, vc.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.strokeStyle = pal.canisterRing;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(vc.x, vc.y, vc.r * 0.52, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // 6. Stone Bunkers (#475569 solid ballistic cover)
+      for (let i = 0; i < state.bunkers.length; i++) {
+        const b = state.bunkers[i];
+        if (b.x + b.w < minX || b.x > maxX || b.y + b.h < minY || b.y > maxY) continue;
+        ctx.fillStyle = pal.bunkerFill;
+        ctx.strokeStyle = pal.bunkerStroke;
+        ctx.lineWidth = 2.5;
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
+
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+        ctx.lineWidth = 1.2;
+        ctx.strokeRect(b.x + 5, b.y + 5, Math.max(2, b.w - 10), Math.max(2, b.h - 10));
+      }
+
+      // 7. Projectiles & Ballistic Tracers
+      for (let i = 0; i < state.projectiles.length; i++) {
+        const p = state.projectiles[i];
+        if (p.x < minX || p.x > maxX || p.y < minY || p.y > maxY) continue;
+        const speedLen = Math.hypot(p.vx, p.vy) || 1;
+        const tailX = p.x - (p.vx / speedLen) * 18;
+        const tailY = p.y - (p.vy / speedLen) * 18;
+
+        ctx.strokeStyle = p.color;
+        ctx.lineWidth = p.radius * 1.3;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      }
+
+      // 8. 24 Contenders (dual-hand weapon barrels + health & shield arc rings)
+      const focusUnit = getFocusedUnit();
+      for (let i = 0; i < state.units.length; i++) {
+        const u = state.units[i];
+        if (!u.alive) continue;
+        if (u.x < minX || u.x > maxX || u.y < minY || u.y > maxY) continue;
+
+        const isHuman = state.humanMode && (u.id === ARENA_GRID_CONFIG.simulation.humanAgentIndex);
+        const isFocused = focusUnit && focusUnit.id === u.id;
+        const wCfg = ARENA_GRID_CONFIG.weapons[u.activeSlot];
+        const kickOffset = u.barrelKick * 5.5;
+
+        ctx.save();
+        ctx.translate(u.x, u.y);
+        ctx.rotate(u.aimAngle);
+
+        // Weapon barrel
+        ctx.fillStyle = "#1c2127";
+        ctx.strokeStyle = wCfg.color;
+        ctx.lineWidth = 1.5;
+        const bx = u.r * 0.55 - kickOffset;
+        const bw = wCfg.barrelLen;
+        const bh = wCfg.barrelWidth;
+        ctx.fillRect(bx, -bh * 0.5, bw, bh);
+        ctx.strokeRect(bx, -bh * 0.5, bw, bh);
+
+        // Dual directional hands gripping weapon
+        ctx.fillStyle = isHuman ? "#dcfce7" : "#f5f2ea";
+        ctx.strokeStyle = "#1c2127";
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.arc(u.r * 0.72 - kickOffset * 0.5, -9.5, 5.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(u.r * 0.98 - kickOffset * 0.5, 5.8, 5.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Contender circular chassis
+        ctx.fillStyle = u.hitFlash > 0 ? "#fca5a5" : (isHuman ? "#15803d" : (isFocused ? "#0369a1" : "#ffffff"));
+        ctx.strokeStyle = "#1c2127";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, u.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Inner directional visor stripe
+        ctx.fillStyle = isHuman || isFocused ? "#ffffff" : wCfg.color;
+        ctx.beginPath();
+        ctx.arc(u.r * 0.35, 0, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+
+        // Outer Health & Shield Arc Rings
+        const hpFrac = Math.max(0, u.hp / u.maxHp);
+        const shFrac = Math.max(0, u.shield / u.maxShield);
+
+        ctx.lineWidth = 2.6;
+        ctx.strokeStyle = hpFrac > 0.45 ? "#15803d" : (hpFrac > 0.22 ? "#d97706" : "#b91c1c");
+        ctx.beginPath();
+        ctx.arc(u.x, u.y, u.r + 5, -Math.PI * 0.5, -Math.PI * 0.5 + Math.PI * 2 * hpFrac);
+        ctx.stroke();
+
+        if (shFrac > 0.01) {
+          ctx.strokeStyle = "#0284c7";
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.arc(u.x, u.y, u.r + 8.5, -Math.PI * 0.5, -Math.PI * 0.5 + Math.PI * 2 * shFrac);
+          ctx.stroke();
+        }
+
+        // Reload or Field Medkit radial channel indicator
+        if (u.reloadTimer > 0 || u.medkitTimer > 0) {
+          const total = u.medkitTimer > 0 ? ARENA_GRID_CONFIG.unit.medkitCooldownSec : wCfg.reloadSec;
+          const rem = u.medkitTimer > 0 ? u.medkitTimer : u.reloadTimer;
+          const prog = 1 - rem / total;
+          ctx.strokeStyle = u.medkitTimer > 0 ? "#15803d" : "#d97706";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(u.x, u.y, u.r + 13, -Math.PI * 0.5, -Math.PI * 0.5 + Math.PI * 2 * prog);
+          ctx.stroke();
+        }
+
+        // Crisp Contender ID Tag
+        ctx.font = "700 10px ui-sans-serif, system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "bottom";
+        ctx.fillStyle = "#1c2127";
+        ctx.fillText(isHuman ? (u.tag + " YOU") : u.tag, u.x, u.y - u.r - 10);
+      }
+
+      // 9. Timber Canopies (#1b4d3e overhead foliage with semi-transparent concealment)
+      for (let i = 0; i < state.canopies.length; i++) {
+        const cp = state.canopies[i];
+        if (cp.x + cp.canopyR < minX || cp.x - cp.canopyR > maxX ||
+            cp.y + cp.canopyR < minY || cp.y - cp.canopyR > maxY) continue;
+
+        // Solid inner trunk
+        ctx.fillStyle = pal.trunkFill;
+        ctx.beginPath();
+        ctx.arc(cp.x, cp.y, cp.trunkR, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Overhead layered botanical crown
+        ctx.save();
+        ctx.globalAlpha = cp.alpha;
+        ctx.fillStyle = pal.canopyFill;
+        ctx.strokeStyle = "#113328";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let a = 0; a < cp.poly.length; a++) {
+          const px = cp.x + cp.poly[a][0];
+          const py = cp.y + cp.poly[a][1];
+          if (a === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = pal.canopyHighlight;
+        ctx.beginPath();
+        ctx.arc(cp.x - cp.canopyR * 0.18, cp.y - cp.canopyR * 0.18, cp.canopyR * 0.55, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 10. Shockwaves, Particles & Floating Damage Numbers
+      for (let i = 0; i < state.shockwaves.length; i++) {
+        const sw = state.shockwaves[i];
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, sw.alpha);
+        ctx.strokeStyle = "#991b1b";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      for (let i = 0; i < state.particles.length; i++) {
+        const pt = state.particles[i];
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, pt.life / pt.maxLife);
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      ctx.font = "800 12px ui-sans-serif, system-ui, sans-serif";
+      ctx.textAlign = "center";
+      for (let i = 0; i < state.floatTexts.length; i++) {
+        const ft = state.floatTexts[i];
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, ft.life / ft.maxLife);
+        ctx.fillStyle = ft.color;
+        ctx.fillText(ft.text, ft.x, ft.y);
+        ctx.restore();
+      }
+
+      // 11. Monotonic Safe-Zone Contraction Ring + Crimson Outer Storm Wash
+      const storm = state.storm;
+
+      // Amber inner target circle
+      ctx.save();
+      ctx.setLineDash([10, 8]);
+      ctx.strokeStyle = pal.targetStroke;
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.arc(storm.targetCx, storm.targetCy, storm.targetRadius, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // Crimson outer storm wash using even-odd fill rule
+      ctx.fillStyle = pal.stormFill;
+      ctx.beginPath();
+      ctx.rect(-1200, -1200, W + 2400, H + 2400);
+      ctx.arc(storm.cx, storm.cy, Math.max(1, storm.radius), 0, Math.PI * 2, true);
+      ctx.fill("evenodd");
+
+      ctx.strokeStyle = pal.stormStroke;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(storm.cx, storm.cy, Math.max(1, storm.radius), 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.restore(); // End world camera transform
+
+      // 12. Dynamic Recoil-Bloom Reticle in Human Play Mode
+      if (state.humanMode) {
+        const hu = state.units[ARENA_GRID_CONFIG.simulation.humanAgentIndex];
+        const wCfg = ARENA_GRID_CONFIG.weapons[hu ? hu.activeSlot : 0];
+        const spreadPx = 8 + ((hu ? hu.bloom : 0) + wCfg.baseSpreadRad) * 190;
+        const mx = input.mouseX;
+        const my = input.mouseY;
+
+        ctx.strokeStyle = "#1c2127";
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(mx - spreadPx - 7, my);
+        ctx.lineTo(mx - spreadPx, my);
+        ctx.moveTo(mx + spreadPx, my);
+        ctx.lineTo(mx + spreadPx + 7, my);
+        ctx.moveTo(mx, my - spreadPx - 7);
+        ctx.lineTo(mx, my - spreadPx);
+        ctx.moveTo(mx, my + spreadPx);
+        ctx.lineTo(mx, my + spreadPx + 7);
+        ctx.stroke();
+
+        ctx.fillStyle = wCfg.color;
+        ctx.beginPath();
+        ctx.arc(mx, my, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
+    }
+
+    // =========================================================================
+    // 13. TACTICAL RADAR MINIMAP & HUD TELEMETRY SYNC
+    // =========================================================================
+    function renderMinimapAndHud() {
+      const mw = 244;
+      const mh = 184;
+      const W = ARENA_GRID_CONFIG.world.width;
+      const H = ARENA_GRID_CONFIG.world.height;
+      const scale = Math.min(mw / W, mh / H);
+      const offX = (mw - W * scale) * 0.5;
+      const offY = (mh - H * scale) * 0.5;
+
+      miniCtx.save();
+      miniCtx.scale(dpr, dpr);
+      miniCtx.fillStyle = "#ebe6da";
+      miniCtx.fillRect(0, 0, mw, mh);
+
+      miniCtx.save();
+      miniCtx.translate(offX, offY);
+      miniCtx.fillStyle = "#f5f2ea";
+      miniCtx.fillRect(0, 0, W * scale, H * scale);
+
+      // Bunkers on radar
+      miniCtx.fillStyle = "#64748b";
+      for (let i = 0; i < state.bunkers.length; i++) {
+        const b = state.bunkers[i];
+        miniCtx.fillRect(b.x * scale, b.y * scale, Math.max(2, b.w * scale), Math.max(2, b.h * scale));
+      }
+
+      // Crates on radar
+      miniCtx.fillStyle = "#b45309";
+      for (let i = 0; i < state.crates.length; i++) {
+        const c = state.crates[i];
+        miniCtx.fillRect(c.x * scale - 1.2, c.y * scale - 1.2, 2.4, 2.4);
+      }
+
+      // Storm wash & target ring on radar
+      const st = state.storm;
+      miniCtx.fillStyle = "rgba(185, 28, 28, 0.14)";
+      miniCtx.beginPath();
+      miniCtx.rect(0, 0, W * scale, H * scale);
+      miniCtx.arc(st.cx * scale, st.cy * scale, st.radius * scale, 0, Math.PI * 2, true);
+      miniCtx.fill("evenodd");
+
+      miniCtx.strokeStyle = "#d97706";
+      miniCtx.lineWidth = 1;
+      miniCtx.beginPath();
+      miniCtx.arc(st.targetCx * scale, st.targetCy * scale, st.targetRadius * scale, 0, Math.PI * 2);
+      miniCtx.stroke();
+
+      miniCtx.strokeStyle = "#b91c1c";
+      miniCtx.lineWidth = 1.4;
+      miniCtx.beginPath();
+      miniCtx.arc(st.cx * scale, st.cy * scale, st.radius * scale, 0, Math.PI * 2);
+      miniCtx.stroke();
+
+      // Living contenders on radar
+      const focusUnit = getFocusedUnit();
+      let aliveCount = 0;
+      for (let i = 0; i < state.units.length; i++) {
+        const u = state.units[i];
+        if (!u.alive) continue;
+        aliveCount += 1;
+        const isFocus = focusUnit && focusUnit.id === u.id;
+        miniCtx.fillStyle = isFocus ? "#15803d" : "#1c2127";
+        miniCtx.beginPath();
+        miniCtx.arc(u.x * scale, u.y * scale, isFocus ? 3.4 : 2.1, 0, Math.PI * 2);
+        miniCtx.fill();
+      }
+
+      // Viewport camera frame
+      const vwWorld = (viewW / state.camera.zoom) * scale;
+      const vhWorld = (viewH / state.camera.zoom) * scale;
+      miniCtx.strokeStyle = "rgba(28, 33, 39, 0.45)";
+      miniCtx.lineWidth = 1;
+      miniCtx.strokeRect(
+        state.camera.x * scale - vwWorld * 0.5,
+        state.camera.y * scale - vhWorld * 0.5,
+        vwWorld,
+        vhWorld
+      );
+
+      miniCtx.restore();
+      miniCtx.restore();
+
+      // Update HUD text readouts cleanly
+      ui.aliveCounter.textContent = aliveCount + " / " + state.units.length;
+      const mins = String(Math.floor(state.matchTimeSec / 60)).padStart(2, "0");
+      const secs = String(Math.floor(state.matchTimeSec % 60)).padStart(2, "0");
+      ui.clockReadout.textContent = mins + ":" + secs;
+
+      const phaseTotal = ARENA_GRID_CONFIG.stormPhases.length;
+      const shownPhase = Math.min(phaseTotal, st.phaseIdx + 1);
+      ui.phaseLabel.textContent = (st.inShrink ? "Contracting · Phase " : "Safe Ring · Phase ") + shownPhase + " / " + phaseTotal;
+      const pSec = Math.max(0, Math.ceil(st.timerSec));
+      ui.phaseTimer.textContent = "00:" + String(pSec).padStart(2, "0");
+      const pct = st.phaseDurationSec > 0 ? Math.min(100, Math.max(0, (1 - st.timerSec / st.phaseDurationSec) * 100)) : 100;
+      ui.phaseProgress.style.width = pct.toFixed(1) + "%";
+      ui.ringRadiusLbl.textContent = "Radius: " + Math.round(st.radius) + " m";
+
+      const pol = activePolicy();
+      ui.polCover.textContent = pol.coverSeek.toFixed(2);
+      ui.polResource.textContent = pol.resourceAffinity.toFixed(2);
+      ui.polStrafe.textContent = pol.strafeCadenceHz.toFixed(1) + " Hz";
+      ui.polBandwidth.textContent = state.metrics.bandwidthKBps.toFixed(1) + " KB/s";
+
+      if (focusUnit) {
+        ui.focusElims.textContent = String(focusUnit.eliminations);
+        const roleSuffix = state.humanMode ? " (You)" : " (Swarm)";
+        ui.focusUnitTitle.textContent = "Agent " + focusUnit.tag + roleSuffix;
+        ui.shieldText.textContent = "Shield " + Math.round(focusUnit.shield) + " / " + focusUnit.maxShield;
+        ui.hpText.textContent = "Health " + Math.round(focusUnit.hp) + " / " + focusUnit.maxHp;
+        ui.barShield.style.width = ((focusUnit.shield / focusUnit.maxShield) * 100).toFixed(1) + "%";
+        ui.barHp.style.width = ((focusUnit.hp / focusUnit.maxHp) * 100).toFixed(1) + "%";
+
+        for (let s = 0; s < 3; s++) {
+          const wSlot = focusUnit.inv.weapons[s];
+          ui.slotCards[s].classList.toggle("active", focusUnit.activeSlot === s);
+          ui.slotCards[s].style.opacity = wSlot.unlocked ? "1" : "0.48";
+          ui.slotTiers[s].textContent = wSlot.unlocked ? ("Mk." + romanTier(wSlot.tier)) : "Locked";
+          ui.slotAmmos[s].textContent = wSlot.mag + " / " + wSlot.reserve;
+        }
+        ui.slot4Count.textContent = "x" + focusUnit.inv.medkits + (focusUnit.medkitTimer > 0 ? " Healing..." : " Ready");
+      }
+
+      // Expose structured telemetry for agents & tests
+      window.ARENA_TELEMETRY = {
+        mode: state.humanMode ? "human" : "swarm",
+        simSpeed: state.simSpeed,
+        seed: state.seed,
+        framesRendered: state.metrics.framesRendered,
+        simTicks: state.metrics.simTicks,
+        fps: state.metrics.fps,
+        aliveContenders: aliveCount,
+        totalContenders: state.units.length,
+        cratesRemaining: state.crates.length,
+        stormPhase: shownPhase,
+        stormRadius: Math.round(st.radius),
+        policyCell: pol
+      };
+    }
+
+    // =========================================================================
+    // 14. INTERACTIVE CONTROLS & MODE SWITCHING
+    // =========================================================================
+    function syncModeButtons() {
+      if (state.humanMode) {
+        ui.btnPlayToggle.textContent = "Return to Swarm Autopilot (Space)";
+        ui.btnPlayToggle.classList.add("playing-human");
+        ui.modePill.classList.add("human-active");
+        ui.modePillText.textContent = "Human Control · Agent #01";
+        ui.spectateHint.textContent = "WASD + Mouse Aim Active";
+      } else {
+        ui.btnPlayToggle.textContent = "Drop In & Play (WASD + Mouse)";
+        ui.btnPlayToggle.classList.remove("playing-human");
+        ui.modePill.classList.remove("human-active");
+        ui.modePillText.textContent = "Autonomous Swarm · " + state.simSpeed + "x";
+        ui.spectateHint.textContent = "Click minimap to focus unit";
+      }
+      ui.speedBtns.forEach(function (btn) {
+        btn.classList.toggle("active", Number(btn.dataset.speed) === state.simSpeed);
+      });
+    }
+
+    function setSimSpeed(mult) {
+      if (PARAMETER_BOUNDS.simSpeedMultiplier.choices.indexOf(mult) === -1) return;
+      state.simSpeed = mult;
+      syncModeButtons();
+    }
+
+    function toggleHumanPlay(forceHuman) {
+      const wantHuman = forceHuman !== undefined ? forceHuman : !state.humanMode;
+      if (wantHuman) {
+        if (state.matchEnded) {
+          initMatch(state.seed + ARENA_GRID_CONFIG.simulation.seedStep, true);
+          return;
+        }
+        const hu = state.units[ARENA_GRID_CONFIG.simulation.humanAgentIndex];
+        if (!hu.alive) {
+          // Re-insert Agent #01 inside active safe ring with starter kit so Drop-In is always playable
+          hu.alive = true;
+          hu.hp = hu.maxHp;
+          hu.shield = ARENA_GRID_CONFIG.unit.humanDropShield;
+          hu.x = state.storm.cx + (state.rng() - 0.5) * Math.min(220, state.storm.radius * 0.4);
+          hu.y = state.storm.cy + (state.rng() - 0.5) * Math.min(220, state.storm.radius * 0.4);
+          hu.inv = createUnitInventory(true);
+        } else {
+          // Unlock all three starter archetypes on takeover so 1/2/3 keys respond immediately
+          for (let s = 0; s < 3; s++) {
+            hu.inv.weapons[s].unlocked = true;
+          }
+          hu.shield = Math.max(hu.shield, ARENA_GRID_CONFIG.unit.humanDropShield);
+          hu.inv.medkits = Math.max(1, hu.inv.medkits);
+        }
+        state.humanMode = true;
+        state.spectateId = hu.id;
+        setSimSpeed(1);
+        pushFeed("<strong>Human Control:</strong> Direct link to Agent #01");
+      } else {
+        state.humanMode = false;
+        pushFeed("<strong>Swarm Autopilot:</strong> Policy grid resumed");
+      }
+      syncModeButtons();
+    }
+
+    ui.btnPlayToggle.addEventListener("click", function () {
+      toggleHumanPlay();
+    });
+
+    ui.speedBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const spd = Number(btn.dataset.speed);
+        if (spd > 1 && state.humanMode) {
+          state.humanMode = false;
+        }
+        setSimSpeed(spd);
+      });
+    });
+
+    ui.btnNewMatch.addEventListener("click", function () {
+      initMatch(state.seed + ARENA_GRID_CONFIG.simulation.seedStep, state.humanMode);
+    });
+
+    ui.btnBannerPlay.addEventListener("click", function () {
+      initMatch(state.seed + ARENA_GRID_CONFIG.simulation.seedStep, true);
+    });
+
+    ui.btnBannerSwarm.addEventListener("click", function () {
+      initMatch(state.seed + ARENA_GRID_CONFIG.simulation.seedStep, false);
+    });
+
+    ui.cellChips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        const key = chip.dataset.cell;
+        if (!ARENA_GRID_CONFIG.policyCells[key]) return;
+        state.activePolicyKey = key;
+        ui.cellChips.forEach(function (c) {
+          c.classList.toggle("active", c === chip);
+        });
+        pushFeed("<strong>Policy Grid:</strong> Switched to " + ARENA_GRID_CONFIG.policyCells[key].cellCode);
+      });
+    });
+
+    ui.slotCards.forEach(function (card) {
+      card.addEventListener("click", function () {
+        const sIdx = Number(card.dataset.slot);
+        const hu = state.units[ARENA_GRID_CONFIG.simulation.humanAgentIndex];
+        if (!state.humanMode || !hu || !hu.alive) return;
+        if (sIdx < 3 && hu.inv.weapons[sIdx].unlocked) {
+          hu.activeSlot = sIdx;
+          hu.reloadTimer = 0;
+        } else if (sIdx === 3) {
+          triggerMedkit(hu);
+        }
+      });
+    });
+
+    miniCanvas.addEventListener("click", function (ev) {
+      if (state.humanMode) return;
+      const rect = miniCanvas.getBoundingClientRect();
+      const mx = ev.clientX - rect.left;
+      const my = ev.clientY - rect.top;
+      const mw = 244;
+      const mh = 184;
+      const W = ARENA_GRID_CONFIG.world.width;
+      const H = ARENA_GRID_CONFIG.world.height;
+      const scale = Math.min(mw / W, mh / H);
+      const offX = (mw - W * scale) * 0.5;
+      const offY = (mh - H * scale) * 0.5;
+      const wx = (mx - offX) / scale;
+      const wy = (my - offY) / scale;
+
+      let best = null;
+      let bestD2 = Infinity;
+      for (let i = 0; i < state.units.length; i++) {
+        const u = state.units[i];
+        if (!u.alive) continue;
+        const d2 = distSq(wx, wy, u.x, u.y);
+        if (d2 < bestD2) {
+          bestD2 = d2;
+          best = u;
+        }
+      }
+      if (best) {
+        state.spectateId = best.id;
+      }
+    });
+
+    window.addEventListener("keydown", function (ev) {
+      input.keys[ev.code] = true;
+      if (ev.code === "Space") {
+        ev.preventDefault();
+        toggleHumanPlay();
+        return;
+      }
+      if (ev.code === "BracketRight" && !state.humanMode) {
+        const alive = state.units.filter(function (u) { return u.alive; });
+        if (alive.length > 0) {
+          const curIdx = alive.findIndex(function (u) { return u.id === state.spectateId; });
+          state.spectateId = alive[(curIdx + 1) % alive.length].id;
+        }
+      }
+      if (ev.code === "BracketLeft" && !state.humanMode) {
+        const alive = state.units.filter(function (u) { return u.alive; });
+        if (alive.length > 0) {
+          const curIdx = alive.findIndex(function (u) { return u.id === state.spectateId; });
+          state.spectateId = alive[(curIdx - 1 + alive.length) % alive.length].id;
+        }
+      }
+
+      const hu = state.units[ARENA_GRID_CONFIG.simulation.humanAgentIndex];
+      if (!state.humanMode || !hu || !hu.alive) return;
+
+      if (ev.code === "Digit1" && hu.inv.weapons[0].unlocked) { hu.activeSlot = 0; hu.reloadTimer = 0; }
+      else if (ev.code === "Digit2" && hu.inv.weapons[1].unlocked) { hu.activeSlot = 1; hu.reloadTimer = 0; }
+      else if (ev.code === "Digit3" && hu.inv.weapons[2].unlocked) { hu.activeSlot = 2; hu.reloadTimer = 0; }
+      else if (ev.code === "Digit4" || ev.code === "KeyE") { triggerMedkit(hu); }
+      else if (ev.code === "KeyF") { tryManualPickup(hu); }
+      else if (ev.code === "KeyR") { startReload(hu); }
+    });
+
+    window.addEventListener("keyup", function (ev) {
+      input.keys[ev.code] = false;
+    });
+
+    canvas.addEventListener("mousemove", function (ev) {
+      input.mouseX = ev.clientX;
+      input.mouseY = ev.clientY;
+    });
+
+    canvas.addEventListener("mousedown", function (ev) {
+      if (ev.button === 0) {
+        input.mouseDown = true;
+        if (state.humanMode) {
+          const hu = state.units[ARENA_GRID_CONFIG.simulation.humanAgentIndex];
+          if (hu && hu.alive) attemptFire(hu);
+        }
+      }
+    });
+
+    window.addEventListener("mouseup", function (ev) {
+      if (ev.button === 0) {
+        input.mouseDown = false;
+      }
+    });
+
+    canvas.addEventListener("wheel", function (ev) {
+      ev.preventDefault();
+      const delta = ev.deltaY > 0 ? -0.08 : 0.08;
+      state.camera.zoom = Math.max(0.62, Math.min(1.45, state.camera.zoom + delta));
+    }, { passive: false });
+
+    // =========================================================================
+    // 15. MAIN 60FPS ANIMATION LOOP & IMMEDIATE LIVE WARM-START
+    // =========================================================================
+    initMatch(ARENA_GRID_CONFIG.simulation.initialSeed, false);
+    // Advance 35 deterministic warm-start substeps so contenders are actively engaging on frame 1
+    for (let w = 0; w < 35; w++) {
+      stepSimulation(ARENA_GRID_CONFIG.simulation.fixedStepSec);
+    }
+
+    let lastTimestamp = performance.now();
+    let fpsAccumSec = 0;
+    let fpsFrameCount = 0;
+
+    function onAnimationFrame(now) {
+      const rawDt = Math.min(
+        ARENA_GRID_CONFIG.simulation.maxFrameDeltaSec,
+        Math.max(0.001, (now - lastTimestamp) / 1000)
+      );
+      lastTimestamp = now;
+
+      fpsAccumSec += rawDt;
+      fpsFrameCount += 1;
+      if (fpsAccumSec >= 0.4) {
+        state.metrics.fps = Math.round(fpsFrameCount / fpsAccumSec);
+        ui.fpsReadout.textContent = state.metrics.fps + " FPS";
+        fpsAccumSec = 0;
+        fpsFrameCount = 0;
+      }
+
+      const substeps = state.simSpeed;
+      const stepDt = ARENA_GRID_CONFIG.simulation.fixedStepSec;
+      for (let s = 0; s < substeps; s++) {
+        stepSimulation(stepDt);
+      }
+
+      renderArena();
+      renderMinimapAndHud();
+      state.metrics.framesRendered += 1;
+
+      requestAnimationFrame(onAnimationFrame);
+    }
+
+    requestAnimationFrame(onAnimationFrame);
+  })();
+  </script>
+</body>
+</html>
