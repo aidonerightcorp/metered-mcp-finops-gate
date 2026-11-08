@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="only light">
+<title>Fenced Task Loop — Simultaneous Discovery &amp; Grid Optimization Landscape Explorer</title>
+<style>
+  :root {
+    color-scheme: only light;
+    --paper: #f5f2ea;
+    --card: #fbf9f4;
+    --ink: #1b2230;
+    --muted: #4b5563;
+    --border: #d6d0c4;
+    --teal: #0f766e;
+    --amber: #b45309;
+    --cobalt: #1d4ed8;
+    --crimson: #be123c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .agent-line {
+    padding: 8px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+  }
+  h1 { margin: 0 0 8px; font-size: 1.65rem; }
+  h2 { margin: 0 0 10px; font-size: 1.2rem; }
+  h3 { margin: 0 0 8px; font-size: 1.02rem; }
+  .sub { color: var(--muted); margin-bottom: 20px; }
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .kpi-val { font-size: 1.45rem; font-weight: 700; color: var(--teal); }
+  .kpi-lbl { font-size: 0.82rem; color: var(--muted); }
+  .grid-two {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  canvas {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fffdf8;
+    cursor: crosshair;
+  }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  select, input, button {
+    background: #fffdf8;
+    color: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.88rem;
+  }
+  button.primary {
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+    font-weight: 600;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  th { cursor: pointer; background: #f0ece1; }
+  pre {
+    background: #f0ece1;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    overflow-x: auto;
+    font-size: 0.8rem;
+    margin: 8px 0 0;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: #f0ece1;
+  }
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 16px 20px;
+    text-align: center;
+    font-size: 0.84rem;
+    color: var(--muted);
+    background: var(--card);
+  }
+  a { color: var(--cobalt); }
+</style>
+</head>
+<body>
+<div class="agent-line">Agent-ready surface: inspect JSON landscape curves embedded in window.LANDSCAPE_DATA or connect via zero-secret MCP/REST.</div>
+<div class="wrap">
+  <h1>Fenced Task Loop — Simultaneous Discovery &amp; Grid Optimization Landscape Explorer</h1>
+  <p class="sub">
+    Simultaneous in-flight step discovery, warm KV prefix-cache switch guards, sub-millisecond neural weight-space tool pruning,
+    and asynchronous overnight response-surface mapping across multi-axis Configuration Settings Grids.
+  </p>
+
+  <div class="kpi-row">
+    <div class="card">
+      <div class="kpi-val">50.0%</div>
+      <div class="kpi-lbl">Simultaneous Mid-Flight Step Token Savings (128 zero-token bypasses)</div>
+    </div>
+    <div class="card">
+      <div class="kpi-val">75.0%</div>
+      <div class="kpi-lbl">Weight-Space Tool Context Reduction (0.18 ms, 100% error retention)</div>
+    </div>
+    <div class="card">
+      <div class="kpi-val">0.9373</div>
+      <div class="kpi-lbl">Promoted Overnight Grid Objective (+0.0178 over default, Gen 2)</div>
+    </div>
+    <div class="card">
+      <div class="kpi-val">5 cells</div>
+      <div class="kpi-lbl">Non-Dominated 3-Objective Pareto Frontier (52 cells probed)</div>
+    </div>
+    <div class="card">
+      <div class="kpi-val">N_eff = 4.99</div>
+      <div class="kpi-lbl">Spectral Lineage Diversity Across 5 Autonomous Worker Pools</div>
+    </div>
+  </div>
+
+  
+
+  <div class="grid-two">
+    <div class="card">
+      <h2>2D Surrogate Response-Surface Contour Map</h2>
+      <div class="toolbar">
+        <span id="hoverReadout" class="badge">Hover map to inspect predicted J(x, y)</span>
+      </div>
+      <canvas id="contourCanvas" width="560" height="380"></canvas>
+      <p style="font-size:0.82rem;color:var(--muted);margin:8px 0 0;">
+        Axes: <strong>effort_confidence_gate_milli</strong> (X) vs. <strong>prefix_cache_switch_margin_milli</strong> (Y).
+        Amber dots = Simultaneous In-Flight Shadow Probes; Cobalt dots = Overnight Async UCB Waves; Crimson Square = Promoted Optimum.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>1D Marginal Optimization Curve &amp; 95% Uncertainty Band</h2>
+      <div class="toolbar">
+        <label for="axisSelect"><strong>Parameter Axis:</strong></label>
+        <select id="axisSelect"></select>
+        <span id="curvatureBadge" class="badge"></span>
+      </div>
+      <canvas id="curveCanvas" width="560" height="380"></canvas>
+      <p style="font-size:0.82rem;color:var(--muted);margin:8px 0 0;">
+        Boundary Auto-Expansions Triggered: <strong>rrf_rank_constant:low-&gt;4, bm25_lexical_share_milli:high-&gt;900, step_stall_timeout_seconds:low-&gt;10</strong>
+        | Quadratic Surface Fit R2: <strong>1.000</strong>
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Evaluated Configuration Grid Cells &amp; Pareto Frontier</h2>
+    <div class="toolbar">
+      <label for="phaseFilter">Phase:</label>
+      <select id="phaseFilter">
+        <option value="all">All Evaluated Cells (52)</option>
+        <option value="pareto">Pareto-Optimal Frontier Only (5)</option>
+        <option value="simultaneous_shadow">Simultaneous In-Flight Shadow</option>
+        <option value="overnight_async_ucb">Overnight Async UCB Waves</option>
+      </select>
+      <label for="sortCol">Sort By:</label>
+      <select id="sortCol">
+        <option value="composite_objective">Composite Objective (High to Low)</option>
+        <option value="quality_score">Quality Score (High to Low)</option>
+        <option value="token_savings_ratio">Token Savings (High to Low)</option>
+        <option value="latency_savings_ratio">Latency Savings (High to Low)</option>
+      </select>
+    </div>
+    <div style="overflow-x:auto;">
+      <table id="cellsTable">
+        <thead>
+          <tr>
+            <th>Wave / Mode</th>
+            <th>Composite J</th>
+            <th>Quality (%)</th>
+            <th>Token Save (%)</th>
+            <th>Latency Save (%)</th>
+            <th>RRF k</th>
+            <th>BM25 Share</th>
+            <th>Bypass Gate</th>
+            <th>Effort Gate</th>
+            <th>Cache Margin</th>
+            <th>Prune Gate</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Multi-Service Worker Federation Connectors (Disjoint Maker / Checker Quorum)</h2>
+    <p style="font-size:0.88rem;color:var(--muted);">
+      Spin up heterogeneous autonomous workers across synthesis, realtime scout, persistent governed loops, workspace spec-audit, and headless CLI exploration pools on the same monotonic lease_epoch queue.
+    </p>
+    <div id="connectorsBox"></div>
+  </div>
+</div>
+
+<footer>
+  <a href="./index.html">Prioritized Next Steps</a> &middot;
+  <a href="./arena.html">Spatial Delta Arena</a> &middot;
+  <span>Light Paper &amp; Ink Surface &middot; Zero Unauthorized Paid Spend</span>
+</footer>
+
+<script>
+window.LANDSCAPE_DATA = {"simultaneous":{"sequential_baseline_tokens":243200,"simultaneous_inflight_tokens":121600,"inflight_token_savings_ratio":0.5,"inflight_bypasses_triggered":128,"prefix_cache_cost_units_saved":2670720000.0,"cross_service_handoff_token_reduction_ratio":0.9992,"resume_packet_bytes":284,"tool_pruner":{"tokens_before":60800,"tokens_after":15200,"token_reduction_ratio":0.75,"causal_dependency_retention":1.0,"prune_latency_ms":0.176}},"landscape":{"total_cells_evaluated":52,"initial_objective":0.9196,"promoted_objective":0.9373,"objective_uplift":0.0178,"promoted_cell":{"rrf_rank_constant":14,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":320,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":40,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"final_grid_generation":2,"boundary_expansions":["rrf_rank_constant:low->4","bm25_lexical_share_milli:high->900","step_stall_timeout_seconds:low->10"],"wave_progression":[{"wave":0,"mode":"default","best_objective":0.9196,"evaluated_count":1},{"wave":1,"mode":"simultaneous_shadow","best_objective":0.9196,"evaluated_count":4},{"wave":2,"mode":"overnight_async_ucb","best_objective":0.9196,"evaluated_count":12},{"wave":3,"mode":"overnight_async_ucb","best_objective":0.9196,"evaluated_count":20},{"wave":4,"mode":"overnight_async_ucb","best_objective":0.9287,"evaluated_count":28},{"wave":5,"mode":"overnight_async_ucb","best_objective":0.9287,"evaluated_count":36},{"wave":6,"mode":"overnight_async_ucb","best_objective":0.9373,"evaluated_count":44},{"wave":7,"mode":"overnight_async_ucb","best_objective":0.9373,"evaluated_count":52}],"quadratic_surface":{"r2_goodness_of_fit":0.9996,"axis_curvatures":{"rrf_rank_constant":-0.0444,"bm25_lexical_share_milli":-0.0409,"inflight_bypass_similarity_milli":-0.0148,"effort_confidence_gate_milli":-0.0279,"prefix_cache_switch_margin_milli":-0.0217,"tool_prune_keep_gate_milli":-0.0301,"step_stall_timeout_seconds":-0.028,"surrogate_ucb_kappa_milli":-0.0247},"top_interactions":[{"pair":"rrf_rank_constant*bm25_lexical_share_milli","coefficient":-0.0373},{"pair":"effort_confidence_gate_milli*prefix_cache_switch_margin_milli","coefficient":0.031},{"pair":"inflight_bypass_similarity_milli*tool_prune_keep_gate_milli","coefficient":0.0259},{"pair":"rrf_rank_constant*step_stall_timeout_seconds","coefficient":0.0237},{"pair":"effort_confidence_gate_milli*step_stall_timeout_seconds","coefficient":-0.0218},{"pair":"bm25_lexical_share_milli*effort_confidence_gate_milli","coefficient":-0.0159},{"pair":"effort_confidence_gate_milli*surrogate_ucb_kappa_milli","coefficient":0.0133},{"pair":"step_stall_timeout_seconds*surrogate_ucb_kappa_milli","coefficient":0.0114},{"pair":"prefix_cache_switch_margin_milli*step_stall_timeout_seconds","coefficient":0.0107},{"pair":"rrf_rank_constant*inflight_bypass_similarity_milli","coefficient":-0.01},{"pair":"tool_prune_keep_gate_milli*surrogate_ucb_kappa_milli","coefficient":0.0098},{"pair":"bm25_lexical_share_milli*prefix_cache_switch_margin_milli","coefficient":0.0092},{"pair":"prefix_cache_switch_margin_milli*tool_prune_keep_gate_milli","coefficient":-0.0085},{"pair":"rrf_rank_constant*effort_confidence_gate_milli","coefficient":0.008},{"pair":"rrf_rank_constant*surrogate_ucb_kappa_milli","coefficient":-0.0056},{"pair":"bm25_lexical_share_milli*tool_prune_keep_gate_milli","coefficient":0.0053},{"pair":"bm25_lexical_share_milli*step_stall_timeout_seconds","coefficient":-0.0049},{"pair":"rrf_rank_constant*tool_prune_keep_gate_milli","coefficient":-0.0047},{"pair":"tool_prune_keep_gate_milli*step_stall_timeout_seconds","coefficient":0.0042},{"pair":"inflight_bypass_similarity_milli*prefix_cache_switch_margin_milli","coefficient":-0.004},{"pair":"effort_confidence_gate_milli*tool_prune_keep_gate_milli","coefficient":0.0029},{"pair":"prefix_cache_switch_margin_milli*surrogate_ucb_kappa_milli","coefficient":0.0024},{"pair":"inflight_bypass_similarity_milli*surrogate_ucb_kappa_milli","coefficient":-0.0015},{"pair":"bm25_lexical_share_milli*inflight_bypass_similarity_milli","coefficient":0.0015},{"pair":"inflight_bypass_similarity_milli*step_stall_timeout_seconds","coefficient":0.0005},{"pair":"bm25_lexical_share_milli*surrogate_ucb_kappa_milli","coefficient":-0.0004},{"pair":"inflight_bypass_similarity_milli*effort_confidence_gate_milli","coefficient":0.0003},{"pair":"rrf_rank_constant*prefix_cache_switch_margin_milli","coefficient":0.0002}]},"marginal_curves":{"rrf_rank_constant":{"x_values":[4.0,7.3,10.6,13.9,17.2,20.5,23.8,27.1,30.4,33.7,37.0,40.3,43.6,46.9,50.2,53.5,56.8,60.1,63.4,66.7,70.0],"mean_objective":[0.9279,0.9321,0.936,0.9373,0.937,0.9352,0.9304,0.9254,0.9195,0.9107,0.9041,0.8977,0.8901,0.8854,0.8815,0.8779,0.8762,0.8753,0.875,0.8753,0.8759],"ci_lower":[0.885,0.901,0.9221,0.9346,0.9231,0.9084,0.888,0.873,0.8588,0.8417,0.8306,0.821,0.8107,0.8047,0.8001,0.7957,0.7936,0.7923,0.7917,0.7916,0.7919],"ci_upper":[0.9708,0.9633,0.9499,0.94,0.9509,0.962,0.9728,0.9778,0.9801,0.9798,0.9776,0.9744,0.9695,0.966,0.963,0.9601,0.9588,0.9583,0.9583,0.959,0.9599]},"bm25_lexical_share_milli":{"x_values":[250.0,282.5,315.0,347.5,380.0,412.5,445.0,477.5,510.0,542.5,575.0,607.5,640.0,672.5,705.0,737.5,770.0,802.5,835.0,867.5,900.0],"mean_objective":[0.8937,0.8973,0.9017,0.9067,0.912,0.9175,0.9231,0.9282,0.9325,0.9357,0.9375,0.9378,0.9365,0.9337,0.9296,0.9244,0.9189,0.9131,0.9073,0.902,0.8975],"ci_lower":[0.8115,0.8161,0.8218,0.8288,0.8369,0.8464,0.8579,0.8708,0.8847,0.8993,0.9147,0.9295,0.929,0.912,0.8939,0.8763,0.8606,0.8467,0.8346,0.8248,0.8173],"ci_upper":[0.9759,0.9786,0.9816,0.9846,0.9871,0.9885,0.9883,0.9857,0.9803,0.972,0.9604,0.9461,0.9439,0.9554,0.9652,0.9725,0.9771,0.9795,0.9801,0.9792,0.9776]},"inflight_bypass_similarity_milli":{"x_values":[600.0,614.0,628.0,642.0,656.0,670.0,684.0,698.0,712.0,726.0,740.0,754.0,768.0,782.0,796.0,810.0,824.0,838.0,852.0,866.0,880.0],"mean_objective":[0.9013,0.9063,0.9117,0.9172,0.9227,0.9278,0.9321,0.9355,0.9375,0.9381,0.9373,0.935,0.9315,0.9271,0.9219,0.9164,0.9109,0.9056,0.9008,0.8966,0.8931],"ci_lower":[0.8199,0.8267,0.8348,0.8442,0.8549,0.867,0.8803,0.8945,0.909,0.9234,0.9346,0.9203,0.9032,0.8863,0.8704,0.8561,0.8437,0.8332,0.8245,0.8176,0.8122],"ci_upper":[0.9827,0.9859,0.9886,0.9903,0.9905,0.9886,0.984,0.9764,0.966,0.9529,0.94,0.9498,0.9599,0.9678,0.9734,0.9767,0.9781,0.9781,0.9771,0.9756,0.9739]},"effort_confidence_gate_milli":{"x_values":[600.0,615.0,630.0,645.0,660.0,675.0,690.0,705.0,720.0,735.0,750.0,765.0,780.0,795.0,810.0,825.0,840.0,855.0,870.0,885.0,900.0],"mean_objective":[0.8838,0.8852,0.887,0.8894,0.8924,0.8959,0.9,0.9047,0.9098,0.9152,0.9206,0.9257,0.9303,0.934,0.9365,0.9377,0.9373,0.9354,0.9322,0.9278,0.9226],"ci_lower":[0.7998,0.8014,0.8037,0.8066,0.8103,0.8147,0.8201,0.8264,0.8339,0.8427,0.853,0.8648,0.878,0.8924,0.9075,0.9226,0.9346,0.9202,0.9028,0.8854,0.869],"ci_upper":[0.9679,0.969,0.9704,0.9722,0.9744,0.9771,0.98,0.983,0.9857,0.9877,0.9882,0.9867,0.9826,0.9756,0.9656,0.9528,0.94,0.9506,0.9615,0.9701,0.9761]},"prefix_cache_switch_margin_milli":{"x_values":[80.0,96.0,112.0,128.0,144.0,160.0,176.0,192.0,208.0,224.0,240.0,256.0,272.0,288.0,304.0,320.0,336.0,352.0,368.0,384.0,400.0],"mean_objective":[0.9003,0.904,0.9079,0.9121,0.9163,0.9206,0.9247,0.9287,0.9324,0.9357,0.9384,0.9403,0.9413,0.9411,0.9398,0.9373,0.9336,0.929,0.9237,0.918,0.9121],"ci_lower":[0.8193,0.824,0.8289,0.834,0.8393,0.8447,0.8503,0.8563,0.8629,0.8705,0.8793,0.8893,0.9006,0.9126,0.9249,0.9346,0.9185,0.8998,0.8814,0.8644,0.8492],"ci_upper":[0.9812,0.984,0.987,0.9901,0.9933,0.9964,0.9992,1.0012,1.002,1.0009,0.9975,0.9912,0.982,0.9697,0.9547,0.94,0.9487,0.9583,0.966,0.9716,0.975]},"tool_prune_keep_gate_milli":{"x_values":[300.0,320.0,340.0,360.0,380.0,400.0,420.0,440.0,460.0,480.0,500.0,520.0,540.0,560.0,580.0,600.0,620.0,640.0,660.0,680.0,700.0],"mean_objective":[0.9212,0.9262,0.9307,0.9342,0.9364,0.9373,0.9367,0.9346,0.9313,0.927,0.9219,0.9164,0.9108,0.9054,0.9005,0.8961,0.8924,0.8894,0.887,0.8852,0.8839],"ci_lower":[0.8597,0.8738,0.8891,0.9053,0.9214,0.9346,0.9217,0.9056,0.8895,0.8741,0.8599,0.8473,0.8365,0.8274,0.8199,0.814,0.8093,0.8056,0.8029,0.8009,0.7995],"ci_upper":[0.9826,0.9787,0.9722,0.9631,0.9514,0.94,0.9517,0.9637,0.9731,0.9798,0.9838,0.9854,0.9851,0.9835,0.981,0.9783,0.9756,0.9732,0.9711,0.9695,0.9683]},"step_stall_timeout_seconds":{"x_values":[10.0,17.0,24.0,31.0,38.0,45.0,52.0,59.0,66.0,73.0,80.0,87.0,94.0,101.0,108.0,115.0,122.0,129.0,136.0,143.0,150.0],"mean_objective":[0.9307,0.9344,0.9368,0.9379,0.9376,0.936,0.9331,0.9293,0.9248,0.9199,0.9149,0.9101,0.9055,0.9014,0.8978,0.8947,0.8921,0.8899,0.8881,0.8867,0.8855],"ci_lower":[0.8768,0.8906,0.905,0.9194,0.9327,0.9253,0.9087,0.8923,0.8768,0.863,0.8511,0.8413,0.8332,0.8267,0.8213,0.8168,0.813,0.8097,0.8069,0.8046,0.8026],"ci_upper":[0.9847,0.9782,0.9687,0.9565,0.9426,0.9466,0.9575,0.9663,0.9728,0.9768,0.9787,0.9788,0.9778,0.9761,0.9743,0.9726,0.9712,0.9701,0.9693,0.9687,0.9683]},"surrogate_ucb_kappa_milli":{"x_values":[1000.0,1075.0,1150.0,1225.0,1300.0,1375.0,1450.0,1525.0,1600.0,1675.0,1750.0,1825.0,1900.0,1975.0,2050.0,2125.0,2200.0,2275.0,2350.0,2425.0,2500.0],"mean_objective":[0.9053,0.9109,0.9168,0.9226,0.9279,0.9324,0.9358,0.9378,0.9386,0.9379,0.9362,0.9335,0.9303,0.9266,0.9229,0.9193,0.9158,0.9125,0.9095,0.9066,0.9039],"ci_lower":[0.8316,0.8432,0.8571,0.8729,0.8902,0.9081,0.9257,0.9324,0.9197,0.9068,0.8946,0.8839,0.8749,0.868,0.8633,0.8605,0.8595,0.8598,0.8605,0.8604,0.8583],"ci_upper":[0.979,0.9786,0.9765,0.9722,0.9656,0.9566,0.9458,0.9433,0.9574,0.9691,0.9777,0.9832,0.9856,0.9852,0.9825,0.978,0.972,0.9653,0.9585,0.9529,0.9496]}},"contour_2d":{"axis_x":"effort_confidence_gate_milli","axis_y":"prefix_cache_switch_margin_milli","x_ticks":[600.0,612.5,625.0,637.5,650.0,662.5,675.0,687.5,700.0,712.5,725.0,737.5,750.0,762.5,775.0,787.5,800.0,812.5,825.0,837.5,850.0,862.5,875.0,887.5,900.0],"y_ticks":[80.0,93.3333,106.6667,120.0,133.3333,146.6667,160.0,173.3333,186.6667,200.0,213.3333,226.6667,240.0,253.3333,266.6667,280.0,293.3333,306.6667,320.0,333.3333,346.6667,360.0,373.3333,386.6667,400.0],"z_matrix":[[0.8921,0.8952,0.8988,0.9025,0.9059,0.9091,0.9121,0.9147,0.9164,0.9176,0.9181,0.9179,0.9172,0.9158,0.9139,0.9115,0.9091,0.9065,0.9036,0.9007,0.8981,0.8957,0.8932,0.891,0.8892],[0.8921,0.8954,0.8991,0.903,0.9065,0.9099,0.9132,0.916,0.9181,0.9195,0.9204,0.9205,0.9199,0.9188,0.917,0.9148,0.9124,0.9097,0.9067,0.9037,0.901,0.8983,0.8956,0.8932,0.8911],[0.892,0.8953,0.8991,0.9031,0.9068,0.9104,0.9139,0.9171,0.9194,0.9212,0.9224,0.9229,0.9227,0.9218,0.9203,0.9182,0.9159,0.9133,0.9103,0.9072,0.9042,0.9014,0.8985,0.8957,0.8934],[0.8917,0.895,0.8988,0.9029,0.9067,0.9104,0.9142,0.9176,0.9202,0.9223,0.9239,0.9248,0.9249,0.9243,0.9231,0.9213,0.9191,0.9166,0.9137,0.9105,0.9075,0.9045,0.9013,0.8984,0.8958],[0.8913,0.8945,0.8983,0.9024,0.9063,0.9101,0.9141,0.9177,0.9206,0.9231,0.925,0.9263,0.9268,0.9266,0.9257,0.9242,0.9223,0.92,0.9171,0.9139,0.9108,0.9077,0.9044,0.9012,0.8984],[0.8908,0.8939,0.8976,0.9017,0.9055,0.9095,0.9136,0.9175,0.9207,0.9234,0.9258,0.9275,0.9285,0.9287,0.9283,0.9272,0.9255,0.9234,0.9207,0.9176,0.9145,0.9113,0.9078,0.9044,0.9013],[0.8902,0.8932,0.8968,0.9008,0.9047,0.9086,0.9129,0.9169,0.9204,0.9234,0.9262,0.9283,0.9297,0.9304,0.9304,0.9297,0.9284,0.9266,0.924,0.921,0.918,0.9147,0.9111,0.9075,0.9042],[0.8896,0.8925,0.896,0.8999,0.9037,0.9076,0.9119,0.9161,0.9198,0.9231,0.9263,0.9289,0.9306,0.9318,0.9323,0.932,0.931,0.9295,0.9273,0.9244,0.9214,0.9182,0.9144,0.9106,0.9071],[0.889,0.8917,0.895,0.8988,0.9025,0.9064,0.9107,0.9151,0.9189,0.9225,0.9261,0.9291,0.9313,0.9329,0.9339,0.9342,0.9337,0.9325,0.9306,0.928,0.9251,0.9218,0.918,0.914,0.9103],[0.8884,0.8909,0.8941,0.8977,0.9013,0.9052,0.9095,0.9139,0.9179,0.9218,0.9256,0.929,0.9316,0.9337,0.9352,0.9359,0.9358,0.935,0.9334,0.9311,0.9283,0.9251,0.9212,0.9171,0.9132],[0.8878,0.8902,0.8932,0.8966,0.9001,0.9039,0.9082,0.9127,0.9168,0.9208,0.925,0.9287,0.9317,0.9342,0.9362,0.9374,0.9377,0.9373,0.936,0.9339,0.9313,0.9281,0.9243,0.92,0.9159],[0.8872,0.8894,0.8922,0.8955,0.8988,0.9025,0.9068,0.9112,0.9154,0.9196,0.924,0.9281,0.9315,0.9344,0.9369,0.9386,0.9394,0.9393,0.9384,0.9366,0.9342,0.9311,0.9272,0.9229,0.9186],[0.8867,0.8887,0.8914,0.8944,0.8976,0.9012,0.9054,0.9098,0.914,0.9183,0.9229,0.9273,0.931,0.9342,0.9371,0.9393,0.9405,0.9408,0.9403,0.9387,0.9365,0.9335,0.9296,0.9252,0.9208],[0.8862,0.8881,0.8905,0.8934,0.8964,0.8999,0.9039,0.9083,0.9125,0.9169,0.9216,0.9262,0.9302,0.9337,0.937,0.9396,0.9411,0.9418,0.9416,0.9403,0.9382,0.9354,0.9315,0.9271,0.9226],[0.8857,0.8874,0.8896,0.8923,0.8951,0.8984,0.9023,0.9066,0.9108,0.9152,0.92,0.9247,0.9289,0.9328,0.9364,0.9393,0.9412,0.9422,0.9423,0.9413,0.9394,0.9367,0.9329,0.9285,0.924],[0.8852,0.8867,0.8888,0.8912,0.8939,0.897,0.9008,0.9049,0.9091,0.9134,0.9182,0.9231,0.9274,0.9315,0.9353,0.9385,0.9407,0.942,0.9423,0.9416,0.9398,0.9372,0.9336,0.9291,0.9246],[0.8847,0.8861,0.888,0.8902,0.8927,0.8956,0.8992,0.9032,0.9072,0.9115,0.9163,0.9212,0.9256,0.9297,0.9338,0.9371,0.9395,0.941,0.9416,0.941,0.9395,0.937,0.9335,0.9291,0.9246],[0.8842,0.8855,0.8871,0.8892,0.8915,0.8942,0.8975,0.9013,0.9051,0.9092,0.914,0.9188,0.9232,0.9274,0.9315,0.935,0.9375,0.9392,0.94,0.9396,0.9382,0.9359,0.9325,0.9283,0.9239],[0.8838,0.8849,0.8864,0.8882,0.8903,0.8928,0.8959,0.8995,0.9031,0.9071,0.9116,0.9163,0.9206,0.9247,0.9289,0.9324,0.935,0.9368,0.9377,0.9374,0.9362,0.9341,0.9308,0.9268,0.9226],[0.8834,0.8844,0.8857,0.8873,0.8892,0.8915,0.8943,0.8976,0.901,0.9048,0.9091,0.9136,0.9177,0.9217,0.9258,0.9293,0.9319,0.9337,0.9346,0.9345,0.9334,0.9315,0.9284,0.9246,0.9206],[0.883,0.8838,0.885,0.8864,0.8881,0.8901,0.8927,0.8957,0.8988,0.9022,0.9063,0.9104,0.9144,0.9182,0.922,0.9254,0.9279,0.9297,0.9307,0.9307,0.9297,0.9279,0.9251,0.9216,0.9179],[0.8827,0.8834,0.8844,0.8856,0.8871,0.8889,0.8912,0.8939,0.8967,0.8999,0.9036,0.9074,0.9111,0.9146,0.9182,0.9214,0.9238,0.9255,0.9265,0.9265,0.9257,0.9241,0.9215,0.9183,0.9149],[0.8824,0.883,0.8838,0.8849,0.8862,0.8878,0.8898,0.8922,0.8947,0.8976,0.9009,0.9044,0.9077,0.911,0.9143,0.9172,0.9194,0.921,0.9219,0.922,0.9213,0.9199,0.9176,0.9147,0.9116],[0.8822,0.8827,0.8834,0.8843,0.8853,0.8867,0.8884,0.8905,0.8927,0.8952,0.8981,0.9012,0.9041,0.907,0.9099,0.9125,0.9145,0.9159,0.9168,0.9169,0.9163,0.9151,0.9131,0.9105,0.9078],[0.882,0.8824,0.883,0.8837,0.8846,0.8858,0.8873,0.889,0.8909,0.8931,0.8956,0.8983,0.9009,0.9034,0.906,0.9083,0.91,0.9113,0.9121,0.9122,0.9117,0.9106,0.9089,0.9067,0.9043]]},"pareto_frontier":[{"phase":"default_init","wave":0,"cell":{"rrf_rank_constant":30,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":60,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9196,"quality_score":0.9523,"token_savings_ratio":0.8738,"latency_savings_ratio":0.9015},{"phase":"overnight_async_ucb","wave":6,"cell":{"rrf_rank_constant":14,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":320,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":40,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9373,"quality_score":0.9467,"token_savings_ratio":0.9114,"latency_savings_ratio":0.9534},{"phase":"overnight_async_ucb","wave":6,"cell":{"rrf_rank_constant":4,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":720,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":70,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9287,"quality_score":0.9422,"token_savings_ratio":0.9135,"latency_savings_ratio":0.9151},{"phase":"overnight_async_ucb","wave":7,"cell":{"rrf_rank_constant":24,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":300,"step_stall_timeout_seconds":10,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9337,"quality_score":0.9278,"token_savings_ratio":0.9505,"latency_savings_ratio":0.9231},{"phase":"overnight_async_ucb","wave":7,"cell":{"rrf_rank_constant":14,"bm25_lexical_share_milli":375,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":300,"step_stall_timeout_seconds":10,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9216,"quality_score":0.9079,"token_savings_ratio":0.9398,"latency_savings_ratio":0.9306}],"evaluated_records":[{"phase":"default_init","wave":0,"cell":{"rrf_rank_constant":30,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":60,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9196,"quality_score":0.9523,"token_savings_ratio":0.8738,"latency_savings_ratio":0.9015},{"phase":"simultaneous_shadow","wave":1,"cell":{"rrf_rank_constant":30,"bm25_lexical_share_milli":750,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":600,"prefix_cache_switch_margin_milli":400,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":150,"surrogate_ucb_kappa_milli":2500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.7336,"quality_score":0.6741,"token_savings_ratio":0.7927,"latency_savings_ratio":0.807},{"phase":"simultaneous_shadow","wave":1,"cell":{"rrf_rank_constant":70,"bm25_lexical_share_milli":250,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":400,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":150,"surrogate_ucb_kappa_milli":1000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.7421,"quality_score":0.7643,"token_savings_ratio":0.7651,"latency_savings_ratio":0.6394},{"phase":"simultaneous_shadow","wave":1,"cell":{"rrf_rank_constant":70,"bm25_lexical_share_milli":250,"inflight_bypass_similarity_milli":600,"effort_confidence_gate_milli":600,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":150,"surrogate_ucb_kappa_milli":1000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.7608,"quality_score":0.797,"token_savings_ratio":0.7683,"latency_savings_ratio":0.6439},{"phase":"overnight_async_ucb","wave":2,"cell":{"rrf_rank_constant":40,"bm25_lexical_share_milli":375,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":30,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8838,"quality_score":0.9339,"token_savings_ratio":0.8334,"latency_savings_ratio":0.8232},{"phase":"overnight_async_ucb","wave":2,"cell":{"rrf_rank_constant":20,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":900,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":600,"step_stall_timeout_seconds":60,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8658,"quality_score":0.8577,"token_savings_ratio":0.8471,"latency_savings_ratio":0.9203},{"phase":"overnight_async_ucb","wave":2,"cell":{"rrf_rank_constant":40,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":300,"step_stall_timeout_seconds":60,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8873,"quality_score":0.8979,"token_savings_ratio":0.9141,"latency_savings_ratio":0.8119},{"phase":"overnight_async_ucb","wave":2,"cell":{"rrf_rank_constant":50,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":30,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8393,"quality_score":0.8758,"token_savings_ratio":0.8296,"latency_savings_ratio":0.7498},{"phase":"overnight_async_ucb","wave":2,"cell":{"rrf_rank_constant":40,"bm25_lexical_share_milli":750,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":90,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8487,"quality_score":0.8614,"token_savings_ratio":0.8445,"latency_savings_ratio":0.8188},{"phase":"overnight_async_ucb","wave":2,"cell":{"rrf_rank_constant":20,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":320,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":90,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9152,"quality_score":0.9166,"token_savings_ratio":0.898,"latency_savings_ratio":0.9398},{"phase":"overnight_async_ucb","wave":2,"cell":{"rrf_rank_constant":60,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":720,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":60,"surrogate_ucb_kappa_milli":1000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8116,"quality_score":0.8328,"token_savings_ratio":0.8467,"latency_savings_ratio":0.6918},{"phase":"overnight_async_ucb","wave":2,"cell":{"rrf_rank_constant":20,"bm25_lexical_share_milli":750,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":660,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":30,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9012,"quality_score":0.924,"token_savings_ratio":0.8513,"latency_savings_ratio":0.9189},{"phase":"overnight_async_ucb","wave":3,"cell":{"rrf_rank_constant":30,"bm25_lexical_share_milli":375,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":600,"step_stall_timeout_seconds":60,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8851,"quality_score":0.9348,"token_savings_ratio":0.8013,"latency_savings_ratio":0.8813},{"phase":"overnight_async_ucb","wave":3,"cell":{"rrf_rank_constant":30,"bm25_lexical_share_milli":750,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":600,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":30,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8681,"quality_score":0.8759,"token_savings_ratio":0.8623,"latency_savings_ratio":0.8549},{"phase":"overnight_async_ucb","wave":3,"cell":{"rrf_rank_constant":20,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":720,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":120,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8997,"quality_score":0.8963,"token_savings_ratio":0.887,"latency_savings_ratio":0.9309},{"phase":"overnight_async_ucb","wave":3,"cell":{"rrf_rank_constant":40,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":660,"prefix_cache_switch_margin_milli":320,"tool_prune_keep_gate_milli":300,"step_stall_timeout_seconds":90,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8401,"quality_score":0.8249,"token_savings_ratio":0.8881,"latency_savings_ratio":0.8041},{"phase":"overnight_async_ucb","wave":3,"cell":{"rrf_rank_constant":30,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":660,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":90,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8908,"quality_score":0.9244,"token_savings_ratio":0.8437,"latency_savings_ratio":0.8724},{"phase":"overnight_async_ucb","wave":3,"cell":{"rrf_rank_constant":30,"bm25_lexical_share_milli":750,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":30,"surrogate_ucb_kappa_milli":1000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8622,"quality_score":0.8775,"token_savings_ratio":0.8274,"latency_savings_ratio":0.8762},{"phase":"overnight_async_ucb","wave":3,"cell":{"rrf_rank_constant":10,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":660,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":60,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8999,"quality_score":0.9171,"token_savings_ratio":0.8587,"latency_savings_ratio":0.9186},{"phase":"overnight_async_ucb","wave":3,"cell":{"rrf_rank_constant":20,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":600,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":300,"step_stall_timeout_seconds":30,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8878,"quality_score":0.8863,"token_savings_ratio":0.8909,"latency_savings_ratio":0.887},{"phase":"overnight_async_ucb","wave":4,"cell":{"rrf_rank_constant":10,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":720,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":90,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9055,"quality_score":0.9315,"token_savings_ratio":0.8384,"latency_savings_ratio":0.942},{"phase":"overnight_async_ucb","wave":4,"cell":{"rrf_rank_constant":30,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":660,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":90,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8762,"quality_score":0.8983,"token_savings_ratio":0.8468,"latency_savings_ratio":0.8613},{"phase":"overnight_async_ucb","wave":4,"cell":{"rrf_rank_constant":30,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":600,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":90,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8583,"quality_score":0.8815,"token_savings_ratio":0.8166,"latency_savings_ratio":0.8607},{"phase":"overnight_async_ucb","wave":4,"cell":{"rrf_rank_constant":20,"bm25_lexical_share_milli":375,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":720,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":600,"step_stall_timeout_seconds":60,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8837,"quality_score":0.9008,"token_savings_ratio":0.8386,"latency_savings_ratio":0.9092},{"phase":"overnight_async_ucb","wave":4,"cell":{"rrf_rank_constant":20,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":320,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":60,"surrogate_ucb_kappa_milli":2500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9063,"quality_score":0.9066,"token_savings_ratio":0.8944,"latency_savings_ratio":0.9251},{"phase":"overnight_async_ucb","wave":4,"cell":{"rrf_rank_constant":20,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":120,"surrogate_ucb_kappa_milli":2500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8688,"quality_score":0.8642,"token_savings_ratio":0.8511,"latency_savings_ratio":0.9117},{"phase":"overnight_async_ucb","wave":4,"cell":{"rrf_rank_constant":10,"bm25_lexical_share_milli":750,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":30,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9287,"quality_score":0.9412,"token_savings_ratio":0.8952,"latency_savings_ratio":0.9482},{"phase":"overnight_async_ucb","wave":4,"cell":{"rrf_rank_constant":50,"bm25_lexical_share_milli":375,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":320,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":60,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8567,"quality_score":0.9014,"token_savings_ratio":0.8434,"latency_savings_ratio":0.7498},{"phase":"overnight_async_ucb","wave":5,"cell":{"rrf_rank_constant":14,"bm25_lexical_share_milli":875,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":660,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":600,"step_stall_timeout_seconds":40,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8685,"quality_score":0.8745,"token_savings_ratio":0.8318,"latency_savings_ratio":0.9123},{"phase":"overnight_async_ucb","wave":5,"cell":{"rrf_rank_constant":14,"bm25_lexical_share_milli":875,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":70,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.898,"quality_score":0.8962,"token_savings_ratio":0.8801,"latency_savings_ratio":0.9332},{"phase":"overnight_async_ucb","wave":5,"cell":{"rrf_rank_constant":14,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":70,"surrogate_ucb_kappa_milli":2500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8984,"quality_score":0.917,"token_savings_ratio":0.8402,"latency_savings_ratio":0.9417},{"phase":"overnight_async_ucb","wave":5,"cell":{"rrf_rank_constant":4,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":300,"step_stall_timeout_seconds":100,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8818,"quality_score":0.8671,"token_savings_ratio":0.8945,"latency_savings_ratio":0.9032},{"phase":"overnight_async_ucb","wave":5,"cell":{"rrf_rank_constant":24,"bm25_lexical_share_milli":750,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":900,"prefix_cache_switch_margin_milli":400,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":40,"surrogate_ucb_kappa_milli":2500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8821,"quality_score":0.884,"token_savings_ratio":0.8711,"latency_savings_ratio":0.895},{"phase":"overnight_async_ucb","wave":5,"cell":{"rrf_rank_constant":14,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":300,"step_stall_timeout_seconds":40,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.898,"quality_score":0.8822,"token_savings_ratio":0.9034,"latency_savings_ratio":0.9348},{"phase":"overnight_async_ucb","wave":5,"cell":{"rrf_rank_constant":4,"bm25_lexical_share_milli":375,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":320,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":100,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8899,"quality_score":0.8775,"token_savings_ratio":0.9053,"latency_savings_ratio":0.8999},{"phase":"overnight_async_ucb","wave":5,"cell":{"rrf_rank_constant":24,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":900,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":10,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9223,"quality_score":0.9366,"token_savings_ratio":0.8927,"latency_savings_ratio":0.9303},{"phase":"overnight_async_ucb","wave":6,"cell":{"rrf_rank_constant":14,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":320,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":40,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9373,"quality_score":0.9467,"token_savings_ratio":0.9114,"latency_savings_ratio":0.9534},{"phase":"overnight_async_ucb","wave":6,"cell":{"rrf_rank_constant":4,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":720,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":70,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9287,"quality_score":0.9422,"token_savings_ratio":0.9135,"latency_savings_ratio":0.9151},{"phase":"overnight_async_ucb","wave":6,"cell":{"rrf_rank_constant":34,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":600,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":600,"step_stall_timeout_seconds":10,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8691,"quality_score":0.8761,"token_savings_ratio":0.8645,"latency_savings_ratio":0.8565},{"phase":"overnight_async_ucb","wave":6,"cell":{"rrf_rank_constant":24,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":880,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":70,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8925,"quality_score":0.9259,"token_savings_ratio":0.8152,"latency_savings_ratio":0.925},{"phase":"overnight_async_ucb","wave":6,"cell":{"rrf_rank_constant":34,"bm25_lexical_share_milli":750,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":100,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8746,"quality_score":0.876,"token_savings_ratio":0.8787,"latency_savings_ratio":0.8641},{"phase":"overnight_async_ucb","wave":6,"cell":{"rrf_rank_constant":4,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":660,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":100,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8985,"quality_score":0.9174,"token_savings_ratio":0.8631,"latency_savings_ratio":0.9031},{"phase":"overnight_async_ucb","wave":6,"cell":{"rrf_rank_constant":34,"bm25_lexical_share_milli":500,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":300,"step_stall_timeout_seconds":10,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9169,"quality_score":0.923,"token_savings_ratio":0.9386,"latency_savings_ratio":0.863},{"phase":"overnight_async_ucb","wave":6,"cell":{"rrf_rank_constant":24,"bm25_lexical_share_milli":250,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":300,"step_stall_timeout_seconds":40,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.896,"quality_score":0.892,"token_savings_ratio":0.9024,"latency_savings_ratio":0.8967},{"phase":"overnight_async_ucb","wave":7,"cell":{"rrf_rank_constant":24,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":300,"step_stall_timeout_seconds":10,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9337,"quality_score":0.9278,"token_savings_ratio":0.9505,"latency_savings_ratio":0.9231},{"phase":"overnight_async_ucb","wave":7,"cell":{"rrf_rank_constant":4,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":720,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":10,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9177,"quality_score":0.9382,"token_savings_ratio":0.8719,"latency_savings_ratio":0.935},{"phase":"overnight_async_ucb","wave":7,"cell":{"rrf_rank_constant":14,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":810,"effort_confidence_gate_milli":840,"prefix_cache_switch_margin_milli":320,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":10,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9092,"quality_score":0.9166,"token_savings_ratio":0.8759,"latency_savings_ratio":0.9435},{"phase":"overnight_async_ucb","wave":7,"cell":{"rrf_rank_constant":34,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":740,"effort_confidence_gate_milli":900,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":300,"step_stall_timeout_seconds":10,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8895,"quality_score":0.8849,"token_savings_ratio":0.916,"latency_savings_ratio":0.8587},{"phase":"overnight_async_ucb","wave":7,"cell":{"rrf_rank_constant":14,"bm25_lexical_share_milli":375,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":240,"tool_prune_keep_gate_milli":300,"step_stall_timeout_seconds":10,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9216,"quality_score":0.9079,"token_savings_ratio":0.9398,"latency_savings_ratio":0.9306},{"phase":"overnight_async_ucb","wave":7,"cell":{"rrf_rank_constant":24,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":600,"effort_confidence_gate_milli":720,"prefix_cache_switch_margin_milli":80,"tool_prune_keep_gate_milli":500,"step_stall_timeout_seconds":40,"surrogate_ucb_kappa_milli":1500,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.9081,"quality_score":0.9133,"token_savings_ratio":0.8981,"latency_savings_ratio":0.9096},{"phase":"overnight_async_ucb","wave":7,"cell":{"rrf_rank_constant":4,"bm25_lexical_share_milli":625,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":720,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":130,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8925,"quality_score":0.8905,"token_savings_ratio":0.8939,"latency_savings_ratio":0.8961},{"phase":"overnight_async_ucb","wave":7,"cell":{"rrf_rank_constant":14,"bm25_lexical_share_milli":250,"inflight_bypass_similarity_milli":670,"effort_confidence_gate_milli":780,"prefix_cache_switch_margin_milli":160,"tool_prune_keep_gate_milli":400,"step_stall_timeout_seconds":10,"surrogate_ucb_kappa_milli":2000,"enable_warm_prefix_guard":true,"enable_concurrent_inflight_prefetch":true},"composite_objective":0.8917,"quality_score":0.8807,"token_savings_ratio":0.8976,"latency_savings_ratio":0.9137}]},"diversity":{"distinct_lineage_count":5,"shannon_entropy_nats":1.6069,"effective_lineage_diversity_neff":4.9875,"meets_diversity_gate":true,"lineage_shares":{"lineage_alpha_synthesis":0.22,"lineage_beta_scout":0.21,"lineage_gamma_builder":0.2,"lineage_delta_auditor":0.19,"lineage_epsilon_open_weights":0.18}},"quorum_pairs":[{"maker_service_id":"muse_agent_service","maker_label":"Autonomous Synthesis Worker Pool A","maker_lineage":"lineage_alpha_synthesis","checker_service_id":"grok_agent_service","checker_label":"Remote MCP Scout & Audit Pool B","checker_lineage":"lineage_beta_scout","disjoint_lineage_ok":true},{"maker_service_id":"hermes_dotz_service","maker_label":"Persistent Governed Worker Pool C","maker_lineage":"lineage_gamma_builder","checker_service_id":"duet_connector_service","checker_label":"JSON-RPC Spec Audit Pool D","checker_lineage":"lineage_delta_auditor","disjoint_lineage_ok":true},{"maker_service_id":"opencode_hosted_swarm_service","maker_label":"Headless CLI & Weight-Space Explorer Pool E","maker_lineage":"lineage_epsilon_open_weights","checker_service_id":"grok_agent_service","checker_label":"Remote MCP Scout & Audit Pool B","checker_lineage":"lineage_beta_scout","disjoint_lineage_ok":true}],"connectors":[{"service_id":"muse_agent_service","label":"Autonomous Synthesis Worker Pool A","lineage_family":"lineage_alpha_synthesis","protocol_mode":"zero_auth_url_waterfall_or_rest","recommended_role":"maker","supports_warm_prefix":true,"specialty":"high_velocity_synthesis_and_calibration","snippet":"# Zero-Auth URL Waterfall Loop (Autonomous Synthesis Pool)\ncurl -sS \"http://127.0.0.1:8787/q/claim?agent_id=synth-worker-pool-a&auto_suffix=1\"\n# Simultaneously probe reusable step catalog (bypass_gate_milli=740):\ncurl -sS \"http://127.0.0.1:8787/q/objects?limit=10\"\n# Submit completed step envelope with monotonic lease_epoch:\ncurl -sS -X POST \"http://127.0.0.1:8787/q/submit?auto_suffix=1\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"agent_id\":\"synth-worker-pool-a\",\"task_id\":\"<claimed_id>\",\"summary\":\"Step synthesis ready\"}'"},{"service_id":"grok_agent_service","label":"Remote MCP Scout & Audit Pool B","lineage_family":"lineage_beta_scout","protocol_mode":"remote_mcp_tools_and_rest","recommended_role":"checker","supports_warm_prefix":true,"specialty":"realtime_discovery_and_adversarial_audit","snippet":"// Remote MCP Scout & Disjoint Audit Connector\n{\n  \"mcpServers\": {\n    \"fenced_queue_fabric\": {\n      \"transport\": \"streamable-http\",\n      \"url\": \"http://127.0.0.1:8787/mcp\",\n      \"role\": \"independent_checker\",\n      \"prefix_cache_switch_margin_milli\": 320\n    }\n  }\n}"},{"service_id":"hermes_dotz_service","label":"Persistent Governed Worker Pool C","lineage_family":"lineage_gamma_builder","protocol_mode":"fenced_task_loop_plugin_and_mcp","recommended_role":"maker","supports_warm_prefix":true,"specialty":"multi_file_engineering_and_governed_grants","snippet":"# Persistent Governed Worker Manifest (fenced-task-loop compatible)\nworker_profile:\n  id: persistent-builder-dot\n  queue_endpoint: \"http://127.0.0.1:8787\"\n  step_stall_timeout_seconds: 40\n  inflight_bypass_similarity_milli: 740\n  enforce_distinct_checker: true"},{"service_id":"duet_connector_service","label":"JSON-RPC Spec Audit Pool D","lineage_family":"lineage_delta_auditor","protocol_mode":"jsonrpc_mcp_connector","recommended_role":"checker","supports_warm_prefix":true,"specialty":"formal_invariant_review_and_spec_audit","snippet":"// Workspace JSON-RPC Spec Audit Connector\n{\n  \"connector_name\": \"fenced_spec_auditor\",\n  \"jsonrpc_endpoint\": \"http://127.0.0.1:8787/mcp\",\n  \"audit_policy\": \"disjoint_lineage_required\",\n  \"warm_prefix_guard\": true\n}"},{"service_id":"opencode_hosted_swarm_service","label":"Headless CLI & Weight-Space Explorer Pool E","lineage_family":"lineage_epsilon_open_weights","protocol_mode":"standalone_headless_cli_and_sqlite_wal","recommended_role":"explorer","supports_warm_prefix":false,"specialty":"overnight_grid_exploration_and_weight_surgery","snippet":"# Headless Standalone CLI + Overnight Grid Explorer Loop\nXDG_DATA_HOME=/tmp/oc_worker/data XDG_CACHE_HOME=/tmp/oc_worker/cache \\\n  opencode run --standalone --format json \\\n  \"Claim ready task from http://127.0.0.1:8787/q/claim, check bypass gate 740, and submit result.\""}]};
+(function() {
+  const D = window.LANDSCAPE_DATA;
+  const L = D.landscape;
+  const cCanvas = document.getElementById("contourCanvas");
+  const ctxC = cCanvas.getContext("2d");
+  const hoverEl = document.getElementById("hoverReadout");
+
+  function lerpColor(t) {
+    const r = Math.round(248 - t * 215);
+    const g = Math.round(244 - t * 110);
+    const b = Math.round(224 - t * 95);
+    return "rgb(" + r + "," + g + "," + b + ")";
+  }
+
+  function drawContour() {
+    const padL = 54, padR = 20, padT = 18, padB = 42;
+    const W = cCanvas.width - padL - padR;
+    const H = cCanvas.height - padT - padB;
+    ctxC.fillStyle = "#fffdf8";
+    ctxC.fillRect(0, 0, cCanvas.width, cCanvas.height);
+
+    const zMat = L.contour_2d.z_matrix;
+    const xt = L.contour_2d.x_ticks;
+    const yt = L.contour_2d.y_ticks;
+    const ny = zMat.length, nx = zMat[0].length;
+    let zMin = Infinity, zMax = -Infinity;
+    for (let j = 0; j < ny; j++) {
+      for (let i = 0; i < nx; i++) {
+        if (zMat[j][i] < zMin) zMin = zMat[j][i];
+        if (zMat[j][i] > zMax) zMax = zMat[j][i];
+      }
+    }
+    const cw = W / nx, ch = H / ny;
+    for (let j = 0; j < ny; j++) {
+      for (let i = 0; i < nx; i++) {
+        const norm = (zMat[j][i] - zMin) / Math.max(zMax - zMin, 1e-6);
+        ctxC.fillStyle = lerpColor(norm);
+        const px = padL + i * cw;
+        const py = padT + (ny - 1 - j) * ch;
+        ctxC.fillRect(px, py, cw + 0.8, ch + 0.8);
+      }
+    }
+
+    const xMin = xt[0], xMax = xt[xt.length - 1];
+    const yMin = yt[0], yMax = yt[yt.length - 1];
+    L.evaluated_records.forEach(rec => {
+      const cx = padL + ((rec.cell.effort_confidence_gate_milli - xMin) / Math.max(xMax - xMin, 1)) * W;
+      const cy = padT + (1 - (rec.cell.prefix_cache_switch_margin_milli - yMin) / Math.max(yMax - yMin, 1)) * H;
+      ctxC.beginPath();
+      ctxC.arc(cx, cy, rec.phase === "simultaneous_shadow" ? 5.5 : 4.2, 0, Math.PI * 2);
+      ctxC.fillStyle = rec.phase === "simultaneous_shadow" ? "#b45309" : "#1d4ed8";
+      ctxC.fill();
+      ctxC.strokeStyle = "#1b2230";
+      ctxC.stroke();
+    });
+
+    const win = L.promoted_cell;
+    const wx = padL + ((win.effort_confidence_gate_milli - xMin) / Math.max(xMax - xMin, 1)) * W;
+    const wy = padT + (1 - (win.prefix_cache_switch_margin_milli - yMin) / Math.max(yMax - yMin, 1)) * H;
+    ctxC.fillStyle = "#be123c";
+    ctxC.fillRect(wx - 6, wy - 6, 12, 12);
+    ctxC.strokeStyle = "#fffdf8";
+    ctxC.strokeRect(wx - 6, wy - 6, 12, 12);
+
+    ctxC.fillStyle = "#1b2230";
+    ctxC.font = "11px sans-serif";
+    ctxC.fillText("Gate " + Math.round(xMin), padL, cCanvas.height - 12);
+    ctxC.fillText("Gate " + Math.round(xMax), padL + W - 52, cCanvas.height - 12);
+    ctxC.fillText("Margin " + Math.round(yMax), 4, padT + 10);
+    ctxC.fillText("Margin " + Math.round(yMin), 4, padT + H);
+
+    cCanvas.onmousemove = function(ev) {
+      const rect = cCanvas.getBoundingClientRect();
+      const sx = (ev.clientX - rect.left) * (cCanvas.width / rect.width);
+      const sy = (ev.clientY - rect.top) * (cCanvas.height / rect.height);
+      const i = Math.floor(((sx - padL) / W) * nx);
+      const j = ny - 1 - Math.floor(((sy - padT) / H) * ny);
+      if (i >= 0 && i < nx && j >= 0 && j < ny) {
+        hoverEl.textContent = "Gate=" + Math.round(xt[i]) + ", Margin=" + Math.round(yt[j]) + " -> Predicted J=" + zMat[j][i].toFixed(4);
+      }
+    };
+  }
+
+  const axisSel = document.getElementById("axisSelect");
+  const curvBadge = document.getElementById("curvatureBadge");
+  const curveCanvas = document.getElementById("curveCanvas");
+  const ctxM = curveCanvas.getContext("2d");
+  Object.keys(L.marginal_curves).forEach(axName => {
+    const opt = document.createElement("option");
+    opt.value = axName;
+    opt.textContent = axName;
+    axisSel.appendChild(opt);
+  });
+
+  function drawMarginal(axName) {
+    const mc = L.marginal_curves[axName];
+    const curv = L.quadratic_surface.axis_curvatures[axName] || 0;
+    curvBadge.textContent = "Curvature b_ii = " + curv.toFixed(4);
+    const padL = 54, padR = 20, padT = 20, padB = 42;
+    const W = curveCanvas.width - padL - padR;
+    const H = curveCanvas.height - padT - padB;
+    ctxM.fillStyle = "#fffdf8";
+    ctxM.fillRect(0, 0, curveCanvas.width, curveCanvas.height);
+
+    const xs = mc.x_values, mu = mc.mean_objective, lo = mc.ci_lower, hi = mc.ci_upper;
+    const yMin = Math.min.apply(null, lo) - 0.01;
+    const yMax = Math.max.apply(null, hi) + 0.01;
+    const xMin = xs[0], xMax = xs[xs.length - 1];
+
+    function px(x) { return padL + ((x - xMin) / Math.max(xMax - xMin, 1e-6)) * W; }
+    function py(y) { return padT + (1 - (y - yMin) / Math.max(yMax - yMin, 1e-6)) * H; }
+
+    ctxM.beginPath();
+    for (let i = 0; i < xs.length; i++) {
+      if (i === 0) ctxM.moveTo(px(xs[i]), py(hi[i]));
+      else ctxM.lineTo(px(xs[i]), py(hi[i]));
+    }
+    for (let i = xs.length - 1; i >= 0; i--) {
+      ctxM.lineTo(px(xs[i]), py(lo[i]));
+    }
+    ctxM.closePath();
+    ctxM.fillStyle = "rgba(15, 118, 110, 0.18)";
+    ctxM.fill();
+
+    ctxM.beginPath();
+    for (let i = 0; i < xs.length; i++) {
+      if (i === 0) ctxM.moveTo(px(xs[i]), py(mu[i]));
+      else ctxM.lineTo(px(xs[i]), py(mu[i]));
+    }
+    ctxM.strokeStyle = "#0f766e";
+    ctxM.lineWidth = 2.5;
+    ctxM.stroke();
+
+    const optVal = L.promoted_cell[axName];
+    const ox = px(optVal);
+    ctxM.beginPath();
+    ctxM.moveTo(ox, padT);
+    ctxM.lineTo(ox, padT + H);
+    ctxM.strokeStyle = "#be123c";
+    ctxM.setLineDash([5, 4]);
+    ctxM.stroke();
+    ctxM.setLineDash([]);
+
+    ctxM.fillStyle = "#1b2230";
+    ctxM.font = "11px sans-serif";
+    ctxM.fillText(String(Math.round(xMin)), padL, curveCanvas.height - 12);
+    ctxM.fillText("Promoted=" + optVal, Math.min(Math.max(ox - 32, padL), padL + W - 85), padT + 14);
+    ctxM.fillText(String(Math.round(xMax)), padL + W - 32, curveCanvas.height - 12);
+    ctxM.fillText(yMax.toFixed(3), 6, padT + 10);
+    ctxM.fillText(yMin.toFixed(3), 6, padT + H);
+  }
+
+  axisSel.onchange = () => drawMarginal(axisSel.value);
+  drawContour();
+  drawMarginal(axisSel.value);
+
+  const tbody = document.querySelector("#cellsTable tbody");
+  const phaseFilter = document.getElementById("phaseFilter");
+  const sortCol = document.getElementById("sortCol");
+  const paretoDigests = new Set(L.pareto_frontier.map(r => JSON.stringify(r.cell)));
+
+  function renderTable() {
+    const mode = phaseFilter.value;
+    const sKey = sortCol.value;
+    let rows = L.evaluated_records.slice();
+    if (mode === "pareto") {
+      rows = rows.filter(r => paretoDigests.has(JSON.stringify(r.cell)));
+    } else if (mode !== "all") {
+      rows = rows.filter(r => r.phase === mode);
+    }
+    rows.sort((a, b) => b[sKey] - a[sKey]);
+    tbody.innerHTML = "";
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+      const isP = paretoDigests.has(JSON.stringify(r.cell));
+      tr.innerHTML =
+        "<td>W" + r.wave + " " + r.phase + (isP ? " <span class='badge'>Pareto</span>" : "") + "</td>" +
+        "<td><strong>" + r.composite_objective.toFixed(4) + "</strong></td>" +
+        "<td>" + (r.quality_score * 100).toFixed(1) + "%</td>" +
+        "<td>" + (r.token_savings_ratio * 100).toFixed(1) + "%</td>" +
+        "<td>" + (r.latency_savings_ratio * 100).toFixed(1) + "%</td>" +
+        "<td>" + r.cell.rrf_rank_constant + "</td>" +
+        "<td>" + r.cell.bm25_lexical_share_milli + "</td>" +
+        "<td>" + r.cell.inflight_bypass_similarity_milli + "</td>" +
+        "<td>" + r.cell.effort_confidence_gate_milli + "</td>" +
+        "<td>" + r.cell.prefix_cache_switch_margin_milli + "</td>" +
+        "<td>" + r.cell.tool_prune_keep_gate_milli + "</td>";
+      tbody.appendChild(tr);
+    });
+  }
+  phaseFilter.onchange = renderTable;
+  sortCol.onchange = renderTable;
+  renderTable();
+
+  const connBox = document.getElementById("connectorsBox");
+  D.connectors.forEach(c => {
+    const div = document.createElement("div");
+    div.style.marginBottom = "14px";
+    const btn = document.createElement("button");
+    btn.className = "primary";
+    btn.style.marginLeft = "10px";
+    btn.textContent = "Copy Snippet";
+    btn.onclick = () => {
+      navigator.clipboard.writeText(c.snippet);
+      btn.textContent = "Copied";
+      setTimeout(() => { btn.textContent = "Copy Snippet"; }, 1200);
+    };
+    const hdr = document.createElement("div");
+    hdr.innerHTML = "<strong>" + c.label + "</strong> <span class='badge'>Role: " + c.recommended_role + "</span> <span class='badge'>" + c.protocol_mode + "</span>";
+    hdr.appendChild(btn);
+    const pre = document.createElement("pre");
+    pre.textContent = c.snippet;
+    div.appendChild(hdr);
+    div.appendChild(pre);
+    connBox.appendChild(div);
+  });
+})();
+</script>
+</body>
+</html>
