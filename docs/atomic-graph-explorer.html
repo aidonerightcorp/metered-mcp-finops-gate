@@ -154,19 +154,23 @@
     <nav class="topnav">
       <div style="font-weight:800;font-size:14.5px;letter-spacing:-0.01em;">AI Done Right · Weight-Space &amp; Atomic Task Research</div>
       <div class="nav-links">
-      <a class="nav-pill" href="weight-space.html">1. Weight-Space Findings</a>
-      <a class="nav-pill active" href="atomic-graph-explorer.html">2. Atomic Node-Graph Lab</a>
-      <a class="nav-pill" href="onet-weight-atlas.html">3. 18,838-Task O*NET Weight Atlas</a>
-      <a class="nav-pill" href="omni-fabric.html">5-Mode Adaptive Plugin</a>
-      <a class="nav-pill" href="quorum-forge.html">QuorumForge Swarm Proxy</a>
-      <a class="nav-pill" href="hermes-submission.html">Hermes Catalog PR #151420</a>
-      <a class="nav-pill" href="index.html">64-Item Roadmap</a>
+      <a class="nav-pill" href="index.html">Research Portal</a>
+      <a class="nav-pill" href="weight-space.html">Weight-Space Findings</a>
+      <a class="nav-pill" href="model-families-traces.html">6 Model Families &amp; Traces</a>
+      <a class="nav-pill active" href="atomic-graph-explorer.html">Atomic Graph &amp; Symbolic Lab</a>
+      <a class="nav-pill" href="kaggle-and-horizon-systems.html">Kaggle RL &amp; Horizon Systems</a>
+      <a class="nav-pill" href="onet-weight-atlas.html">18,838-Task O*NET Atlas</a>
+      <a class="nav-pill" href="omni-fabric.html">Omni-Fabric v0.4.0</a>
+      <a class="nav-pill" href="quorum-forge.html">QuorumForge Swarm</a>
+      <a class="nav-pill" href="hermes-submission.html">Hermes Plugin Brief</a>
       </div>
     </nav>
-    <span class="eyebrow">Interactive Graph &amp; Trace Simulator</span>
+    <span class="eyebrow">Interactive Graph &amp; Trace Simulator · ASD-STE100 Technical Specification</span>
     <h1>Atomic Task-Graph Decomposition, Stepwise Attenuation &amp; Symbolic Weight Lab</h1>
     <p class="lede">
-      Inspect how benchmark tasks (competition math, repository patch repair, multi-hop tool policies, and high-throughput classification) decompose into width <code>W</code> &times; depth <code>D</code> node graphs, how per-step error attenuates across unguarded chains, and how replacing deterministic nodes with <code>0</code>-epoch polytope or <code>256-byte</code> <code>LoRA-XS</code> weight cartridges restores end-to-end survival while slashing token burn.
+      Complex benchmarks split into task graphs with width <code>W</code> and sequential depth <code>D</code>.
+      Move the sliders below to inspect how per-step error compounds across unguarded chains.
+      Replace deterministic nodes with <code>0</code>-epoch polytopes or <code>256-byte</code> subspace adapters to preserve end-to-end survival and reduce token use.
     </p>
 
     <section>
@@ -281,7 +285,7 @@
       tool: [
         { id: "P1", name: "1. Post-Cutoff Endpoint Injector", kind: "SVD Nullspace Weight Edit", tok: "0 tok (0.22 ms)", sym: "Maps natural-language intents to post-cutoff endpoints (0% -> 100% vs thinking=off).", trace: "5_seed_mean=100.0% | anchor_drift=0.0" },
         { id: "P2", name: "2. Schema Argument Validator", kind: "Multi-Head .safetensors", tok: "0 tok (0.37 ms)", sym: "Checks required keys and parameter bounds before any network call.", trace: "safetensors_kib=302.8 | pass=100.0%" },
-        { id: "P3", name: "3. Batched Tool Execution", kind: "Simultaneous Pack (k=3)", tok: "310 tok (amortized 1/3)", sym: "Executes compatible tool calls in one batched turn.", trace: "dispatch=simultaneous_batched_pack" },
+        { id: "P3", name: "3. Batched Tool Execution", kind: "Simultaneous Batch (k=3)", tok: "310 tok (amortized 1/3)", sym: "Combines compatible tool calls in one batched turn.", trace: "dispatch=simultaneous_batched_pack" },
         { id: "P4", name: "4. Bitemporal Reuse Cache", kind: "FTS5 + RRF Object Store", tok: "0 tok on repeat turns", sym: "Promotes checked outputs so Wave-2 swarm turns execute at 0 LLM tokens.", trace: "wave2_tokens=0 (-100%)" }
       ]
     };

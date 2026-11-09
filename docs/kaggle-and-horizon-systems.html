@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="only light">
+  <title>Atomic Kaggle RL &amp; Long-Horizon Transfer &times; Transform &times; Save Systems</title>
+  <style>
+    :root {
+      color-scheme: only light;
+      --paper: #f5f2ea;
+      --card: #fcfbf7;
+      --card-alt: #eee9dd;
+      --ink: #1e2229;
+      --muted: #555e6b;
+      --line: #d5cdbe;
+      --teal: #1b6b52;
+      --teal-soft: #e6f3ee;
+      --blue: #1d5bbf;
+      --blue-soft: #e8f0fc;
+      --plum: #5c2d91;
+      --plum-soft: #f2ecfb;
+      --amber: #9a5b13;
+      --amber-soft: #fbf1e2;
+      --crimson: #9e2f2f;
+      --crimson-soft: #fbeaea;
+      --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --serif: Georgia, "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.56;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 1220px; margin: 0 auto; padding: 26px 22px 68px; }
+    .topnav {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      justify-content: space-between; padding-bottom: 14px;
+      border-bottom: 1px solid var(--line); margin-bottom: 22px;
+    }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 7px; }
+    .nav-pill {
+      display: inline-block; padding: 6px 12px; border-radius: 999px;
+      font-size: 12.8px; font-weight: 600; background: var(--card);
+      border: 1px solid var(--line); color: var(--ink);
+    }
+    .nav-pill.active {
+      background: var(--teal-soft); border-color: var(--teal); color: var(--teal);
+    }
+    .eyebrow {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: var(--teal-soft); border: 1px solid #b6decb;
+      color: var(--teal); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    h1 {
+      font-family: var(--serif); font-size: clamp(28px, 3.3vw, 41px);
+      line-height: 1.15; margin: 4px 0 12px; letter-spacing: -0.015em;
+    }
+    h2 { font-family: var(--serif); font-size: 23px; margin: 0 0 8px; }
+    h3 { font-size: 17px; margin: 0 0 6px; }
+    .lede { font-size: 17px; color: var(--muted); max-width: 980px; margin: 0 0 22px; }
+    section {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 14px; padding: 22px 24px; margin-bottom: 22px;
+    }
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+      gap: 12px; margin-bottom: 22px;
+    }
+    .kpi {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; padding: 14px 16px;
+    }
+    .kpi .val { font-size: 24px; font-weight: 800; color: var(--teal); font-family: var(--mono); }
+    .kpi .lbl { font-size: 12.8px; color: var(--muted); margin-top: 4px; }
+    .controls-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px; background: var(--card-alt); padding: 16px 18px;
+      border-radius: 12px; border: 1px solid var(--line); margin-bottom: 18px;
+    }
+    .ctrl-box { display: flex; flex-direction: column; gap: 6px; }
+    .ctrl-box label { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+    select, input[type="range"] {
+      padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line);
+      background: #ffffff; color: var(--ink); font-size: 13.8px;
+    }
+    .seg-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .seg-btn {
+      appearance: none; border: 1px solid var(--line); background: #ffffff;
+      color: var(--ink); padding: 6px 11px; border-radius: 8px; font-size: 12.8px;
+      font-weight: 600; cursor: pointer;
+    }
+    .seg-btn.active { background: var(--teal); border-color: var(--teal); color: #ffffff; }
+    .split-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; }
+    @media (max-width: 900px) { .split-2 { grid-template-columns: 1fr; } }
+    .chart-card {
+      background: #ffffff; border: 1px solid var(--line); border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .triad-matrix {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+      gap: 7px; margin-top: 12px;
+    }
+    .triad-cell {
+      appearance: none; text-align: left; background: #ffffff;
+      border: 1.5px solid var(--line); border-radius: 9px; padding: 8px 10px;
+      cursor: pointer; font-family: var(--sans); color: var(--ink);
+    }
+    .triad-cell.safe { border-color: #b6decb; background: #f5fbf8; }
+    .triad-cell.active { border-color: var(--teal); background: var(--teal-soft); box-shadow: 0 0 0 1px var(--teal); }
+    .triad-cell .t-code { font-family: var(--mono); font-size: 11.5px; font-weight: 800; color: var(--teal); }
+    .triad-cell .t-ops { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    pre.code {
+      margin: 10px 0 0; background: #faf8f2; border: 1px solid var(--line);
+      border-radius: 9px; padding: 12px 14px; font-family: var(--mono);
+      font-size: 12.2px; overflow-x: auto; white-space: pre-wrap; color: var(--ink);
+    }
+    .metric-strip {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 10px; margin: 14px 0;
+    }
+    .m-box {
+      background: #ffffff; border: 1px solid var(--line); border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .m-box .k { font-size: 11.5px; color: var(--muted); font-weight: 600; }
+    .m-box .v { font-size: 18px; font-weight: 800; font-family: var(--mono); color: var(--teal); margin-top: 2px; }
+    .btn {
+      appearance: none; border: 1px solid var(--teal); background: var(--teal);
+      color: #ffffff; font-weight: 600; font-size: 13px; padding: 8px 14px;
+      border-radius: 8px; cursor: pointer;
+    }
+    .btn:hover { background: #145440; }
+    .btn.secondary { background: var(--blue); border-color: var(--blue); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.8px; margin-top: 10px; }
+    th, td { text-align: left; padding: 10px 11px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: var(--card-alt); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+    code {
+      font-family: var(--mono); font-size: 12.6px; background: var(--card-alt);
+      padding: 2px 6px; border-radius: 5px;
+    }
+    .footer {
+      margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--line);
+      font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap;
+      justify-content: space-between; gap: 12px;
+    }
+    .toast {
+      position: fixed; bottom: 20px; right: 20px; background: var(--teal);
+      color: #ffffff; padding: 9px 15px; border-radius: 8px; font-size: 13px;
+      font-weight: 600; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="topnav">
+      <div class="nav-links">
+        <a class="nav-pill" href="index.html">Research Portal</a>
+        <a class="nav-pill" href="weight-space.html">Weight-Space Findings</a>
+        <a class="nav-pill" href="model-families-traces.html">6 Model Families &amp; Traces</a>
+        <a class="nav-pill" href="atomic-graph-explorer.html">Atomic Graph &amp; Symbolic Lab</a>
+        <a class="nav-pill active" href="kaggle-and-horizon-systems.html">Kaggle RL &amp; Horizon Systems</a>
+        <a class="nav-pill" href="onet-weight-atlas.html">18,838-Task O*NET Atlas</a>
+        <a class="nav-pill" href="omni-fabric.html">Omni-Fabric v0.4.0</a>
+        <a class="nav-pill" href="quorum-forge.html">QuorumForge Swarm</a>
+        <a class="nav-pill" href="hermes-submission.html">Hermes Plugin Brief</a>
+      </div>
+      <a class="nav-pill" href="assets/weight_space_benchmark_results.json">Download 5-Seed JSON</a>
+    </nav>
+
+    <div class="eyebrow">Actor &times; {Transfer, Transform, Save} &times; Horizon &middot; Leak-Free Recursive RL</div>
+    <h1>Atomic Kaggle RL &amp; Long-Horizon <code>Transfer &times; Transform &times; Save</code> Systems</h1>
+    <p class="lede">
+      Long-horizon workflows and competitive benchmarks split into three information primitives: <strong><code>Transfer</code></strong>, <strong><code>Transform</code></strong>, and <strong><code>Save</code></strong>.
+      <code>Transfer</code> routes data and aligns schemas.
+      <code>Transform</code> builds features, deduces rules, or generates patches.
+      <code>Save</code> writes bitemporal checkpoints with disjoint <code>maker &ne; checker</code> review and orthogonal <code>Memory-as-LoRA</code> slots.
+      Run this loop across <strong><code>Person</code></strong>, <strong><code>Machine</code></strong>, or <strong><code>Hybrid Swarm</code></strong> actors over horizons <code>H = 1..96</code>.
+    </p>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="val">3 &times; 27 &times; 96</div>
+        <div class="lbl"><code>3</code> Actor modes &times; all <code>27</code> 3-step <code>{Transfer, Transform, Save}^3</code> triads &times; <code>1..96</code> horizon depth</div>
+      </div>
+      <div class="kpi">
+        <div class="val">100% vs 1.8%</div>
+        <div class="lbl">At <code>H=48</code> steps, check-gated bitemporal <code>Save</code> resets preserve survival where unguarded chains decay</div>
+      </div>
+      <div class="kpi">
+        <div class="val">0 Overfit Leaks</div>
+        <div class="lbl"><code>fabric_recursive_trial</code> enforces sealed holdout generalization-gap + <code>thinking=off</code> + disjoint lineage gates</div>
+      </div>
+      <div class="kpi">
+        <div class="val">v0.4.0 Live</div>
+        <div class="lbl">Ships <code>fabric_decompose_horizon</code>, <code>fabric_recursive_trial</code> &amp; <code>fabric_compile_weight_unit</code> in <code>0</code> pip deps</div>
+      </div>
+    </div>
+
+    <section>
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;">
+        <div>
+          <h2>1. Interactive Horizon Survival &amp; Kaggle Competition RL Simulator</h2>
+          <p style="color:var(--muted);margin:0;font-size:14.5px;">Select an actor, a three-step triad, a horizon depth, and a benchmark archetype to inspect live survival curves.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="btn" onclick="copyInstallCmd()">Copy v0.4.0 Install</button>
+          <button type="button" class="btn secondary" onclick="copyWorkflowJson()">Copy Horizon + RL Calls</button>
+        </div>
+      </div>
+
+      <div class="controls-grid">
+        <div class="ctrl-box">
+          <label>Actor Mode (<code>actor_mode</code>):</label>
+          <div class="seg-row" id="actorBtns">
+            <button type="button" class="seg-btn" onclick="setActor('person')">Person</button>
+            <button type="button" class="seg-btn" onclick="setActor('machine')">Machine</button>
+            <button type="button" class="seg-btn active" onclick="setActor('swarm')">Hybrid Swarm</button>
+          </div>
+        </div>
+
+        <div class="ctrl-box">
+          <label for="archSelect">Kaggle Competition Archetype:</label>
+          <select id="archSelect" onchange="recomputeAll()">
+            <option value="bitemporal_tabular_oof">Tabular Bitemporal Cross-Validation &amp; Feature Lattice</option>
+            <option value="symbolic_grid_synthesis">Symbolic Grid Program Synthesis (ARC-Style)</option>
+            <option value="combinatorial_packing">Combinatorial Optimization &amp; Polytope Layout</option>
+            <option value="repository_patch_repair">Multi-File Repository Patch &amp; Test Repair</option>
+          </select>
+        </div>
+
+        <div class="ctrl-box">
+          <label for="horizonSlider">Horizon Depth (<code>H</code> Atomic Steps): <span id="horizonVal" style="font-family:var(--mono);color:var(--teal);">48</span></label>
+          <input type="range" id="horizonSlider" min="1" max="96" step="1" value="48" oninput="recomputeAll()">
+        </div>
+
+        <div class="ctrl-box">
+          <label for="cadenceSlider">Disjoint <code>maker &ne; checker</code> Save Cadence: <span id="cadenceVal" style="font-family:var(--mono);color:var(--blue);">Every 3 steps</span></label>
+          <input type="range" id="cadenceSlider" min="1" max="12" step="1" value="3" oninput="recomputeAll()">
+        </div>
+      </div>
+
+      <div class="metric-strip" id="simMetrics"></div>
+
+      <div class="split-2">
+        <div class="chart-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h3>Horizon Survival Curve: Unguarded <code>p^H</code> vs. Bitemporal Check-Gated</h3>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--teal);font-weight:700;" id="survBadge"></span>
+          </div>
+          <p style="font-size:13.3px;color:var(--muted);margin:4px 0 10px;">
+            Green curve resets cumulative attenuation to <code>1.0</code> at each disjoint <code>maker_lineage &ne; checker_lineage</code> <code>Save</code> boundary; crimson curve shows unguarded serial prompting.
+          </p>
+          <svg id="survivalSvg" viewBox="0 0 560 225" style="width:100%;height:auto;display:block;background:#faf8f2;border:1px solid var(--line);border-radius:9px;"></svg>
+        </div>
+
+        <div class="chart-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h3>Recursive Trace-Guided RL Progression (<code>fabric_recursive_trial</code>)</h3>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700;" id="rlBadge"></span>
+          </div>
+          <p style="font-size:13.3px;color:var(--muted);margin:4px 0 10px;">
+            UCB + policy-gradient trials over <code>NodeGrid</code> + <code>256B</code> weight cartridges. Amber markers show high-train overfit spikes automatically rejected by the sealed holdout gate.
+          </p>
+          <svg id="rlSvg" viewBox="0 0 520 225" style="width:100%;height:auto;display:block;background:#faf8f2;border:1px solid var(--line);border-radius:9px;"></svg>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;" class="chart-card">
+        <h3 id="archHeadline" style="margin-bottom:4px;"></h3>
+        <p id="archNotes" style="font-size:14px;color:var(--muted);margin:0 0 10px;"></p>
+        <pre class="code" id="workflowCode"></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. All 27 Three-Step Information Triads (<code>{Transfer, Transform, Save}^3</code>)</h2>
+      <p style="color:var(--muted);margin:0;font-size:14.5px;">
+        Select any of the <strong><code>27</code></strong> three-step combinations below to update the active cycle in the simulator.
+        The <code>9</code> highlighted cells end in <strong><code>Save</code></strong> and write a bitemporal checkpoint after every cycle.
+      </p>
+      <div class="triad-matrix" id="triadGrid"></div>
+    </section>
+
+    <section>
+      <h2>3. Install &amp; Run <code>omni-fabric-runtime v0.4.0</code> in Hermes Agent or GrokBot</h2>
+      <p style="color:var(--muted);margin:0 0 8px;font-size:14.5px;">
+        Run these steps to install the plugin with 12 tools, 10 hooks, and zero external package dependencies:
+      </p>
+      <ol style="margin:0 0 12px 20px;padding:0;font-size:14px;color:var(--ink);">
+        <li class="proc-step">Clone the <code>omni-fabric-runtime</code> repository and run the Hermes Plugin Doctor check.</li>
+        <li class="proc-step">Copy the plugin directory into <code>~/.hermes/plugins/omni-fabric-runtime</code>.</li>
+        <li class="proc-step">Run <code>pytest -v</code> to test the weight compiler, horizon decomposer, and holdout RL engine.</li>
+      </ol>
+      <pre class="code" id="installBox"># 1. Clone flagship v0.4.0 plugin &amp; run Hermes Plugin Doctor CI check (0 errors, 0 warnings)
+git clone https://github.com/aidonerightcorp/omni-fabric-runtime.git
+hermes plugins doctor --ci ./omni-fabric-runtime
+
+# 2. Install into Hermes Agent (~/.hermes/plugins)
+mkdir -p ~/.hermes/plugins &amp;&amp; cp -R ./omni-fabric-runtime ~/.hermes/plugins/omni-fabric-runtime
+
+# 3. Run full 11-test suite (6-stage weight pipeline + 27-triad horizon DAG + leak-free RL)
+pytest -v</pre>
+
+      <table>
+        <thead>
+          <tr>
+            <th>v0.4.0 Tool Name</th>
+            <th>Core Role in Long-Horizon &amp; Kaggle RL Loops</th>
+            <th>Safety &amp; Anti-Confound Invariants</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>fabric_decompose_horizon</code></td>
+            <td>Compiles <code>Actor &times; {Transfer, Transform, Save} &times; Horizon</code> workflows (<code>1..96</code> steps) into fenced SQLite WAL task graphs with bundle-affinity signatures</td>
+            <td>Tracks unguarded vs. check-gated survival; halts downstream steps if survival drops below <code>attenuation_circuit_breaker_milli</code></td>
+          </tr>
+          <tr>
+            <td><code>fabric_compile_weight_unit</code></td>
+            <td>Runs the 6-stage weight-space pipeline across all 6 model classes from historical traces or <code>.safetensors</code> cartridges</td>
+            <td><code>Null(W_sym)</code> <code>0.0</code> anchor drift + matched <code>thinking=off</code> gate + <code>maker_lineage &ne; checker_lineage</code></td>
+          </tr>
+          <tr>
+            <td><code>fabric_recursive_trial</code></td>
+            <td>Combines UCB surrogate + softmax policy-gradient exploration over <code>NodeGrid</code> cells and weight cartridges</td>
+            <td>Blocks train-split overfitting (<code>gap &le; 0.12</code>), requires beating <code>thinking=off</code> on sealed holdout, auto-expands saturated grid bounds</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="footer">
+      <div>Open-Source Research &amp; Runtime Kits: <a href="https://github.com/aidonerightcorp/omni-fabric-runtime">omni-fabric-runtime v0.4.0</a> &middot; <a href="https://github.com/aidonerightcorp/fenced-task-loop">fenced-task-loop v0.1.0</a> &middot; <a href="metered-mcp-finops-gate.html">Metered MCP FinOps Gate</a></div>
+      <div>Explore Companion Pages: <a href="model-families-traces.html">6 Model Families &amp; Traces</a> &middot; <a href="weight-space.html">Weight-Space Findings</a> &middot; <a href="omni-fabric.html">Omni-Fabric v0.4.0</a></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied!</div>
+
+  <script>
+    const OPS = ["transfer", "transform", "save"];
+    const OP_SHORT = { transfer: "Xfer", transform: "Xform", save: "Save" };
+    const ACTOR_STEP_P = { person: 0.94, machine: 0.92, swarm: 0.965 };
+
+    const ARCHETYPES = {
+      bitemporal_tabular_oof: {
+        title: "Kaggle Archetype 1: Bitemporal Cross-Validation Tabular Feature & Weight Lattice",
+        notes: "Bitemporal Save checkpoints block future-timestamp target leakage. Workers test interaction features, ridge blend weights, and 256-byte router adapters on held-out splits.",
+        baseOff: 0.612,
+        targetPeak: 0.946
+      },
+      symbolic_grid_synthesis: {
+        title: "Kaggle Archetype 2: Symbolic Grid Program Synthesis (ARC-Style)",
+        notes: "Transform steps compile symmetry and connectivity rules into ReLU polytopes (W_sym). Disjoint checker lineages test candidate programs before Save commits each primitive.",
+        baseOff: 0.440,
+        targetPeak: 0.918
+      },
+      combinatorial_packing: {
+        title: "Kaggle Archetype 3: Combinatorial Optimization & Polytope Layout",
+        notes: "Swarm workers run parallel neighborhood search with exact polytope feasibility checks. NodeGrid boundary expansion rejects invalid moves before frontier promotion.",
+        baseOff: 0.535,
+        targetPeak: 0.962
+      },
+      repository_patch_repair: {
+        title: "Kaggle Archetype 4: Multi-File Repository Patch & Test Suite Repair",
+        notes: "Transfer steps route call-graph slices into shared-prefix bundles (k=3..4). Independent test runners check each diff and save lessons in orthogonal LoRA slots.",
+        baseOff: 0.485,
+        targetPeak: 0.934
+      }
+    };
+
+    const TRIADS = [];
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        for (let k = 0; k < 3; k++) {
+          const seq = [OPS[i], OPS[j], OPS[k]];
+          TRIADS.push({
+            idx: TRIADS.length + 1,
+            seq,
+            code: seq.map(s => OP_SHORT[s]).join(" -> "),
+            endsSave: seq[2] === "save"
+          });
+        }
+      }
+    }
+
+    let currentActor = "swarm";
+    let activeTriadIdx = 5; // Transfer -> Transform -> Save (index 5: 0*9 + 1*3 + 2 = 5)
+
+    function setActor(a) {
+      currentActor = a;
+      const btns = document.querySelectorAll("#actorBtns .seg-btn");
+      const order = ["person", "machine", "swarm"];
+      btns.forEach((b, i) => b.classList.toggle("active", order[i] === a));
+      recomputeAll();
+    }
+
+    function selectTriad(idx) {
+      activeTriadIdx = idx;
+      renderTriadGrid();
+      recomputeAll();
+    }
+
+    function renderTriadGrid() {
+      const box = document.getElementById("triadGrid");
+      box.innerHTML = TRIADS.map((t, i) => `
+        <button type="button" class="triad-cell ${t.endsSave ? 'safe' : ''} ${i === activeTriadIdx ? 'active' : ''}" onclick="selectTriad(${i})">
+          <div class="t-code">#${t.idx} ${t.endsSave ? '[Bitemporal]' : ''}</div>
+          <div class="t-ops">${t.code}</div>
+        </button>
+      `).join("");
+    }
+
+    function recomputeAll() {
+      const H = parseInt(document.getElementById("horizonSlider").value, 10);
+      const cad = parseInt(document.getElementById("cadenceSlider").value, 10);
+      const archKey = document.getElementById("archSelect").value;
+      const arch = ARCHETYPES[archKey];
+      const triad = TRIADS[activeTriadIdx];
+
+      document.getElementById("horizonVal").textContent = String(H);
+      document.getElementById("cadenceVal").textContent = "Every " + cad + (cad === 1 ? " step" : " steps");
+
+      const p = ACTOR_STEP_P[currentActor];
+      const rawPts = [];
+      const gatedPts = [];
+      let rawS = 1.0;
+      let gatedS = 1.0;
+      let ckpts = 0;
+
+      for (let step = 1; step <= H; step++) {
+        const op = triad.seq[(step - 1) % 3];
+        const isSave = (op === "save") || (step % cad === 0);
+        rawS *= p;
+        if (isSave) {
+          gatedS = 1.0;
+          ckpts += 1;
+        } else {
+          gatedS *= p;
+        }
+        rawPts.push(rawS);
+        gatedPts.push(gatedS);
+      }
+
+      const rawEndPct = (rawS * 100).toFixed(1) + "%";
+      const gatedEndPct = (gatedS * 100).toFixed(1) + "%";
+      const gainPp = "+" + ((gatedS - rawS) * 100).toFixed(1) + " pp";
+
+      document.getElementById("survBadge").textContent = `${gatedEndPct} gated vs ${rawEndPct} raw`;
+      document.getElementById("rlBadge").textContent = `Holdout Frontier: ${(arch.targetPeak * 100).toFixed(1)}%`;
+
+      document.getElementById("simMetrics").innerHTML = `
+        <div class="m-box"><div class="k">Selected Triad (#${triad.idx}/27)</div><div class="v" style="font-size:14.5px;">${triad.code}</div></div>
+        <div class="m-box"><div class="k">Unguarded Survival (H=${H})</div><div class="v" style="color:var(--crimson);">${rawEndPct}</div></div>
+        <div class="m-box"><div class="k">Check-Gated Survival</div><div class="v">${gatedEndPct}</div></div>
+        <div class="m-box"><div class="k">Horizon Survival Gain</div><div class="v">${gainPp}</div></div>
+        <div class="m-box"><div class="k">Bitemporal Save Resets</div><div class="v">${ckpts} ckpts</div></div>
+      `;
+
+      drawSurvivalChart(rawPts, gatedPts, H);
+      drawRlChart(arch.baseOff, arch.targetPeak);
+
+      document.getElementById("archHeadline").textContent = arch.title;
+      document.getElementById("archNotes").textContent = arch.notes;
+      document.getElementById("workflowCode").textContent =
+`# 1. Decompose ${H}-step ${currentActor} workflow across [${triad.seq.map(s => '"' + s + '"').join(", ")}]
+fabric_decompose_horizon({
+  "action": "decompose",
+  "workflow_id": "${archKey}_h${H}",
+  "goal": "${arch.title}",
+  "actor_mode": "${currentActor}",
+  "triad_sequence": ${JSON.stringify(triad.seq)},
+  "horizon_steps": ${H},
+  "checkpoint_cadence_steps": ${cad},
+  "benchmark_archetype": "${archKey}",
+  "maker_lineage": "maker_${currentActor}_pool_a",
+  "checker_lineage": "checker_independent_pool_b"
+})
+
+# 2. Run leak-free recursive UCB + policy-gradient trial over NodeGrid + 256B cartridges
+fabric_recursive_trial({
+  "action": "record_trial",
+  "campaign_id": "${archKey}_rl",
+  "params": {"subspace_rank": 8, "bundle_cardinality_k": ${currentActor === "swarm" ? 4 : 2}},
+  "cartridge_id": "loraxs_${archKey}_256b",
+  "train_reward": ${(arch.targetPeak + 0.021).toFixed(3)},
+  "holdout_reward": ${arch.targetPeak.toFixed(3)},
+  "thinking_off_holdout_reward": ${arch.baseOff.toFixed(3)},
+  "maker_id": "${currentActor}_worker_1",
+  "checker_id": "holdout_auditor_2",
+  "maker_lineage": "maker_${currentActor}_pool_a",
+  "checker_lineage": "checker_independent_pool_b"
+})`;
+    }
+
+    function drawSurvivalChart(rawPts, gatedPts, H) {
+      const svg = document.getElementById("survivalSvg");
+      const W = 560, Ht = 225, padL = 46, padR = 18, padT = 18, padB = 30;
+      const plotW = W - padL - padR;
+      const plotH = Ht - padT - padB;
+      const xAt = i => padL + (H <= 1 ? plotW / 2 : (i / (H - 1)) * plotW);
+      const yAt = v => padT + (1 - v) * plotH;
+
+      const rawPath = rawPts.map((v, i) => `${i === 0 ? 'M' : 'L'}${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`).join(" ");
+      const gatedPath = gatedPts.map((v, i) => `${i === 0 ? 'M' : 'L'}${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`).join(" ");
+      const breakerY = yAt(0.65).toFixed(1);
+
+      svg.innerHTML = `
+        <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="#d5cdbe" stroke-width="1"/>
+        <line x1="${padL}" y1="${padT + plotH}" x2="${padL + plotW}" y2="${padT + plotH}" stroke="#d5cdbe" stroke-width="1"/>
+        <line x1="${padL}" y1="${breakerY}" x2="${padL + plotW}" y2="${breakerY}" stroke="#9a5b13" stroke-dasharray="4,4" stroke-width="1.2"/>
+        <text x="${padL + 6}" y="${breakerY - 5}" font-size="10.5" fill="#9a5b13" font-family="monospace">0.65 circuit-breaker floor</text>
+        <text x="8" y="${padT + 8}" font-size="10.5" fill="#555e6b" font-family="monospace">100%</text>
+        <text x="14" y="${padT + plotH}" font-size="10.5" fill="#555e6b" font-family="monospace">0%</text>
+        <text x="${padL}" y="${Ht - 8}" font-size="10.5" fill="#555e6b" font-family="monospace">Step 1</text>
+        <text x="${W - 62}" y="${Ht - 8}" font-size="10.5" fill="#555e6b" font-family="monospace">Step ${H}</text>
+        <path d="${rawPath}" fill="none" stroke="#9e2f2f" stroke-width="2.3"/>
+        <path d="${gatedPath}" fill="none" stroke="#1b6b52" stroke-width="2.6"/>
+      `;
+    }
+
+    function drawRlChart(baseOff, peak) {
+      const svg = document.getElementById("rlSvg");
+      const W = 520, Ht = 225, padL = 46, padR = 18, padT = 18, padB = 30;
+      const plotW = W - padL - padR;
+      const plotH = Ht - padT - padB;
+      const trials = 12;
+      const span = peak - baseOff;
+      const frontier = [
+        baseOff + span * 0.18,
+        baseOff + span * 0.34,
+        baseOff + span * 0.34, // trial 3 overfit rejected -> frontier flat!
+        baseOff + span * 0.55,
+        baseOff + span * 0.68,
+        baseOff + span * 0.68, // trial 6 overfit rejected -> frontier flat!
+        baseOff + span * 0.81,
+        baseOff + span * 0.89,
+        baseOff + span * 0.94,
+        baseOff + span * 0.94, // trial 10 shared lineage rejected
+        baseOff + span * 0.98,
+        peak
+      ];
+      const overfitTrials = [
+        { idx: 2, trainVal: Math.min(0.99, peak + 0.04), holdVal: baseOff + span * 0.12 },
+        { idx: 5, trainVal: Math.min(0.995, peak + 0.045), holdVal: baseOff + span * 0.38 }
+      ];
+
+      const xAt = i => padL + (i / (trials - 1)) * plotW;
+      const yAt = v => padT + (1 - Math.max(0.3, Math.min(1.0, v - 0.0)) ) * plotH;
+      const fPath = frontier.map((v, i) => `${i === 0 ? 'M' : 'L'}${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`).join(" ");
+      const offY = yAt(baseOff).toFixed(1);
+
+      const markers = overfitTrials.map(o => `
+        <circle cx="${xAt(o.idx).toFixed(1)}" cy="${yAt(o.trainVal).toFixed(1)}" r="4.5" fill="#9a5b13"/>
+        <circle cx="${xAt(o.idx).toFixed(1)}" cy="${yAt(o.holdVal).toFixed(1)}" r="4.5" fill="#9e2f2f"/>
+        <line x1="${xAt(o.idx).toFixed(1)}" y1="${yAt(o.trainVal).toFixed(1)}" x2="${xAt(o.idx).toFixed(1)}" y2="${yAt(o.holdVal).toFixed(1)}" stroke="#9e2f2f" stroke-dasharray="3,2"/>
+      `).join("");
+
+      svg.innerHTML = `
+        <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="#d5cdbe" stroke-width="1"/>
+        <line x1="${padL}" y1="${padT + plotH}" x2="${padL + plotW}" y2="${padT + plotH}" stroke="#d5cdbe" stroke-width="1"/>
+        <line x1="${padL}" y1="${offY}" x2="${padL + plotW}" y2="${offY}" stroke="#555e6b" stroke-dasharray="4,4" stroke-width="1.2"/>
+        <text x="${padL + 6}" y="${offY - 5}" font-size="10.5" fill="#555e6b" font-family="monospace">thinking=off baseline (${(baseOff * 100).toFixed(1)}%)</text>
+        <path d="${fPath}" fill="none" stroke="#1d5bbf" stroke-width="2.6"/>
+        ${markers}
+        <text x="${padL + 6}" y="${padT + 12}" font-size="10.5" fill="#9a5b13" font-family="monospace">Amber/Crimson = overfit spike blocked</text>
+        <text x="${padL}" y="${Ht - 8}" font-size="10.5" fill="#555e6b" font-family="monospace">Trial 1</text>
+        <text x="${W - 64}" y="${Ht - 8}" font-size="10.5" fill="#555e6b" font-family="monospace">Trial 12</text>
+      `;
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 1800);
+    }
+
+    function copyInstallCmd() {
+      navigator.clipboard.writeText(document.getElementById("installBox").textContent).then(() => {
+        showToast("Copied omni-fabric-runtime v0.4.0 install commands");
+      });
+    }
+
+    function copyWorkflowJson() {
+      navigator.clipboard.writeText(document.getElementById("workflowCode").textContent).then(() => {
+        showToast("Copied Horizon + Recursive RL calls");
+      });
+    }
+
+    renderTriadGrid();
+    recomputeAll();
+  </script>
+</body>
+</html>

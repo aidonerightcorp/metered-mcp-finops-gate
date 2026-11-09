@@ -140,19 +140,25 @@
     <nav class="topnav">
       <div style="font-weight:800;font-size:14.5px;letter-spacing:-0.01em;">AI Done Right · Weight-Space &amp; Atomic Task Research</div>
       <div class="nav-links">
-      <a class="nav-pill active" href="weight-space.html">1. Weight-Space Findings</a>
-      <a class="nav-pill" href="atomic-graph-explorer.html">2. Atomic Node-Graph Lab</a>
-      <a class="nav-pill" href="onet-weight-atlas.html">3. 18,838-Task O*NET Weight Atlas</a>
-      <a class="nav-pill" href="omni-fabric.html">5-Mode Adaptive Plugin</a>
-      <a class="nav-pill" href="quorum-forge.html">QuorumForge Swarm Proxy</a>
-      <a class="nav-pill" href="hermes-submission.html">Hermes Catalog PR #151420</a>
-      <a class="nav-pill" href="index.html">64-Item Roadmap</a>
+      <a class="nav-pill" href="index.html">Research Portal</a>
+      <a class="nav-pill active" href="weight-space.html">Weight-Space Findings</a>
+      <a class="nav-pill" href="model-families-traces.html">6 Model Families &amp; Traces</a>
+      <a class="nav-pill" href="atomic-graph-explorer.html">Atomic Graph &amp; Symbolic Lab</a>
+      <a class="nav-pill" href="kaggle-and-horizon-systems.html">Kaggle RL &amp; Horizon Systems</a>
+      <a class="nav-pill" href="onet-weight-atlas.html">18,838-Task O*NET Atlas</a>
+      <a class="nav-pill" href="omni-fabric.html">Omni-Fabric v0.4.0</a>
+      <a class="nav-pill" href="quorum-forge.html">QuorumForge Swarm</a>
+      <a class="nav-pill" href="hermes-submission.html">Hermes Plugin Brief</a>
       </div>
     </nav>
     <span class="eyebrow">Empirical Research Brief · Matched Controls &amp; Multi-Seed Benchmarks</span>
-    <h1>Why Whole-Model Weight-Space Programming Stalls — &amp; Why Atomic Task Graphs Unlock It</h1>
+    <h1>Whole-Model Sparse Weight Edits vs. Weight-Space Programming on Atomic Task Graphs</h1>
     <p class="lede">
-      Recent community replications showed why editing <code>0.016%</code> of a monolithic language model's weights on full 15-step math benchmarks collapsed under proper controls (<code>51.5%</code> unedited with <code>thinking=off</code> vs. <code>51.2%</code> edited across four seeds, and <code>12.9%</code> on fresh prompt reruns). Our trace experiments uncover the structural reason: <strong>dense whole-model weights superpose dozens of entangled sub-circuits</strong>. When tasks are decomposed into <strong>check-gated atomic or near-atomic node graphs</strong> with induced symbolic skeletons and <code>256-byte</code> singular-subspace cartridges, weight-space programming becomes reproducible across seeds, zero-drift on anchor tasks, and <code>100x–2,500x</code> leaner in token and memory overhead.
+      Community replications tested sparse edits to <code>0.016%</code> of a monolithic model on 15-step math benchmarks.
+      Those edits did not increase accuracy above the unedited <code>thinking=off</code> control (<code>51.2%</code> edited vs <code>51.5%</code> unedited across four seeds).
+      Fresh prompt reruns dropped to <code>12.9%</code> because dense whole-model layers superpose many sub-circuits.
+      We decompose workflows into <strong>check-gated atomic task graphs</strong> with symbolic skeletons and <code>256-byte</code> subspace adapters.
+      This design achieves reproducible multi-seed gains, <code>0.0</code> anchor drift, and <code>100x&ndash;2,500x</code> lower token and memory cost.
     </p>
 
     <div class="kpi-grid">
@@ -181,38 +187,46 @@
     <section>
       <h2>1. Deconstructing the Whole-Model Hype Cycle vs. Matched-Control Reality</h2>
       <p style="color:var(--muted);margin-top:0;">
-        Why did one-shot whole-model weight editing appear to jump <code>6x</code> on Monday (<code>7.9% &rarr; 48.1%</code>) and vanish by Friday (<code>51.5%</code> unedited <code>thinking=off</code> vs. <code>51.2%</code> edited)? Every weight-space claim must clear three methodological confounders that our runtime enforces mechanically before promoting any cartridge:
+        One-shot whole-model edits appeared to jump from <code>7.9%</code> to <code>48.1%</code>, yet matched <code>thinking=off</code> controls scored <code>51.5%</code> vs <code>51.2%</code>.
+        Our runtime checks three methodological controls before promoting any weight adapter:
       </p>
       <div class="grid-3">
         <div class="subcard warn">
           <span class="tag crimson">Confounder 1 · Budget Truncation</span>
-          <h3 style="margin-top:8px;">The <code>thinking=off</code> Trap</h3>
+          <h3 style="margin-top:8px;">The <code>thinking=off</code> Control</h3>
           <p style="font-size:14px;color:var(--muted);margin-bottom:0;">
-            In small reasoning models, <code>7.9%</code> occurred because verbose reasoning chains hit the output token ceiling before emitting a final boxed answer. Perturbing <code>0.016%</code> of weights merely muted the verbose trigger — something <code>thinking=off</code> already delivers at <code>51.5%</code> with zero weight edits. Our <code>EffortAndBudgetGate</code> always benchmarks <strong>unedited direct-answer (<code>thinking=off</code>)</strong> first.
+            Small reasoning models scored <code>7.9%</code> because verbose chains reached the token limit before emitting a final answer.
+            Editing <code>0.016%</code> of weights suppressed verbose text, while <code>thinking=off</code> reached <code>51.5%</code> with zero weight edits.
+            Our <code>EffortAndBudgetGate</code> always measures the unedited <code>thinking=off</code> baseline first.
           </p>
         </div>
         <div class="subcard amber">
           <span class="tag amber">Confounder 2 · Circuit Superposition</span>
-          <h3 style="margin-top:8px;">Monolithic Entanglement (<code>r &gg; 256</code>)</h3>
+          <h3 style="margin-top:8px;">Monolithic Interference (<code>r &gg; 256</code>)</h3>
           <p style="font-size:14px;color:var(--muted);margin-bottom:0;">
-            Asking one dense matrix edit to simultaneously improve parsing, multi-step algebra, tool routing, and formatting creates destructive interference across superposed features — causing fresh prompt seeds to swing from <code>48.1%</code> down to <code>12.9%</code>. Breaking the task into atomic graph nodes isolates low-rank subspaces (<code>r &isin; [2, 8]</code>).
+            One dense matrix edit cannot tune parsing, algebra, routing, and formatting at the same time without feature interference.
+            Fresh prompt seeds therefore drop from <code>48.1%</code> to <code>12.9%</code>.
+            Atomic task graphs isolate low-rank subspaces with <code>r &isin; [2, 8]</code> per node.
           </p>
         </div>
         <div class="subcard good">
           <span class="tag teal">Solution · Neuro-Symbolic Subspaces</span>
           <h3 style="margin-top:8px;">Symbolic Skeleton + Nullspace Residual</h3>
           <p style="font-size:14px;color:var(--muted);margin-bottom:0;">
-            When an agent swarm decomposes work into atomic nodes, induces compact symbolic rules (<code>W_sym</code>), and projects trace residuals strictly into the orthogonal anchor nullspace (<code>Null(W_anchor)</code>), post-cutoff routing jumps from <code>0.0%</code> (even with <code>thinking=off</code>!) to <code>100.0%</code> with zero anchor regression.
+            Agent swarms split work into atomic nodes and compile symbolic rules into an analytical skeleton <code>W_sym</code>.
+            SVD projects trace residuals into the orthogonal anchor nullspace <code>Null(W_anchor)</code>.
+            Post-cutoff routing rises from <code>0.0%</code> under <code>thinking=off</code> to <code>100.0%</code> with zero anchor drift.
           </p>
         </div>
       </div>
-      <img class="poster-img" src="assets/fig_atomic_vs_monolithic_weight_space.png" alt="Why whole-model weight edits stall vs why atomic task graphs unlock weight-space programming">
+      <img class="poster-img" src="assets/fig_atomic_vs_monolithic_weight_space.png" alt="Monolithic sparse weight edits vs weight-space programming on atomic task graphs">
     </section>
 
     <section>
       <h2>2. Interactive Granularity Phase-Transition Explorer (Monolith vs. Atomic Node Graph)</h2>
       <p style="color:var(--muted);margin-top:0;">
-        Slide task granularity from a <strong>1-node whole-model monolith</strong> to a <strong>32-node check-gated atomic task graph</strong> and toggle the control baseline to see why benchmark gains only separate from <code>thinking=off</code> once operator rank drops below the superposition threshold:
+        Move the granularity slider from a 1-node monolith to a 32-node check-gated atomic task graph.
+        Select a workload family to compare accuracy against the matched <code>thinking=off</code> baseline as operator rank decreases.
       </p>
       <div class="controls">
         <div class="ctrl-group">
@@ -313,22 +327,58 @@
     <section>
       <h2>4. Neuro-Symbolic Mirroring: Abstracting Symbols Before Compiling Weights</h2>
       <p style="color:var(--muted);margin-top:0;">
-        Fitting raw natural-language surface traces directly into weights memorizes phrasing quirks. Instead, when a frontier model or sub-agent swarm inspects <code>maker != checker</code> traces and <strong>induces compact intermediate symbols</strong> (modular congruences, conservation laws, linear inequalities <code>Ax &le; b</code>, or finite-state sequence transitions), those symbols compile <em>analytically</em> into an exact ReLU/attention skeleton <code>W_sym</code>, while fuzzy semantic edge cases are projected into <code>Null(W_sym)</code>:
+        Direct fits on raw natural-language traces memorize surface phrasing rather than task invariants.
+        Instead, our swarm inspects disjoint <code>maker != checker</code> traces and extracts compact intermediate rules such as linear inequalities <code>Ax &le; b</code>.
+        The compiler maps those rules analytically into an exact ReLU skeleton <code>W_sym</code> and fits edge cases inside <code>Null(W_sym)</code>.
       </p>
-      <img class="poster-img" src="assets/fig_neuro_symbolic_weight_compiler.png" alt="4-Stage Neuro-Symbolic Weight Compiler Pipeline">
+      <img class="poster-img" src="assets/fig_neuro_symbolic_weight_compiler.png" alt="Neuro-Symbolic Weight Compiler Pipeline">
     </section>
 
     <section>
-      <h2>5. Multi-Task Worker Dispatch: Back-to-Back Sequential vs. Simultaneous Batched</h2>
+      <h2>5. ASD-STE100 Controlled Language &amp; True Float32 Tensor Edits vs. Routing Gates</h2>
       <p style="color:var(--muted);margin-top:0;">
-        How atomic tasks are grouped and handed to workers matters almost as much as the weight cartridge itself. Test our four parameterized worker bundle strategies (implemented in <a href="https://github.com/aidonerightcorp/omni-fabric-runtime"><code>omni-fabric-runtime v0.3.0</code></a> via <code>fabric_claim_bundle</code>):
+        We write task specifications and worker trace envelopes in <strong>ASD-STE100 Simplified Technical English</strong>.
+        Controlled vocabulary makes documentation clear for human readers and machine translation tools.
+        It also reduces lexical entropy across prompts and logged traces.
+        Lower lexical entropy lets <code>24-d</code> embeddings, <code>Subject-Predicate-Object &rarr; rule</code> extractors, and <code>256-byte</code> adapters reach higher accuracy with fewer parameters.
+      </p>
+      <div class="grid-2" style="margin-bottom:14px;">
+        <div class="subcard info">
+          <span class="tag blue">Category A · Decoding Config &amp; Routing Gate</span>
+          <h3 style="margin-top:8px;">Local <code>3B</code>/<code>7B</code> Modelfile + <code>77,208</code>-Param Gate</h3>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:0;">
+            Local <code>3B</code> and <code>7B</code> Modelfile profiles calibrate stop sequences, token floors, and <code>thinking=off</code> budgets without modifying base LLM weights.
+            A separate <code>77,208</code>-parameter routing gate classifies effort and bundle size in <code>&lt;0.2 ms</code> before model invocation.
+          </p>
+        </div>
+        <div class="subcard good">
+          <span class="tag teal">Category B · True Float32 Tensor Weight Edits</span>
+          <h3 style="margin-top:8px;">Direct Parameter Surgery &amp; <code>256-Byte</code> Adapters</h3>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:0;">
+            True weight-space operators modify <code>float32</code> parameter tensors directly from checked traces.
+            These operators include <code>SVD nullspace</code> projection, <code>Wanda + ridge</code> pruning, <code>LoRA-XS</code> <code>256-byte</code> adapters, <code>DARE-TIES</code> merges, and contrastive bias addition.
+          </p>
+        </div>
+      </div>
+      <ol style="margin:0 0 4px 20px;padding:0;font-size:14px;color:var(--ink);">
+        <li class="proc-step">Write each atomic task prompt in ASD-STE100 active voice with at most 20 words.</li>
+        <li class="proc-step">Run the unedited <code>thinking=off</code> baseline and <code>77,208</code>-parameter routing gate before any tensor edit.</li>
+        <li class="proc-step">Compile <code>float32</code> tensor updates inside <code>Null(W_sym)</code> and promote only when disjoint holdout accuracy increases.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>6. Multi-Task Worker Dispatch: Back-to-Back Sequential vs. Simultaneous Batched</h2>
+      <p style="color:var(--muted);margin-top:0;">
+        Grouping atomic tasks for warm workers reduces token and cache overhead alongside weight adapters.
+        Select one of the four bundle modes in <a href="https://github.com/aidonerightcorp/omni-fabric-runtime"><code>omni-fabric-runtime v0.4.0</code></a> via <code>fabric_claim_bundle</code>:
       </p>
       <div class="controls">
         <div class="ctrl-group">
           <label for="dispSelect">Worker Dispatch Strategy</label>
           <select id="dispSelect">
             <option value="back_to_back" selected>Back-to-Back Sequential (Prefix-Sorted Affinity, k = 2..4)</option>
-            <option value="simultaneous">Simultaneous Batched Pack (Shared Tool Schema, k = 2..4)</option>
+            <option value="simultaneous">Simultaneous Batched Group (Shared Tool Schema, k = 2..4)</option>
             <option value="speculative">Speculative Maker &rarr; Checker Pipeline (Overlap Audit)</option>
             <option value="single">Single Isolated Claim (Cold Baseline, k = 1)</option>
           </select>
@@ -342,7 +392,7 @@
     </section>
 
     <section>
-      <h2>6. Explore Companion Interactive Labs &amp; Open-Source Runtime</h2>
+      <h2>7. Explore Companion Interactive Labs &amp; Open-Source Runtime</h2>
       <div class="grid-3">
         <div class="subcard info">
           <h3>Interactive Node-Graph &amp; Attenuation Lab</h3>
@@ -354,17 +404,27 @@
           <p style="font-size:14px;color:var(--muted);">Search all <code>23</code> occupational groups, <code>1,016</code> roles, and <code>2,087</code> shared work activities mapped to <code>256-byte</code> subspace &amp; polytope cartridges.</p>
           <a class="btn primary" href="onet-weight-atlas.html">Open 18,838-Task Atlas &rarr;</a>
         </div>
+        <div class="subcard info">
+          <h3>6 Model Families &amp; Side-by-Side Traces</h3>
+          <p style="font-size:14px;color:var(--muted);">Inspect before/after traces across Embeddings (<code>-95.3%</code> RAM), Search (<code>-72%</code> postings), Decision Routers, <code>LoRA-XS</code> + Memory-as-LoRA, Symbolic Nets, and Open-Weight LLMs.</p>
+          <a class="btn primary" href="model-families-traces.html">Open 6-Family Explorer &rarr;</a>
+        </div>
+        <div class="subcard good">
+          <h3>Atomic Kaggle RL &amp; Horizon Systems</h3>
+          <p style="font-size:14px;color:var(--muted);">Toggle <code>Person</code>/<code>Machine</code>/<code>Swarm</code>, all <code>27</code> <code>Transfer &times; Transform &times; Save</code> triads, <code>1..96</code> horizon steps, and leak-free recursive RL progression.</p>
+          <a class="btn primary" href="kaggle-and-horizon-systems.html">Open Horizon &amp; RL Lab &rarr;</a>
+        </div>
         <div class="subcard amber">
-          <h3><code>omni-fabric-runtime v0.3.0</code> (Hermes + GrokBot)</h3>
-          <p style="font-size:14px;color:var(--muted);">Zero-dependency Manifest v2 plugin + OpenAI-v1 loopback proxy with <code>256B</code> <code>LoRA-XS</code> hot-swap, <code>thinking=off</code> confound gate, and bundle claiming.</p>
-          <a class="btn" href="https://github.com/aidonerightcorp/omni-fabric-runtime" target="_blank" rel="noopener">View GitHub Repo (v0.3.0) &rarr;</a>
+          <h3><code>omni-fabric-runtime v0.4.0</code> (Hermes + GrokBot)</h3>
+          <p style="font-size:14px;color:var(--muted);">Zero-dependency Manifest v2 plugin (12 tools, 10 hooks) with 6-stage weight compiler, horizon DAG decomposer, and leak-free holdout RL trial engine.</p>
+          <a class="btn" href="https://github.com/aidonerightcorp/omni-fabric-runtime" target="_blank" rel="noopener">View GitHub Repo (v0.4.0) &rarr;</a>
         </div>
       </div>
     </section>
 
     <footer>
       <div>Published by AI Done Right Corp · Reproducible Multi-Seed Weight-Space &amp; Atomic Task-Graph Suite</div>
-      <div><a href="weight-space.html">Weight-Space Findings</a> · <a href="atomic-graph-explorer.html">Node-Graph Lab</a> · <a href="onet-weight-atlas.html">O*NET Weight Atlas</a> · <a href="omni-fabric.html">Adaptive Plugin</a></div>
+      <div><a href="weight-space.html">Weight-Space Findings</a> · <a href="model-families-traces.html">6 Model Families</a> · <a href="kaggle-and-horizon-systems.html">Kaggle RL &amp; Horizon</a> · <a href="atomic-graph-explorer.html">Node-Graph Lab</a> · <a href="onet-weight-atlas.html">O*NET Weight Atlas</a> · <a href="omni-fabric.html">Omni-Fabric v0.4.0</a></div>
     </footer>
   </div>
 
@@ -373,13 +433,13 @@
       {
         label: "1 Monolithic Whole-Model Node (L = 1)",
         rank: 312,
-        superposition: "94% circuit collision",
+        superposition: "94% circuit interference",
         seedStd: "± 14.8%",
         metrics: {
-          post_cutoff: { off: 0.0, edit: 14.2, note: "Sparse poke corrupts anchor circuits without reliably routing unseen endpoints." },
-          comp_math:   { off: 51.5, edit: 51.2, note: "Matches the 4-seed replication: apparent gain over verbose mode (7.9%) was purely thinking=off!" },
-          triage_cls:  { off: 61.0, edit: 62.4, note: "Whole-model poke cannot isolate 12 decision boundaries simultaneously." },
-          code_patch:  { off: 44.5, edit: 43.8, note: "High variance across seeds; scope and test invariants remain entangled." }
+          post_cutoff: { off: 0.0, edit: 14.2, note: "Sparse weight edits disturb anchor circuits and fail to route unseen endpoints reliably." },
+          comp_math:   { off: 51.5, edit: 51.2, note: "Matches the 4-seed control: the apparent jump above verbose mode (7.9%) came from thinking=off." },
+          triage_cls:  { off: 61.0, edit: 62.4, note: "One whole-model sparse edit cannot separate 12 decision boundaries at the same time." },
+          code_patch:  { off: 44.5, edit: 43.8, note: "Accuracy varies widely across seeds because scope and test rules share dense channels." }
         }
       },
       {
@@ -388,10 +448,10 @@
         superposition: "41% moderate overlap",
         seedStd: "± 4.6%",
         metrics: {
-          post_cutoff: { off: 0.0, edit: 68.5, note: "Routing stage separated from generation, reducing anchor interference." },
-          comp_math:   { off: 51.5, edit: 71.0, note: "Parsing separated from algebraic solving; partial invariant capture." },
-          triage_cls:  { off: 61.0, edit: 81.5, note: "Coarse category router handles top-level split cleanly." },
-          code_patch:  { off: 44.5, edit: 69.2, note: "Localization split from test synthesis reduces context thrash." }
+          post_cutoff: { off: 0.0, edit: 68.5, note: "Separating routing from text generation reduces interference on anchor tasks." },
+          comp_math:   { off: 51.5, edit: 71.0, note: "Separating problem parsing from algebraic solving captures partial invariants." },
+          triage_cls:  { off: 61.0, edit: 81.5, note: "A dedicated top-level category router splits major classes cleanly." },
+          code_patch:  { off: 44.5, edit: 69.2, note: "Splitting file localization from test generation reduces context switching." }
         }
       },
       {
@@ -400,10 +460,10 @@
         superposition: "7% low overlap",
         seedStd: "± 0.9%",
         metrics: {
-          post_cutoff: { off: 0.0, edit: 96.4, note: "Subspace rank drops to r=12; SVD nullspace projection preserves 100% of anchors." },
-          comp_math:   { off: 51.5, edit: 91.8, note: "Modular & parity invariants induced symbolically before weight compile." },
-          triage_cls:  { off: 61.0, edit: 96.2, note: "Wanda channel slicing + ridge recalibration cuts 75% RAM." },
-          code_patch:  { off: 44.5, edit: 90.4, note: "Check-gated boundaries prevent upstream localization slip from cascading." }
+          post_cutoff: { off: 0.0, edit: 96.4, note: "Subspace rank drops to r=12, and SVD nullspace projection preserves 100% of anchors." },
+          comp_math:   { off: 51.5, edit: 91.8, note: "Workers extract modular and parity rules symbolically before weight compilation." },
+          triage_cls:  { off: 61.0, edit: 96.2, note: "Wanda channel pruning with ridge recalibration reduces active memory by 75%." },
+          code_patch:  { off: 44.5, edit: 90.4, note: "Check-gated node boundaries stop upstream localization errors from spreading." }
         }
       },
       {
@@ -412,10 +472,10 @@
         superposition: "<1% isolated subspace",
         seedStd: "± 0.2%",
         metrics: {
-          post_cutoff: { off: 0.0, edit: 100.0, note: "Exact closed-form SVD nullspace + 256B LoRA-XS cartridge: 100.0% across all 5 seeds, 0.0 anchor drift." },
-          comp_math:   { off: 51.5, edit: 98.4, note: "0-epoch ReLU polytope skeleton handles exact algebraic/modular gates; LLM reserved only for novel lemma step." },
-          triage_cls:  { off: 61.0, edit: 99.3, note: "Symbolic boundary skeleton + orthogonal nullspace residual runs in <0.3 ms at 0 LLM tokens." },
-          code_patch:  { off: 44.5, edit: 96.8, note: "Automaton state gate enforces scope/epoch rules deterministically; independent checker resets depth attenuation." }
+          post_cutoff: { off: 0.0, edit: 100.0, note: "Closed-form SVD nullspace plus a 256-byte adapter reaches 100.0% with 0.0 anchor drift." },
+          comp_math:   { off: 51.5, edit: 98.4, note: "Zero-epoch ReLU polytopes handle exact modular checks while the LLM solves novel steps." },
+          triage_cls:  { off: 61.0, edit: 99.3, note: "A symbolic skeleton plus nullspace residual runs in under 0.3 ms at 0 LLM tokens." },
+          code_patch:  { off: 44.5, edit: 96.8, note: "State gates enforce scope rules deterministically while disjoint checkers reset depth attenuation." }
         }
       }
     ];
@@ -460,22 +520,22 @@
       back_to_back: {
         title: "Back-to-Back Sequential (Prefix Affinity)",
         kvBase: 0.85, tokCut: 68, latCut: 54,
-        desc: "Assigns k tasks sharing prefix_signature sequentially to the same warm worker. Keeps KV-cache prefixes and 256-byte LoRA-XS cartridges resident in L2/RAM with episodic schema carryover."
+        desc: "Sends k tasks with the same prefix_signature sequentially to one warm worker. Keeps KV prefixes and 256-byte adapters resident in memory."
       },
       simultaneous: {
-        title: "Simultaneous Batched Pack",
+        title: "Simultaneous Batched Group",
         kvBase: 0.48, tokCut: 62, latCut: 64,
-        desc: "Packs k compatible atomic tasks into a single batched matrix/tool turn, amortizing system prompt and tool schema overhead by 1/k while saturating SIMD/GPU tiles."
+        desc: "Combines k compatible atomic tasks in one batched turn. Shares system prompt headers by 1/k across active compute units."
       },
       speculative: {
         title: "Speculative Maker -> Checker Pipeline",
         kvBase: 0.74, tokCut: 59, latCut: 71,
-        desc: "Worker A begins Atom 2 with warm cache immediately while Independent Checker B audits Atom 1 in parallel, hiding check-gate wall-clock latency."
+        desc: "Worker A starts Atom 2 with warm cache while Checker B audits Atom 1 in parallel to hide check latency."
       },
       single: {
         title: "Single Isolated Claim (Cold Baseline)",
         kvBase: 0.0, tokCut: 0, latCut: 0,
-        desc: "Cold per-task dispatch (k = 1). Re-sends full system/schema tokens and reloads adapter state on every single claim."
+        desc: "Dispatches one isolated task per claim (k = 1). Resends full schema tokens and reloads adapter weights every turn."
       }
     };
 
