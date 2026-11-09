@@ -137,7 +137,8 @@
     <nav class="topnav">
       <div class="nav-links">
         <a class="nav-pill" href="index.html">Research Portal</a>
-        <a class="nav-pill active" href="paper-atomic-weight-space.html">arXiv Monograph (.tex)</a>
+        <a class="nav-pill active" href="paper-atomic-weight-space.html">arXiv Monograph (PDF &amp; .tex)</a>
+        <a class="nav-pill" href="wasm-wgsl-dp-and-kaggle-lab.html">WASM, WGSL &amp; DP Lab</a>
         <a class="nav-pill" href="weight-space.html">Weight-Space Findings</a>
         <a class="nav-pill" href="model-families-traces.html">6 Families &amp; Traces</a>
         <a class="nav-pill" href="adversarial-validation-and-code-reuse.html">Adversarial &amp; CEGAR</a>
@@ -146,26 +147,27 @@
         <a class="nav-pill" href="atomic-graph-explorer.html">Atomic Graph Lab</a>
         <a class="nav-pill" href="kaggle-and-horizon-systems.html">Kaggle RL &amp; Horizon</a>
         <a class="nav-pill" href="onet-weight-atlas.html">18,838-Task O*NET</a>
-        <a class="nav-pill" href="omni-fabric.html">Omni-Fabric v0.5.0</a>
+        <a class="nav-pill" href="omni-fabric.html">Omni-Fabric v0.6.0</a>
         <a class="nav-pill" href="quorum-forge.html">QuorumForge Swarm</a>
       </div>
-      <a class="nav-pill" href="assets/atomic_weight_space_paper.tex" download>Download .tex Source</a>
+      <a class="nav-pill" href="assets/atomic_weight_space_paper.pdf" download>Download 8-Page PDF</a>
     </nav>
 
-    <div class="eyebrow">Technical Monograph &middot; 5 Formal Propositions &middot; 5-Seed CPU Reproduction</div>
+    <div class="eyebrow">Technical Monograph &middot; 8-Page Academic PDF &middot; arXiv Bundle &middot; 5-Seed CPU Reproduction</div>
     <h1>Atomic Weight-Space Programming: Resolving the Monolithic Null-Effect via Neuro-Symbolic &amp; Spectral Operators</h1>
     <p class="lede">
       Recent work on weight-space programming (Takehi et al., MIT CSAIL, 2026) examines tiny sparse perturbations inside dense models.
       Under a matched <code>thinking=off</code> control, a <code>0.016%</code> monolithic sparse weight edit changes accuracy from <code>51.84%</code> to <code>51.60%</code> (<code>-0.24 pp</code>, <code>t = -1.395</code>).
       We resolve this monolithic null-effect by decomposing workflows into orthogonal neuro-symbolic and non-symbolic weight cartridges.
-      This monograph presents five formal propositions, ten model families, eight adversarial red-team defenses, eight non-symbolic operators, and real pretrained <code>.safetensors</code> surgery.
+      This 8-page monograph presents five propositions, ten model families, seven zero-dependency targets (including browser <code>.wasm</code> and WebGPU <code>.wgsl</code>), and <code>(&epsilon;, &delta;)</code>-DP Nullspace Woodbury merging.
     </p>
 
     <div class="btn-row">
-      <a class="btn btn-primary" href="assets/atomic_weight_space_paper.tex" download>Download arXiv-Ready LaTeX (atomic_weight_space_paper.tex)</a>
-      <a class="btn" href="https://github.com/aidonerightcorp/omni-fabric-runtime/releases/tag/v0.5.0">Inspect omni-fabric-runtime v0.5.0 (15 Tools)</a>
-      <a class="btn" href="adversarial-validation-and-code-reuse.html">Open Adversarial &amp; CEGAR Lab</a>
-      <a class="btn" href="kernels-familiarity-and-oneshot-lab.html">Open Kernels &amp; Pretrained Safetensors Lab</a>
+      <a class="btn btn-primary" href="assets/atomic_weight_space_paper.pdf" download>Download 8-Page Academic PDF</a>
+      <a class="btn" style="background:var(--blue);border-color:var(--blue);color:#ffffff;" href="assets/atomic_weight_space_arxiv_bundle.tar.gz" download>Download arXiv .tar.gz Bundle</a>
+      <a class="btn" href="assets/atomic_weight_space_paper.tex" download>Download LaTeX Source (.tex)</a>
+      <a class="btn" href="wasm-wgsl-dp-and-kaggle-lab.html">Open Live Browser .wasm, WGSL &amp; DP Lab &rarr;</a>
+      <a class="btn" href="https://github.com/aidonerightcorp/omni-fabric-runtime/releases/tag/v0.6.0">Inspect omni-fabric-runtime v0.6.0 (17 Tools)</a>
     </div>
 
     <div class="kpi-grid">
@@ -186,8 +188,8 @@
         <div class="lbl">Anchor drift on real <code>7.56M</code>-param <code>.safetensors</code> subword surgery (<code>50.0% &rarr; 100.0%</code> in <code>6-d</code>)</div>
       </div>
       <div class="kpi">
-        <div class="val">1.19e-7</div>
-        <div class="lbl">Max logit discrepancy across 5 runtimes (<code>.safetensors</code>, JS, Python, SQLite SQL, <code>0.106 &mu;s</code> C99)</div>
+        <div class="val">7 Targets / 1.19e-7</div>
+        <div class="lbl">Max logit discrepancy across <code>.safetensors</code>, JS, Python, SQL, <code>0.106 &mu;s</code> C99, <code>.wasm</code> &amp; <code>.wgsl</code></div>
       </div>
     </div>
 
@@ -382,12 +384,12 @@
     </section>
 
     <section>
-      <h2>5. Five-Runtime Portability, Enterprise Canary &amp; References</h2>
+      <h2>5. Seven-Runtime Portability, DP Nullspace Woodbury &amp; References</h2>
       <p>
-        A single <code>16 &rarr; 12 &rarr; 4</code> <code>float32</code> cartridge exports to <code>.safetensors</code>, V8 <code>Float32Array</code> JS, Python, SQLite SQL, and C99 headers (<code>0.106 &mu;s</code>).
-        All five runtimes achieve <code>100.0%</code> top-1 agreement and <code>1.19e-7</code> maximum logit discrepancy.
-        In the 4-stage enterprise canary loop, entity-nullspace differentially private rank-8 sync cuts tokens by <code>88.0%</code> across four topologies.
-        Local inference runs at <code>0.008 - 0.014 ms</code> <code>p99</code> latency with <code>0</code> exfiltrated customer records.
+        A single <code>16 &rarr; 12 &rarr; 4</code> <code>float32</code> cartridge compiles across seven targets: <code>.safetensors</code>, V8 JS, Python, SQLite SQL, C99 (<code>0.106 &mu;s</code>), WebAssembly v1 <code>.wasm</code> (<code>0.0184 ms</code>), and WebGPU <code>.wgsl</code>.
+        All seven targets achieve <code>100.0%</code> top-1 agreement and <code>1.19e-7</code> maximum float32 logit discrepancy with zero binary blobs stored on disk.
+        For distributed multi-agent swarms, <code>(&epsilon;, &delta;)</code>-DP Nullspace Woodbury clips per-worker L2 updates and projects calibrated Gaussian noise onto <code>P_perp = I - V_a V_a^T</code>.
+        Swarm nodes exchange clipped low-rank deltas with <code>0.0</code> prior anchor drift and <code>0</code> exfiltrated customer records, reducing token usage by <code>88.0%</code>.
       </p>
       <h3>Primary References Cited in the Monograph</h3>
       <ol class="ref-list">
@@ -401,6 +403,8 @@
         <li>P. Kanerva, &ldquo;Hyperdimensional computing,&rdquo; <em>Cognitive Computation</em>, 1(2):139&ndash;159, 2009.</li>
         <li>V. A. Marchenko and L. A. Pastur, &ldquo;Distribution of eigenvalues for some sets of random matrices,&rdquo; <em>Math. USSR-Sbornik</em>, 1967.</li>
         <li>ASD-STE100, <em>Simplified Technical English Specification</em>, Issue 8, 2021.</li>
+        <li>A. Haas et al., &ldquo;Bringing the web up to speed with WebAssembly,&rdquo; <em>ACM PLDI</em>, pp. 185&ndash;200, 2017.</li>
+        <li>C. Dwork and A. Roth, &ldquo;The algorithmic foundations of differential privacy,&rdquo; <em>Found. Trends Theor. Comput. Sci.</em>, 9(3&ndash;4):211&ndash;407, 2014.</li>
       </ol>
       <pre class="code">@techreport{omnifabric2026atomic,
   title       = {Atomic Weight-Space Programming: Resolving the Monolithic Null-Effect via Neuro-Symbolic Decomposition, Non-Symbolic Spectral Operators, and Counterexample-Guided Trace Compilation},
@@ -408,13 +412,18 @@
   institution = {AI Done Right Corp.},
   year        = {2026},
   month       = {November},
-  note        = {arXiv-ready source at https://aidonerightcorp.github.io/assets/atomic_weight_space_paper.tex}
+  note        = {8-page PDF and arXiv bundle at https://aidonerightcorp.github.io/assets/atomic_weight_space_paper.pdf}
 }</pre>
     </section>
 
     <footer class="footer">
       <div>Omni-Fabric Weight-Space Research &middot; Paper &amp; Ink Light Edition &middot; ASD-STE100 Controlled English</div>
-      <div><a href="assets/atomic_weight_space_paper.tex" download>Download atomic_weight_space_paper.tex</a> &middot; <a href="https://github.com/aidonerightcorp/omni-fabric-runtime">GitHub v0.5.0</a></div>
+      <div>
+        <a href="assets/atomic_weight_space_paper.pdf" download>Download 8-Page PDF</a> &middot;
+        <a href="assets/atomic_weight_space_arxiv_bundle.tar.gz" download>arXiv .tar.gz Bundle</a> &middot;
+        <a href="assets/atomic_weight_space_paper.tex" download>LaTeX .tex</a> &middot;
+        <a href="https://github.com/aidonerightcorp/omni-fabric-runtime/releases/tag/v0.6.0">GitHub v0.6.0</a>
+      </div>
     </footer>
   </div>
 

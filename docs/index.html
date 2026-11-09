@@ -1,779 +1,346 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="only light">
-<title>Prioritized Next Steps: Prize Tracks, Monetization, Grants & Capital</title>
-<style>
-  :root {
-    color-scheme: only light;
-    --paper: #f5f2ea;
-    --surface: #ffffff;
-    --surface-alt: #faf8f3;
-    --border: #ddd6c7;
-    --border-strong: #b8afa0;
-    --ink: #141312;
-    --muted: #5c574f;
-    --teal: #0f766e;
-    --teal-bg: #e6f4f1;
-    --blue: #1d4ed8;
-    --blue-bg: #e8effd;
-    --amber: #9a4a06;
-    --amber-bg: #fef3e2;
-    --crimson: #b91c1c;
-    --crimson-bg: #fdeaea;
-    --plum: #6d28d9;
-    --plum-bg: #f1ebfe;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    padding: 24px 28px 56px;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.45;
-  }
-  .wrap { max-width: 1480px; margin: 0 auto; }
-  header {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 16px;
-    padding-bottom: 18px;
-    border-bottom: 2px solid var(--border-strong);
-    margin-bottom: 18px;
-  }
-  h1 {
-    margin: 0 0 6px;
-    font-size: 1.65rem;
-    letter-spacing: -0.02em;
-  }
-  .subtitle {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.95rem;
-    max-width: 920px;
-  }
-  .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  button, select, input[type="search"] {
-    font: inherit;
-    font-size: 0.86rem;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    border-radius: 7px;
-    padding: 7px 12px;
-  }
-  button { cursor: pointer; font-weight: 600; transition: background 0.12s ease; }
-  button:hover { background: var(--surface-alt); }
-  button.primary {
-    background: var(--ink);
-    color: var(--surface);
-    border-color: var(--ink);
-  }
-  button.primary:hover { opacity: 0.9; }
-  button.active-pill, button.active-pill:hover {
-    background: var(--teal);
-    color: var(--surface);
-    border-color: var(--teal);
-  }
-  .kpis {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-  .kpi {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 13px 16px;
-  }
-  .kpi-label {
-    font-size: 0.76rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--muted);
-    font-weight: 700;
-  }
-  .kpi-val {
-    font-size: 1.48rem;
-    font-weight: 800;
-    margin-top: 3px;
-    font-variant-numeric: tabular-nums;
-  }
-  .kpi-sub {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-  .controls {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    margin-bottom: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .pill-row, .filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-  }
-  .pill-row .label, .filter-row .label {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--muted);
-    margin-right: 4px;
-  }
-  input[type="search"] { min-width: 250px; flex: 1; }
-  .range-wrap {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85rem;
-    background: var(--surface-alt);
-    padding: 5px 10px;
-    border-radius: 7px;
-    border: 1px solid var(--border);
-  }
-  .knapsack-banner {
-    display: none;
-    background: var(--teal-bg);
-    border: 1px solid var(--teal);
-    color: var(--ink);
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 0.88rem;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-  }
-  .knapsack-banner.visible { display: flex; flex-wrap: wrap; }
-  .table-shell {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow-x: auto;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.88rem;
-  }
-  thead th {
-    position: sticky;
-    top: 0;
-    background: var(--surface-alt);
-    border-bottom: 2px solid var(--border-strong);
-    padding: 10px 8px;
-    text-align: left;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    color: var(--ink);
-    cursor: pointer;
-    user-select: none;
-    white-space: nowrap;
-  }
-  thead th:hover { background: #efeae0; }
-  thead th.num, tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
-  tbody tr.main-row { border-bottom: 1px solid var(--border); transition: background 0.1s ease; }
-  tbody tr.main-row:hover { background: var(--surface-alt); }
-  tbody tr.main-row.done-row { opacity: 0.58; background: #f4f1ea; }
-  tbody tr.main-row.knapsack-hit { background: var(--teal-bg); }
-  tbody td { padding: 10px 8px; vertical-align: top; }
-  .title-cell { min-width: 245px; max-width: 360px; }
-  .item-title {
-    font-weight: 700;
-    font-size: 0.94rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .item-title:hover { color: var(--blue); }
-  .item-summary {
-    color: var(--muted);
-    font-size: 0.82rem;
-    margin-top: 3px;
-  }
-  .badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-size: 0.74rem;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  .cat-Prize { background: var(--blue-bg); color: var(--blue); }
-  .cat-Monetization { background: var(--teal-bg); color: var(--teal); }
-  .cat-Grant { background: var(--amber-bg); color: var(--amber); }
-  .cat-Fundraising { background: var(--plum-bg); color: var(--plum); }
-  .cat-Ops { background: #eae6dd; color: var(--ink); }
-  .urgent-pill { background: var(--crimson-bg); color: var(--crimson); margin-left: 4px; }
-  .knap-pill { background: var(--teal); color: #fff; margin-left: 4px; }
-  .auto-ready { background: var(--teal-bg); color: var(--teal); margin-left: 4px; }
-  .auto-sign { background: var(--amber-bg); color: var(--amber); margin-left: 4px; }
-  .auto-key { background: var(--plum-bg); color: var(--plum); margin-left: 4px; }
-  .auth-panel {
-    display: none;
-    background: var(--surface);
-    border: 2px solid var(--teal);
-    border-radius: 10px;
-    padding: 16px 18px;
-    margin-bottom: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-    font-size: 0.85rem;
-  }
-  .auth-panel.open { display: grid; }
-  .auth-panel h3 { margin: 0 0 6px; font-size: 0.92rem; color: var(--ink); }
-  .auth-panel ul { margin: 0; padding-left: 18px; }
-  .auth-panel li { margin-bottom: 5px; }
-  .auth-note {
-    margin-top: 8px;
-    padding: 7px 10px;
-    background: var(--surface);
-    border-left: 3px solid var(--teal);
-    border-radius: 4px;
-    font-size: 0.82rem;
-  }
-  .detail-row { display: none; background: var(--surface-alt); border-bottom: 2px solid var(--border-strong); }
-  .detail-row.open { display: table-row; }
-  .detail-box {
-    padding: 12px 18px 16px 46px;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 18px;
-  }
-  .detail-box h4 { margin: 0 0 6px; font-size: 0.82rem; text-transform: uppercase; color: var(--muted); }
-  .detail-box ol { margin: 0; padding-left: 18px; font-size: 0.85rem; }
-  .detail-box li { margin-bottom: 4px; }
-  .link-chips { display: flex; flex-wrap: wrap; gap: 7px; }
-  .link-chip {
-    display: inline-block;
-    padding: 5px 10px;
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    border-radius: 6px;
-    color: var(--blue);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.81rem;
-  }
-  .link-chip:hover { text-decoration: underline; background: var(--blue-bg); }
-  footer {
-    margin-top: 18px;
-    color: var(--muted);
-    font-size: 0.81rem;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="only light">
+  <title>Weight-Space Programming on Atomic Task Graphs · Research &amp; Interactive Atlas</title>
+  <style>
+    :root {
+      color-scheme: only light;
+      --paper: #f5f2ea;
+      --card: #fcfbf7;
+      --card-alt: #eee9dd;
+      --ink: #1e2229;
+      --muted: #555e6b;
+      --line: #d5cdbe;
+      --teal: #1b6b52;
+      --teal-soft: #e6f3ee;
+      --blue: #1d5bbf;
+      --blue-soft: #e8f0fc;
+      --plum: #5c2d91;
+      --plum-soft: #f2ecfb;
+      --amber: #9a5b13;
+      --amber-soft: #fbf1e2;
+      --crimson: #9e2f2f;
+      --crimson-soft: #fbeaea;
+      --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --serif: Georgia, "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.56;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 26px 22px 68px; }
+    .topnav {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      justify-content: space-between; padding-bottom: 14px;
+      border-bottom: 1px solid var(--line); margin-bottom: 22px;
+    }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .nav-pill {
+      display: inline-block; padding: 6px 12px; border-radius: 999px;
+      font-size: 13px; font-weight: 600; background: var(--card);
+      border: 1px solid var(--line); color: var(--ink);
+    }
+    .nav-pill.active {
+      background: var(--teal-soft); border-color: var(--teal); color: var(--teal);
+    }
+    .eyebrow {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: var(--teal-soft); border: 1px solid #b6decb;
+      color: var(--teal); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    h1 {
+      font-family: var(--serif); font-size: clamp(29px, 3.4vw, 42px);
+      line-height: 1.15; margin: 4px 0 12px; letter-spacing: -0.015em;
+    }
+    h2 { font-family: var(--serif); font-size: 23px; margin: 0 0 8px; }
+    h3 { font-size: 17px; margin: 0 0 6px; }
+    .lede { font-size: 17px; color: var(--muted); max-width: 980px; margin: 0 0 22px; }
+    section {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 14px; padding: 22px 24px; margin-bottom: 22px;
+    }
+    .portal-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 14px; margin-bottom: 22px;
+    }
+    .portal-card {
+      display: block; background: #ffffff; border: 1px solid var(--line);
+      border-radius: 13px; padding: 18px 20px; color: var(--ink);
+      transition: transform 0.12s ease, border-color 0.12s ease;
+    }
+    .portal-card:hover {
+      text-decoration: none; border-color: var(--teal); transform: translateY(-1px);
+    }
+    .portal-card .tag {
+      display: inline-block; font-size: 11.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 3px 9px; border-radius: 999px; margin-bottom: 8px;
+      background: var(--teal-soft); color: var(--teal);
+    }
+    .portal-card.blue .tag { background: var(--blue-soft); color: var(--blue); }
+    .portal-card.plum .tag { background: var(--plum-soft); color: var(--plum); }
+    .portal-card.amber .tag { background: var(--amber-soft); color: var(--amber); }
+    .portal-card h3 { font-size: 18px; margin: 0 0 6px; color: var(--ink); }
+    .portal-card p { font-size: 14px; color: var(--muted); margin: 0 0 10px; }
+    .portal-card .open-link { font-size: 13px; font-weight: 700; color: var(--blue); font-family: var(--mono); }
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 13px; margin-bottom: 22px;
+    }
+    .kpi {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; padding: 15px 17px;
+    }
+    .kpi .val { font-size: 25px; font-weight: 800; color: var(--teal); font-family: var(--mono); }
+    .kpi .lbl { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px; }
+    th, td { text-align: left; padding: 10px 11px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: var(--card-alt); font-weight: 700; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.04em; }
+    code {
+      font-family: var(--mono); font-size: 12.8px; background: var(--card-alt);
+      padding: 2px 6px; border-radius: 5px;
+    }
+    .fig-card {
+      background: #ffffff; border: 1px solid var(--line); border-radius: 12px;
+      padding: 14px; margin-top: 14px;
+    }
+    .fig-card img { width: 100%; height: auto; display: block; border-radius: 8px; }
+    .fig-cap { font-size: 13px; color: var(--muted); margin-top: 8px; }
+    .footer {
+      margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--line);
+      font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap;
+      justify-content: space-between; gap: 12px;
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div>
-      <h1>Prioritized Next Steps: Prize Tracks, Monetization, Grants & Capital</h1>
-      <p class="subtitle">Interactive filterable & sortable Expected-Value (EV/hr) matrix across prize tracks, metered MCP monetization, 0%-dilution grants, and AI fellowships.</p>
-    </div>
-    <div class="header-actions">
-      <button id="btnAuthGuide" type="button" class="primary">Auths, MCPs &amp; Self-Management Setup</button>
-      <button id="btnExpandAll" type="button">Expand All Steps</button>
-      <button id="btnExportCsv" type="button">Export Filtered CSV</button>
-      <button id="btnReset" type="button">Reset Filters</button>
-    </div>
-  </header>
+  <div class="wrap">
+    <nav class="topnav">
+      <div class="nav-links">
+        <a class="nav-pill active" href="index.html">Research Portal</a>
+        <a class="nav-pill" href="paper-atomic-weight-space.html">arXiv Monograph (PDF &amp; .tex)</a>
+        <a class="nav-pill" href="wasm-wgsl-dp-and-kaggle-lab.html">WASM, WGSL &amp; DP Lab</a>
+        <a class="nav-pill" href="weight-space.html">Weight-Space Findings</a>
+        <a class="nav-pill" href="model-families-traces.html">6 Families &amp; Traces</a>
+        <a class="nav-pill" href="adversarial-validation-and-code-reuse.html">Adversarial &amp; CEGAR</a>
+        <a class="nav-pill" href="llm-attribution-and-enterprise-fabric.html">Attribution &amp; 5-Runtime</a>
+        <a class="nav-pill" href="kernels-familiarity-and-oneshot-lab.html">Kernels, 1-Shot &amp; Safetensors</a>
+        <a class="nav-pill" href="atomic-graph-explorer.html">Atomic Graph Lab</a>
+        <a class="nav-pill" href="kaggle-and-horizon-systems.html">Kaggle RL &amp; Horizon</a>
+        <a class="nav-pill" href="onet-weight-atlas.html">18,838-Task O*NET</a>
+        <a class="nav-pill" href="omni-fabric.html">Omni-Fabric v0.6.0</a>
+        <a class="nav-pill" href="quorum-forge.html">QuorumForge Swarm</a>
+        <a class="nav-pill" href="hermes-submission.html">Hermes Plugin Brief</a>
+      </div>
+      <a class="nav-pill" href="assets/atomic_weight_space_paper.pdf" download>Download 8-Page PDF</a>
+    </nav>
 
-  <section class="auth-panel" id="authPanel" aria-label="Autonomous authentication and MCP setup">
-    <div>
-      <h3>1. Already Live &amp; Authed (0 Action Needed)</h3>
-      <ul>
-        <li><strong>GitHub CLI (`gh`):</strong> Public repos, releases, CI checks &amp; catalog PRs (`#151420`).</li>
-        <li><strong>Cloudflare (`wrangler`):</strong> Live Workers, D1, KV, R2 &amp; health watchdogs.</li>
-        <li><strong>Kaggle API CLI:</strong> CPU kernel execution, privacy scanning &amp; output verification.</li>
-        <li><strong>Hermes CLI + Local GPU Render Studio:</strong> `hermes plugins doctor`, `-14 LUFS` 1080p MP4 synthesis &amp; 3D WebGL gates.</li>
-      </ul>
-    </div>
-    <div>
-      <h3>2. High-Leverage Keys / MCPs to Add</h3>
-      <ul>
-        <li><strong>Dedicated Operator Workspace (`ops@...` + Gmail/Drive/Calendar MCP):</strong> Receives portal verification codes &amp; grant follow-ups without touching personal inbox.</li>
-        <li><strong>Stripe Restricted Key + Polar.sh Token:</strong> Automates `x402` prepaid top-ups, OSS tiers &amp; 20%-savings FinOps invoicing.</li>
-        <li><strong>X API v2 Keys + Discord Webhook:</strong> Automates `&lt;90s` MP4 demo uploads &amp; release posts.</li>
-        <li><strong>Cloud Service Accounts (`gcloud` / `aws` / `az`):</strong> Unlocks multi-cloud `Pub/Sub + GCS` benchmarks once startup credits land.</li>
-      </ul>
-    </div>
-    <div>
-      <h3>3. Strict 30-Second Human-Only Gates</h3>
-      <ul>
-        <li><strong>Never Bypassed by Policy:</strong> CAPTCHA / Turnstile human checks, legal founder signatures (`NSF MyWork`, `YC/SPC/Conviction/AI Grant SAFEs`), and KYC/banking.</li>
-        <li><strong>How Our System Handles Them:</strong> `AutonomousControlPlane` pre-compiles 100% of copy, verified `HTTP 200` links, and videos, then issues a <strong>one-use `&lt;1 KB` confirmation packet</strong> so your part takes 30 seconds.</li>
-      </ul>
-    </div>
-  </section>
+    <div class="eyebrow">Empirical Weight-Space Systems Research &middot; 5-Seed Matched Controls</div>
+    <h1>Whole-Model Weight Edits vs. Weight-Space Programming on Atomic Task Graphs</h1>
+    <p class="lede">
+      Sparse weight edits on monolithic benchmarks do not increase accuracy above the unedited <code>thinking=off</code> baseline (<code>51.60% &plusmn; 3.11%</code> vs <code>51.84% &plusmn; 3.31%</code> across 5 seeds).
+      We decompose workflows into check-gated <strong>atomic task graphs</strong> with effective rank <code>r_eff = 3.0</code>.
+      We then compile symbolic invariant skeletons and project residuals into the orthogonal SVD nullspace.
+      This pipeline reaches <strong><code>98.96% &plusmn; 0.25%</code></strong> atomic accuracy (<code>+47.36 pp</code> above <code>thinking=off</code>) with <strong><code>256-byte</code></strong> adapters and <strong><code>20.14x</code></strong> bundle throughput.
+    </p>
 
-  <section class="kpis" aria-label="Portfolio summary metrics">
-    <div class="kpi">
-      <div class="kpi-label">Visible Opportunities</div>
-      <div class="kpi-val" id="kpiCount">0</div>
-      <div class="kpi-sub" id="kpiDoneSub">0 marked done</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Total Expected Value (EV)</div>
-      <div class="kpi-val" id="kpiEv">$0</div>
-      <div class="kpi-sub" id="kpiUpsideSub">Gross target pool: $0</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Remaining Effort</div>
-      <div class="kpi-val" id="kpiHours">0h</div>
-      <div class="kpi-sub">Incremental build/submit hours</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Portfolio EV / Hour</div>
-      <div class="kpi-val" id="kpiEvHr">$0/h</div>
-      <div class="kpi-sub">Expected return per engineering hour</div>
-    </div>
-  </section>
-
-  <section class="controls" aria-label="Table filters and sprint optimizer">
-    <div class="pill-row" id="categoryPills">
-      <span class="label">Track:</span>
-      <button type="button" data-cat="ALL" class="active-pill">All</button>
-      <button type="button" data-cat="URGENT">Urgent (&le; 7d)</button>
-      <button type="button" data-cat="Prize Track">Prize Tracks</button>
-      <button type="button" data-cat="Monetization">Monetization</button>
-      <button type="button" data-cat="Grant / Credits">0% Grants &amp; Credits</button>
-      <button type="button" data-cat="Fundraising / VC">Pre-Seed / SAFE</button>
-      <button type="button" data-cat="Ops & Launch">Ops &amp; Launch</button>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="val">+47.36 pp</div>
+        <div class="lbl">Atomic 32-node graph gain over matched <code>thinking=off</code> control (<code>98.96% &plusmn; 0.25%</code> vs <code>51.60%</code>)</div>
+      </div>
+      <div class="kpi">
+        <div class="val">99.60% &plusmn; 0.14%</div>
+        <div class="lbl">Neuro-symbolic skeleton + orthogonal SVD nullspace OOD holdout accuracy (<code>0.0%</code> rule violations)</div>
+      </div>
+      <div class="kpi">
+        <div class="val">256 Bytes</div>
+        <div class="lbl">Per-skill <code>LoRA-XS</code> subspace cartridge; all <code>2,087</code> O*NET DWAs fit in <code>521.75 KiB</code> L2 cache</div>
+      </div>
+      <div class="kpi">
+        <div class="val">20.14x / -96.1%</div>
+        <div class="lbl">Speculative <code>k=4</code> maker-checker bundle speedup &amp; LLM token reduction (<code>23.0</code> vs <code>588.0</code> tokens/task)</div>
+      </div>
+      <div class="kpi">
+        <div class="val">121,565 Atoms</div>
+        <div class="lbl">Decomposed occupational &amp; benchmark tasks across <code>1,016</code> O*NET roles &amp; <code>18,838</code> task statements</div>
+      </div>
     </div>
 
-    <div class="filter-row">
-      <input id="searchInput" type="search" placeholder="Filter by keyword, PR, x402, FinOps, grant, Kaggle, white-box...">
-      <select id="statusSelect" aria-label="Filter by readiness">
-        <option value="ALL">All Statuses</option>
-        <option value="Ready Now">Ready Now</option>
-        <option value="In Sprint">In Sprint</option>
-        <option value="Backlog">Backlog</option>
-        <option value="OPEN_ONLY">Unchecked Only</option>
-        <option value="DONE_ONLY">Checked Done</option>
-      </select>
-      <select id="autoSelect" aria-label="Filter by automation mode">
-        <option value="ALL">All Automation Modes</option>
-        <option value="95% Agent Auto">95% Agent Auto</option>
-        <option value="Agent + 30s Sign-Off">Agent + 30s Sign-Off</option>
-        <option value="Needs API/MCP Key">Needs API/MCP Key</option>
-      </select>
-      <select id="dilutionSelect" aria-label="Filter by dilution">
-        <option value="ALL">All Capital Types</option>
-        <option value="NON_DILUTIVE">0% Non-Dilutive Only</option>
-        <option value="EQUITY">SAFE / Equity</option>
-      </select>
-      <label class="range-wrap">
-        <span>Max Hours: <strong id="maxHoursLabel">30h</strong></span>
-        <input id="maxHoursRange" type="range" min="1" max="30" step="1" value="30">
-      </label>
+    <div class="portal-grid">
+      <a class="portal-card" href="paper-atomic-weight-space.html">
+        <span class="tag">1 &middot; 8-Page PDF &amp; arXiv Bundle</span>
+        <h3>Atomic Weight-Space Programming Monograph (PDF, .tar.gz &amp; .tex)</h3>
+        <p>Eight-page publication PDF, arXiv bundle, five formal propositions, ten model families, seven zero-dependency targets, and DP-Woodbury merging.</p>
+        <span class="open-link">Open paper-atomic-weight-space.html &rarr;</span>
+      </a>
+      <a class="portal-card blue" href="wasm-wgsl-dp-and-kaggle-lab.html">
+        <span class="tag">2 &middot; Live Browser .wasm &amp; WGSL</span>
+        <h3>Browser <code>WebAssembly.instantiate</code>, WebGPU <code>.wgsl</code> &amp; DP-Woodbury Lab</h3>
+        <p>Compile and execute real IEEE-754 <code>.wasm</code> cartridges in browser memory, generate <code>.wgsl</code> shaders, and explore <code>(&epsilon;, &delta;)</code>-DP swarm merges.</p>
+        <span class="open-link">Open wasm-wgsl-dp-and-kaggle-lab.html &rarr;</span>
+      </a>
+      <a class="portal-card amber" href="adversarial-validation-and-code-reuse.html">
+        <span class="tag">3 &middot; Red-Team &amp; CEGAR-WSP</span>
+        <h3>Adversarial 8-Paradigm Red-Team, AST Reuse &amp; <code>CEGAR-WSP</code></h3>
+        <p>Recovers mean accuracy under attack from <code>17.14%</code> to <code>99.89%</code>, compiles 6 Python AST cartridges at <code>0</code> tokens, and prevents <code>55.93%</code> collapse.</p>
+        <span class="open-link">Open adversarial-validation-and-code-reuse.html &rarr;</span>
+      </a>
+      <a class="portal-card plum" href="llm-attribution-and-enterprise-fabric.html">
+        <span class="tag">4 &middot; Attribution &amp; 5-Runtime</span>
+        <h3>Topic-Nullspace Attribution, Koopman Actor &amp; Multi-Runtime Export</h3>
+        <p>Live 8-profile classifier (<code>22.34% &rarr; 99.30%</code> unseen-topic), <code>0.112 ms</code> Koopman planner, <code>0.106 &mu;s</code> C99 exporter, and <code>88%</code> enterprise offload.</p>
+        <span class="open-link">Open llm-attribution-and-enterprise-fabric.html &rarr;</span>
+      </a>
+      <a class="portal-card blue" href="kernels-familiarity-and-oneshot-lab.html">
+        <span class="tag">5 &middot; Kernels &amp; Real Safetensors</span>
+        <h3>Non-Symbolic Kernels, Hopfield 1-Shot &amp; Real <code>.safetensors</code> Lab</h3>
+        <p>Bochner RFF, Nystr&ouml;m <code>M=48</code>, Hopfield <code>0.0045 ms</code> writes, Woodbury RLS (<code>0.0 pp</code> forgetting), <code>7.56M</code> subword surgery, and 3-model Procrustes.</p>
+        <span class="open-link">Open kernels-familiarity-and-oneshot-lab.html &rarr;</span>
+      </a>
+      <a class="portal-card" href="weight-space.html">
+        <span class="tag">6 &middot; Primary Study</span>
+        <h3>Weight-Space Programming &amp; Matched-Control Results</h3>
+        <p>Full 5-seed replication of the monolithic <code>thinking=off</code> confound, the 8 weight-space paradigms, zero-drift SVD nullspace edits, and channel slicing.</p>
+        <span class="open-link">Open weight-space.html &rarr;</span>
+      </a>
+      <a class="portal-card blue" href="model-families-traces.html">
+        <span class="tag">7 &middot; All 6 Model Families</span>
+        <h3>Weight-Space Programming Across 6 Model Families &amp; Traces</h3>
+        <p>Side-by-side before/after traces across Embeddings (<code>-95.3%</code> RAM), Search (<code>-72%</code> index), Routers (<code>20.14x</code>), <code>LoRA-XS</code> &amp; Memory-as-LoRA, Symbolic Nets, and Open-Weight LLMs.</p>
+        <span class="open-link">Open model-families-traces.html &rarr;</span>
+      </a>
+      <a class="portal-card plum" href="kaggle-and-horizon-systems.html">
+        <span class="tag">8 &middot; Long-Horizon &amp; Kaggle RL</span>
+        <h3>Atomic Kaggle RL &amp; <code>Transfer &times; Transform &times; Save</code> Horizon Systems</h3>
+        <p>Interactive explorer across <code>Person</code>/<code>Machine</code>/<code>Hybrid Swarm</code>, all <code>27</code> 3-step triads, <code>1..96</code> horizon steps, and leak-free holdout recursive RL trials.</p>
+        <span class="open-link">Open kaggle-and-horizon-systems.html &rarr;</span>
+      </a>
+      <a class="portal-card blue" href="atomic-graph-explorer.html">
+        <span class="tag">9 &middot; Interactive Simulator</span>
+        <h3>Atomic Graph, Stepwise Attenuation &amp; Neuro-Symbolic Lab</h3>
+        <p>Live interactive sliders for DAG granularity, width, depth, <code>maker &ne; checker</code> survival reset, symbolic invariant compilation, and <code>k=1..4</code> worker bundle dispatch.</p>
+        <span class="open-link">Open atomic-graph-explorer.html &rarr;</span>
+      </a>
+      <a class="portal-card plum" href="onet-weight-atlas.html">
+        <span class="tag">10 &middot; Economy-Scale Atlas</span>
+        <h3>18,838-Task O*NET &amp; 121,565-Atom Weight Cartridge Atlas</h3>
+        <p>Searchable breakdown of all 23 major occupational groups, <code>1,016</code> roles, and <code>2,087</code> shared Detailed Work Activities into 256-byte subspace cartridges.</p>
+        <span class="open-link">Open onet-weight-atlas.html &rarr;</span>
+      </a>
+      <a class="portal-card amber" href="omni-fabric.html">
+        <span class="tag">11 &middot; Runtime Plugin v0.6.0</span>
+        <h3><code>omni-fabric-runtime v0.6.0</code> for Hermes Agent &amp; GrokBot</h3>
+        <p>SSRF-hardened 5-mode runtime plugin with 17 tools, 10 hooks, in-memory <code>.wasm</code>/<code>.wgsl</code> compiler, and <code>(&epsilon;, &delta;)</code>-DP Nullspace Woodbury sync.</p>
+        <span class="open-link">Open omni-fabric.html &rarr;</span>
+      </a>
+      <a class="portal-card blue" href="quorum-forge.html">
+        <span class="tag">12 &middot; Decentralized Swarm</span>
+        <h3>QuorumForge Swarm &amp; Multi-Provider Loopback Proxy</h3>
+        <p>Connects heterogeneous local and frontier agents over CAS-fenced task queues, disjoint review gates, and progressive 4-rung neural boil-down.</p>
+        <span class="open-link">Open quorum-forge.html &rarr;</span>
+      </a>
+      <a class="portal-card" href="hermes-submission.html">
+        <span class="tag">13 &middot; Submission &amp; Demos</span>
+        <h3><code>fenced-task-loop</code> Interactive Architecture &amp; &lt;90s Videos</h3>
+        <p>Monotonic SQLite WAL <code>lease_epoch</code> task fencing, bitemporal object reuse, and narrated 1080p30 demos.</p>
+        <span class="open-link">Open hermes-submission.html &rarr;</span>
+      </a>
     </div>
 
-    <div class="pill-row" id="knapsackRow">
-      <span class="label">0/1 Sprint Knapsack Optimizer:</span>
-      <button type="button" data-knap="10">Best 10h Sprint</button>
-      <button type="button" data-knap="20">Best 20h Sprint</button>
-      <button type="button" data-knap="40">Best 40h Sprint</button>
-      <button type="button" data-knap="80">Best 80h Sprint</button>
-      <button type="button" data-knap="120">Best 120h Sprint</button>
-      <button type="button" id="btnClearKnap" style="display:none;">Clear Sprint Filter</button>
-    </div>
+    <section>
+      <h2>5-Seed Matched-Control Summary (Seeds <code>11, 23, 37, 53, 71</code>)</h2>
+      <p style="color:var(--muted);margin:0 0 8px;">
+        Every weight-space operator is evaluated side-by-side against the unedited direct-answer (<code>thinking=off</code>)
+        control under identical output budgets (<code>512</code> tokens) and held-out task splits.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Experimental Arm / Granularity Regime</th>
+            <th>5-Seed Mean &plusmn; SD</th>
+            <th>Delta vs <code>thinking=off</code></th>
+            <th>Runtime Footprint / Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Monolith: Unedited Verbose Chain</strong> (<code>thinking=on</code>)</td>
+            <td><code>9.28% &plusmn; 1.51%</code></td>
+            <td><code>-42.56 pp</code></td>
+            <td><code>82.2%</code> responses clip the 512-token ceiling mid-derivation</td>
+          </tr>
+          <tr>
+            <td><strong>Monolith: Unedited Direct Answer</strong> (<code>thinking=off</code> control)</td>
+            <td><code>51.84% &plusmn; 3.31%</code></td>
+            <td><code>Baseline (0.00 pp)</code></td>
+            <td>Prompting alone recovers the 6x apparent jump without touching weights</td>
+          </tr>
+          <tr>
+            <td><strong>Monolith: Unconstrained <code>0.016%</code> Sparse Weight Edit</strong> (<code>thinking=off</code>)</td>
+            <td><code>51.60% &plusmn; 3.11%</code></td>
+            <td><code>-0.24 pp</code> (null)</td>
+            <td>Paired <code>t = -1.395</code>; tuned vs fresh prompt drops <code>48.88% &rarr; 12.88%</code></td>
+          </tr>
+          <tr>
+            <td><strong>Atomic 32-Node Graph (1 subtask/node, rank-8 cartridges)</strong></td>
+            <td><strong><code>98.96% &plusmn; 0.25%</code></strong></td>
+            <td><strong><code>+47.36 pp</code></strong></td>
+            <td>Operator rank drops <code>51.21 &rarr; 3.00</code>; cross-seed SD drops <code>13x</code></td>
+          </tr>
+          <tr>
+            <td><strong>Neuro-Symbolic Skeleton + Orthogonal SVD Nullspace Residual</strong></td>
+            <td><strong><code>99.60% &plusmn; 0.14%</code></strong></td>
+            <td><strong><code>+50.55 pp</code> vs raw fit</strong></td>
+            <td><code>0</code> runtime LLM tokens, <code>0.0059 ms</code> latency, <code>0.0</code> anchor drift</td>
+          </tr>
+          <tr>
+            <td><strong>Wanda Channel Pruning + Closed-Form Ridge Recalibration</strong></td>
+            <td><strong><code>99.81% &plusmn; 0.28%</code></strong></td>
+            <td><strong><code>+51.12 pp</code> vs naive prune</strong></td>
+            <td><code>-75.0%</code> active channel memory (<code>128 &rarr; 32</code> channels)</td>
+          </tr>
+          <tr>
+            <td><strong>Speculative Maker-Checker Bundle (<code>k=4</code> atoms/claim)</strong></td>
+            <td><strong><code>96.71%</code></strong></td>
+            <td><strong><code>20.14x</code> throughput</strong></td>
+            <td><code>206.42</code> tasks/sec, <code>23.03</code> LLM tokens/task (<code>-96.08%</code> token use)</td>
+          </tr>
+        </tbody>
+      </table>
 
-    <div class="knapsack-banner" id="knapBanner">
-      <span id="knapSummaryText"></span>
-      <label style="cursor:pointer; font-weight:600;">
-        <input type="checkbox" id="chkOnlyKnap"> Show only selected sprint items
-      </label>
-    </div>
-  </section>
+      <div class="fig-card">
+        <img src="assets/fig_atomic_vs_monolithic_weight_space.png" alt="Monolithic Superposition vs Weight-Space Programming on Atomic Task Graphs">
+        <div class="fig-cap">
+          <strong>Figure 1:</strong> Monolithic sparse weight edits interfere across superposed high-rank sub-circuits (<code>r_eff = 51.21</code>).
+          Atomic check-gated task graphs isolate rank-3 to rank-8 operators into 256-byte subspace adapters.
+        </div>
+      </div>
 
-  <div class="table-shell">
-    <table id="roadmapTable">
-      <thead>
-        <tr>
-          <th data-sort="done" title="Mark completed">Done</th>
-          <th data-sort="rank" class="num">#</th>
-          <th data-sort="title">Prioritized Next Step (Click Row for Playbook &amp; Links)</th>
-          <th data-sort="category">Track</th>
-          <th data-sort="status_tag">Readiness</th>
-          <th data-sort="deadline_days">Window / Urgency</th>
-          <th data-sort="upside_usd" class="num">Target Upside</th>
-          <th data-sort="prob_pct" class="num">P(Win)</th>
-          <th data-sort="hours" class="num">Hours</th>
-          <th data-sort="ev_usd" class="num">Expected Value</th>
-          <th data-sort="ev_per_hr" class="num">EV / Hr</th>
-          <th data-sort="dilution">Terms / Margin</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-    </table>
+      <div class="fig-card">
+        <img src="assets/fig_neuro_symbolic_weight_compiler.png" alt="Neuro-Symbolic Weight Compiler Pipeline">
+        <div class="fig-cap">
+          <strong>Figure 2:</strong> Checked worker traces induce symbolic invariant rules and compile them analytically into <code>W_sym</code>.
+          Residual edge cases fit inside the orthogonal nullspace <code>Null(W_sym)</code> with zero anchor drift.
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>Open-Source Research &amp; Runtime Kits: <a href="https://github.com/aidonerightcorp/omni-fabric-runtime/releases/tag/v0.6.0">omni-fabric-runtime v0.6.0</a> &middot; <a href="assets/atomic_weight_space_paper.pdf" download>8-Page Academic PDF</a> &middot; <a href="assets/atomic_weight_space_arxiv_bundle.tar.gz" download>arXiv .tar.gz</a> &middot; <a href="wasm-wgsl-dp-and-kaggle-lab.html">WASM/WGSL/DP Lab</a> &middot; <a href="https://github.com/aidonerightcorp/fenced-task-loop">fenced-task-loop v0.1.0</a> &middot; <a href="metered-mcp-finops-gate.html">Metered MCP FinOps Gate</a></div>
+      <div>Additional Interactive Explorers: <a href="onet-lattice.html">O*NET Lattice</a> &middot; <a href="cellular-fabric.html">Cellular Fabric</a> &middot; <a href="studio.html">240-Task Studio</a> &middot; <a href="arena.html">Spatial Arena</a></div>
+    </div>
   </div>
-
-  <footer>
-    <span>Updated 2026-11-08 · Click any column header to sort ascending/descending · Checkboxes save locally in your browser.</span>
-    <span>Formula: EV = Target Upside &times; P(Win/Conv); Priority Score weights Risk-Adjusted EV/hr &times; Deadline Urgency.</span>
-  </footer>
-</div>
-
-<script>
-const CATALOG = {"updated_date": "2026-11-08", "runtime_constants": {"default_sprint_budget_hours": 40, "sprint_presets_hours": [10, 20, 40, 80, 120], "risk_discount_factor": 0.85, "urgent_days_ceiling": 7, "ready_hours_ceiling": 6.0, "percent_scale": 100.0, "round_digits": 2, "indent_spaces": 2}, "rows": [{"id": "ACT-34", "title": "Cloudflare Startup Enterprise Upgrade ($250k Workers/D1/AI Tier)", "category": "Grant / Credits", "status_tag": "Ready Now", "deadline_label": "Rolling Cohort", "deadline_days": 10.0, "upside_usd": 100000, "pool_note": "Up to $250,000 Cloudflare Workers, D1, R2 & Workers AI credits", "prob": 0.35, "hours": 2.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Already authed on Cloudflare Workers Paid (~670k 7d requests!). Needs: 30s founder submission on cloudflare.com/startups/ + Account ID.", "summary": "Leverage our live production Workers/D1/R2 footprint (~670k weekly requests, 0 errors) to qualify for Cloudflare's high-tier startup credit tranche.", "next_steps": ["Attach verified production Worker/D1 telemetry summary and architecture brief.", "Submit Cloudflare for Startups application linked to active Account ID."], "links": [{"label": "Cloudflare Startups", "url": "https://www.cloudflare.com/startups/"}], "prob_pct": 35.0, "ev_usd": 35000.0, "risk_adj_ev_usd": 29750.0, "ev_per_hr": 17500.0, "priority_score": 16227.27, "rank": 1}, {"id": "ACT-01", "title": "Submit Nous Research Hermes Plugin Prize Track Entry", "category": "Prize Track", "status_tag": "Ready Now", "deadline_label": "Wed Nov 11, 5:00 PM EST", "deadline_days": 3.1, "upside_usd": 10000, "pool_note": "$20,000 cash ($10k 1st, $5k 2nd)", "prob": 0.25, "hours": 0.25, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Steps 1 & 2 DONE (Plugin + Catalog PR #151420 OPEN/MERGEABLE). Step 3: Post <90s live-in-action MP4 on X tagging @NousResearch. Step 4: Submit PR + X URL on Typeform.", "next_steps": ["1. DONE — Built & runtime-tested fenced-task-loop (passed hermes plugins doctor: 4 tools, 5 hooks, llm_request middleware, /fenced-loop).", "2. DONE — Opened official catalog PR https://github.com/NousResearch/hermes-agent/pull/151420 (OPEN & MERGEABLE).", "3. Post our <90s live-in-action MP4 on X (Twitter) tagging @NousResearch (use the 1-click Pre-Filled X Post button on the right and attach fenced-task-loop-live-in-action.mp4).", "4. Submit BOTH links (PR #151420 URL + your X post URL) in the official Typeform before Wed Nov 11, 2026 at 5:00 PM EST: https://form.typeform.com/to/FwJLvOln"], "links": [{"label": "1. Open Nous Typeform", "url": "https://form.typeform.com/to/FwJLvOln"}, {"label": "2. Pre-Filled X Post (@NousResearch)", "url": "https://x.com/intent/tweet?text=Built%20fenced-task-loop%20for%20the%20%40NousResearch%20Hermes%20Agent%20Plugin%20Challenge!%0A%0AZero-dep%20SQLite%20WAL%20plugin%20adding%20CAS%20lease_epoch%20zombie%20fencing%2C%20distinct%20maker%21%3Dchecker%200-token%20artifact%20reuse%2C%20and%20zero-network%20llm_request%20effort%20calibration.%0A%0ACatalog%20PR%3A%20https%3A%2F%2Fgithub.com%2FNousResearch%2Fhermes-agent%2Fpull%2F151420"}, {"label": "3. Hermes Plugin System Video (81s)", "url": "https://github.com/aidonerightcorp/fenced-task-loop/releases/download/v0.1.0/hermes-plugin-system-and-fenced-loop.mp4"}, {"label": "4. Architecture Diagram PNG", "url": "https://github.com/aidonerightcorp/fenced-task-loop/releases/download/v0.1.0/hermes-plugin-system-architecture.png"}, {"label": "5. Catalog PR #151420", "url": "https://github.com/NousResearch/hermes-agent/pull/151420"}], "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Already authed: gh CLI + hermes CLI (Steps 1-2 DONE). You: 30s X post (@NousResearch) + paste URL in Nous Typeform (anti-bot/personal X). Optional: X API v2 keys to automate future X posts.", "prob_pct": 25.0, "ev_usd": 2500.0, "risk_adj_ev_usd": 2125.0, "ev_per_hr": 10000.0, "priority_score": 10573.17, "rank": 2}, {"id": "ACT-28", "title": "NVIDIA Inception Startup Program (Cloud GPU Credits + NIM)", "category": "Grant / Credits", "status_tag": "Ready Now", "deadline_label": "Rolling (Apply This Week)", "deadline_days": 7.0, "upside_usd": 25000, "pool_note": "Up to $100k+ partner GPU credits + hardware discounts", "prob": 0.6, "hours": 1.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent pre-writes entire company & white-box AI infra profile. Needs: founder ops@ corporate email login + 30s portal submit.", "summary": "Zero-equity NVIDIA program unlocking AWS/GCP/ Nebius GPU credits, NIM inference credits, and deep-tech investor introductions.", "next_steps": ["Generate complete NVIDIA Inception company profile highlighting white-box activation propagation & durable agent infra.", "Submit via corporate domain email (zero equity, rolling 2-week approval)."], "links": [{"label": "NVIDIA Startups", "url": "https://www.nvidia.com/en-us/startups/"}], "prob_pct": 60.0, "ev_usd": 15000.0, "risk_adj_ev_usd": 12750.0, "ev_per_hr": 10000.0, "priority_score": 9562.5, "rank": 3}, {"id": "ACT-03", "title": "Apply to Startup Cloud & Inference Credit Stack", "category": "Grant / Credits", "status_tag": "Ready Now", "deadline_label": "Rolling (Do This Week)", "deadline_days": 5.0, "upside_usd": 35000, "pool_note": "$10k-$250k+ infra credits", "prob": 0.65, "hours": 2.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Submit Cloudflare for Startups, Google for Startups, Microsoft Founders Hub, and AWS Activate applications to eliminate hosting COGS.", "next_steps": ["Submit Cloudflare for Startups (Workers, D1, R2, Queues, Workers AI credits).", "Submit Google Cloud for Startups ($2k Start tier -> $200k AI tier for Pub/Sub + GCS + Vertex).", "Submit Microsoft Founders Hub ($1k-$150k) and AWS Activate Founders ($1k-$10k immediate)."], "links": [{"label": "Cloudflare Startups", "url": "https://www.cloudflare.com/startups/"}, {"label": "Google Startups Cloud", "url": "https://cloud.google.com/startup"}, {"label": "Microsoft Founders Hub", "url": "https://foundershub.startups.microsoft.com/"}, {"label": "AWS Startups Activate", "url": "https://aws.amazon.com/startups/"}], "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent prepares 100% of company/architecture copy. Needs: dedicated founder/ops Google Workspace login + 30s human click per portal (Cloudflare, Google Cloud, Microsoft Founders Hub, AWS Activate) due to OAuth/Turnstile/founder terms.", "prob_pct": 65.0, "ev_usd": 22750.0, "risk_adj_ev_usd": 19337.5, "ev_per_hr": 9100.0, "priority_score": 9024.17, "rank": 4}, {"id": "ACT-61", "title": "ElevenLabs Startup Grants (33M+ Chars / ~$11k Voice AI Credits)", "category": "Grant / Credits", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent drafts product integration brief (Programmatic Launch-Video Studio + Voice Escalation Agents). Needs: corporate domain email + 30s form submit on elevenlabs.io/startup-grants.", "deadline_label": "Rolling Review (1h Task)", "deadline_days": 7.0, "upside_usd": 11000, "pool_note": "12 months free Scale-tier equivalent (4,000+ audio hrs)", "prob": 0.55, "hours": 1.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Non-dilutive 12-month ElevenLabs Startup Grant (<25 employees) providing 33M+ characters of studio narration and ultra-low-latency conversational voice credits.", "next_steps": ["Demonstrate live narration & voice workflow integration alongside our local Explainroo studio and voice tool-fencing demos.", "Submit concise startup application via corporate domain on elevenlabs.io/startup-grants."], "links": [{"label": "ElevenLabs Startup Grants", "url": "https://elevenlabs.io/startup-grants"}], "prob_pct": 55.0, "ev_usd": 6050.0, "risk_adj_ev_usd": 5142.5, "ev_per_hr": 6050.0, "priority_score": 5785.31, "rank": 5}, {"id": "ACT-37", "title": "Official MCP Registry Canonical Namespace Publish (mcp-publisher)", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: gh CLI (aidonerightcorp namespace). Needs 1-time GitHub OIDC login in mcp-publisher CLI if prompted.", "deadline_label": "Immediate (1h Task)", "deadline_days": 3.0, "upside_usd": 8000, "pool_note": "Canonical MCP namespace + downstream directory sync", "prob": 0.65, "hours": 1.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Publish server.json manifests for fenced-task-loop and metered-mcp-finops-gate under io.github.aidonerightcorp/* on registry.modelcontextprotocol.io so downstream MCP directories auto-ingest them.", "next_steps": ["Generate schema-compliant server.json manifests declaring stdio and Streamable-HTTP remotes.", "Authenticate io.github.aidonerightcorp namespace via mcp-publisher CLI and publish v0.1.0.", "Confirm live JSON indexing via registry.modelcontextprotocol.io/v0/servers."], "links": [{"label": "Official MCP Registry", "url": "https://registry.modelcontextprotocol.io/"}, {"label": "MCP Registry GitHub", "url": "https://github.com/modelcontextprotocol/registry"}, {"label": "MCP Reference Servers", "url": "https://github.com/modelcontextprotocol/servers"}], "prob_pct": 65.0, "ev_usd": 5200.0, "risk_adj_ev_usd": 4420.0, "ev_per_hr": 5200.0, "priority_score": 5525.0, "rank": 6}, {"id": "ACT-12", "title": "NSF SBIR Phase I Project Pitch ($305,000 Non-Dilutive)", "category": "Grant / Credits", "status_tag": "In Sprint", "deadline_label": "Rolling Pitch Window", "deadline_days": 21.0, "upside_usd": 305000, "pool_note": "$305k Phase I -> $1.25M Phase II (0% eq)", "prob": 0.14, "hours": 8.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "3-page initial Project Pitch to NSF America's Seed Fund on Provably Fenced Multi-Agent State Machines & Analytical White-Box Neural Verification.", "next_steps": ["Draft 1,500-word Project Pitch (Technical Innovation, R&D Objectives, CommercialFinOps Market, Team).", "Highlight our 80.3x MSE analytical ReLU covariance estimator and monotonic CAS lease fencing.", "Submit pitch first (~3-week decision) before investing time in full proposal."], "links": [{"label": "NSF Pitch Info (HTTP 200)", "url": "https://seedfund.nsf.gov/apply/project-pitch-information/"}, {"label": "NSF MyWork Submission Portal", "url": "https://nsfgov.my.site.com/mywork/s/"}, {"label": "America's Seed Fund Hub", "url": "https://seedfund.nsf.gov/"}], "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "VALID (NSF 26-510 active!). Agent drafts full 1,500-word Project Pitch (4 sections). Needs: founder Login.gov / NSF MyWork account login (nsfgov.my.site.com/mywork) + legal attestation click.", "prob_pct": 14.0, "ev_usd": 42700.0, "risk_adj_ev_usd": 36295.0, "ev_per_hr": 5337.5, "priority_score": 4743.1, "rank": 7}, {"id": "ACT-57", "title": "AI Grant (Batches 1-4) & YC Agent Infra ShadowWasteAuditor Blitz", "category": "Monetization", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent generates custom 1-repo integration PRs/gists per target from ai_grant_and_yc_ecosystem_playbook.md. Needs: founder ops@ email / X DM send.", "deadline_label": "3-10 Days to Pilot", "deadline_days": 7.0, "upside_usd": 75000, "pool_note": "2-3 B2B design partners ($2.5k-$10k/mo) + AI Grant intros", "prob": 0.32, "hours": 5.0, "dilution": "0% Non-Dilutive", "margin_pct": 90, "public_safe": true, "summary": "Execute targeted technical outbound to 18 top AI Grant & YC teams (Helicone, Antimetal, Browserbase, Firecrawl, Trigger.dev, Vapi, Didero, Mem0) with custom 3-line DropInQueueObjectBridge & 60s ShadowWasteAuditor demos.", "next_steps": ["Open lightweight integration cookbooks/PRs showing Browserbase, Trigger.dev, Firecrawl, and Mem0 running with DropInQueueObjectBridge.", "Send concise 3-sentence technical notes to Helicone & Antimetal founders proposing a 50/50 rev-share on our 20% LLM FinOps savings audit.", "Convert landed design partners into warm alumni referrals to AI Grant operators Hersh Desai & Lenny Bogdonoff."], "links": [{"label": "AI Grant 92-Startup Portfolio", "url": "https://aigrant.com/"}, {"label": "Metered FinOps Gate Repo", "url": "https://github.com/aidonerightcorp/metered-mcp-finops-gate"}, {"label": "Fenced Task Loop Repo", "url": "https://github.com/aidonerightcorp/fenced-task-loop"}], "prob_pct": 32.0, "ev_usd": 24000.0, "risk_adj_ev_usd": 20400.0, "ev_per_hr": 4800.0, "priority_score": 4590.0, "rank": 8}, {"id": "ACT-51", "title": "Hacker News Show HN Launch: Memory Poisoning vs. Fenced Queues", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent preps reproducible MIT repo, zero-auth live endpoint, and concise Show HN text. Needs: personal founder HN account submission.", "deadline_label": "Tue/Wed/Thu 9:00 AM ET", "deadline_days": 4.0, "upside_usd": 20000, "pool_note": "5k-30k technical visits + inbound B2B design partners", "prob": 0.4, "hours": 2.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Launch a benchmark-backed Show HN ('Show HN: Drop-in CAS lease queue & check-gated object DB cutting agent memory token burn by 80.7%') with zero-signup curl/browser testing.", "next_steps": ["Strictly follow news.ycombinator.com/showhn.html rules: matter-of-fact engineering title, zero marketing hype, immediate zero-auth tryout.", "Include 1-command pytest benchmark reproducing 60.4% memory poisoning vs. 0.0% check-gated poisoning.", "Post founder technical deep-dive comment answering concurrency and bitemporal TTL tradeoffs."], "links": [{"label": "Show HN Guidelines", "url": "https://news.ycombinator.com/showhn.html"}, {"label": "HN Show Feed", "url": "https://news.ycombinator.com/show"}, {"label": "Fenced Task Loop Repo", "url": "https://github.com/aidonerightcorp/fenced-task-loop"}], "prob_pct": 40.0, "ev_usd": 8000.0, "risk_adj_ev_usd": 6800.0, "ev_per_hr": 4000.0, "priority_score": 4080.0, "rank": 9}, {"id": "ACT-39", "title": "Smithery.ai Hosted 1-Click MCP Server Listing & CLI Install", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Already authed: public GitHub repos + Dockerfile/smithery.yaml. Needs: 1-time GitHub OAuth sign-in on smithery.ai.", "deadline_label": "Anytime (1h Setup)", "deadline_days": 4.0, "upside_usd": 6000, "pool_note": "1-liner npx install + inbound paid gateway funnel", "prob": 0.6, "hours": 1.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Add smithery.yaml to fenced-task-loop and metered-mcp-finops-gate so developers across Claude, Cursor, and Windsurf install our MCP servers in one CLI command.", "next_steps": ["Commit declarative smithery.yaml config schema to both public MCP repositories.", "Link aidonerightcorp GitHub repos on www.smithery.ai to enable hosted container builds.", "Verify 1-liner npx @smithery/cli install flow end-to-end."], "links": [{"label": "Smithery Registry", "url": "https://www.smithery.ai/"}, {"label": "Metered MCP FinOps Repo", "url": "https://github.com/aidonerightcorp/metered-mcp-finops-gate"}], "prob_pct": 60.0, "ev_usd": 3600.0, "risk_adj_ev_usd": 3060.0, "ev_per_hr": 3600.0, "priority_score": 3672.0, "rank": 10}, {"id": "ACT-40", "title": "Glama.ai, PulseMCP & mcp.so Triple MCP Directory Claim", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent prepares all metadata, SPDX license headers, and MCP Inspector checks. Needs: 30s GitHub OAuth claim on glama.ai + form submit on pulsemcp.com/submit and mcp.so/submit.", "deadline_label": "This Week (1.5h)", "deadline_days": 5.0, "upside_usd": 7500, "pool_note": "A+ security badge + curated newsletter + SEO traffic", "prob": 0.65, "hours": 1.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Claim our auto-indexed GitHub MCP servers on Glama (earning A+ security/quality inspection badges) and submit to PulseMCP's weekly digest and mcp.so's interactive playground.", "next_steps": ["Verify zero tool-schema warnings in MCP Inspector so Glama automated scanner awards A+ health score.", "Submit curated server descriptions and benchmark metrics to pulsemcp.com/submit.", "Submit interactive server config to mcp.so/submit with UTM attribution links."], "links": [{"label": "Glama MCP Directory", "url": "https://glama.ai/mcp/servers"}, {"label": "PulseMCP Submit", "url": "https://www.pulsemcp.com/submit"}, {"label": "mcp.so Submit", "url": "https://mcp.so/submit"}], "prob_pct": 65.0, "ev_usd": 4875.0, "risk_adj_ev_usd": 4143.75, "ev_per_hr": 3250.0, "priority_score": 3222.92, "rank": 11}, {"id": "ACT-52", "title": "DevHunt (devhunt.org) Weekly Open-Source DevTool Batch", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: gh CLI (DevHunt accepts open-source GitHub PR/auth submissions).", "deadline_label": "Next Weekly Cohort", "deadline_days": 5.0, "upside_usd": 5000, "pool_note": "Developer-only launchpad + high-DR OSS backlink", "prob": 0.6, "hours": 1.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Launch fenced-task-loop and metered-mcp-finops-gate on DevHunt's developer-only weekly leaderboard to capture GitHub stars and early CLI adopters.", "next_steps": ["Prepare crisp <60-char developer tagline, architecture PNG, and 81s live terminal MP4.", "Submit tool manifest via devhunt.org / MarsX-dev/devhunt repository workflow.", "Track conversion via ?utm_source=devhunt."], "links": [{"label": "DevHunt Launchpad", "url": "https://devhunt.org/"}, {"label": "DevHunt Open-Source Repo", "url": "https://github.com/MarsX-dev/devhunt"}], "prob_pct": 60.0, "ev_usd": 3000.0, "risk_adj_ev_usd": 2550.0, "ev_per_hr": 3000.0, "priority_score": 2975.0, "rank": 12}, {"id": "ACT-29", "title": "GitHub Sponsors + Polar.sh Automated OSS Monetization", "category": "Monetization", "status_tag": "Ready Now", "deadline_label": "Immediate (2h Setup)", "deadline_days": 4.0, "upside_usd": 12000, "pool_note": "Recurring tiers + paid issue bounties + license keys", "prob": 0.45, "hours": 2.0, "dilution": "0% Non-Dilutive", "margin_pct": 95, "public_safe": true, "auto_mode": "Needs API/MCP Key", "auth_needed": "Needs: 1-time Polar.sh / GitHub Sponsors Stripe payout onboarding + POLAR_ACCESS_TOKEN so agent auto-manages tiers & releases.", "summary": "Attach FUNDING.yml + Polar.sh automated license/sponsorship checkout across all public Hermes, OpenClaw, and Metered MCP repos.", "next_steps": ["Connect aidonerightcorp GitHub org to Polar.sh + Stripe Express payout.", "Commit .github/FUNDING.yml and automated Pro Embodiment bundle delivery."], "links": [{"label": "Polar.sh", "url": "https://polar.sh/"}, {"label": "GitHub Sponsors", "url": "https://github.com/open-source/sponsors"}], "prob_pct": 45.0, "ev_usd": 5400.0, "risk_adj_ev_usd": 4590.0, "ev_per_hr": 2700.0, "priority_score": 2754.0, "rank": 13}, {"id": "ACT-22", "title": "Y Combinator / South Park Commons ($500k-$1M Pre-Seed)", "category": "Fundraising / VC", "status_tag": "Backlog", "deadline_label": "Next Cohort Cycle", "deadline_days": 45.0, "upside_usd": 500000, "pool_note": "$500k YC / $400k+$600k SPC + $1M credits", "prob": 0.05, "hours": 8.0, "dilution": "~7% Equity + MFN SAFE", "margin_pct": 100, "public_safe": true, "summary": "Unmatched B2B enterprise distribution if scaling Counterfactual FinOps + Durable Agent Substrates into a category-defining venture company.", "next_steps": ["Land first 2-3 FinOps / Metered MCP design-partner logos first to maximize acceptance odds.", "Apply only if choosing high-velocity venture path over 100%-owned cashflow studio."], "links": [{"label": "Y Combinator Apply", "url": "https://www.ycombinator.com/apply"}, {"label": "SPC Fellowship", "url": "https://www.southparkcommons.com/apply"}], "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent compiles metrics, demo video & technical answers. Needs: founder YC/SPC portal login, founder video & legal SAFE consent.", "prob_pct": 5.0, "ev_usd": 25000.0, "risk_adj_ev_usd": 21250.0, "ev_per_hr": 3125.0, "priority_score": 2713.99, "rank": 14}, {"id": "ACT-11", "title": "AI Grant ($250k Uncapped MFN SAFE + Compute)", "category": "Fundraising / VC", "status_tag": "Ready Now", "deadline_label": "Next Batch Window", "deadline_days": 30.0, "upside_usd": 250000, "pool_note": "$250k Uncapped MFN + $350k+ credits", "prob": 0.06, "hours": 5.0, "dilution": "Uncapped MFN SAFE", "margin_pct": 100, "public_safe": true, "summary": "Nat Friedman & Daniel Gross AI-native fellowship favoring technical builders shipping open-source agent infrastructure and benchmarks.", "next_steps": ["Lead with shipped open-source repos, merged ecosystem PRs, and white-box activation math.", "Record a 90-second founder walkthrough showing live multi-agent fencing and cost routing."], "links": [{"label": "AI Grant", "url": "https://aigrant.com/"}], "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent prepares open-source links, benchmarks & technical brief. Needs: 90s founder voice/camera intro + form submit on aigrant.com.", "prob_pct": 6.0, "ev_usd": 15000.0, "risk_adj_ev_usd": 12750.0, "ev_per_hr": 3000.0, "priority_score": 2632.26, "rank": 15}, {"id": "ACT-56", "title": "BetaList Early-Adopter Queue + F6S Perks & Crunchbase Entity Graph", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent pre-fills company bios, traction metrics, and media assets. Needs: founder corporate email verification on betalist.com, f6s.com, and crunchbase.com.", "deadline_label": "This Week (1.5h)", "deadline_days": 7.0, "upside_usd": 6000, "pool_note": "Early B2B beta leads + F6S cloud perks + VC graph", "prob": 0.65, "hours": 1.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Submit to BetaList's early-adopter queue while establishing canonical F6S (unlocking extra SaaS/cloud credits) and Crunchbase profiles for automated VC/grant due diligence.", "next_steps": ["Submit startup listing at betalist.com/submissions/new with clean light-mode product screenshots.", "Claim F6S company profile to stack additional non-dilutive DevTool/APM credits alongside ACT-03.", "Publish verified Crunchbase organization entity linking public repos and product domains."], "links": [{"label": "BetaList Submit", "url": "https://betalist.com/submissions/new"}, {"label": "F6S Founder Network", "url": "https://www.f6s.com/"}, {"label": "Crunchbase", "url": "https://www.crunchbase.com/"}], "prob_pct": 65.0, "ev_usd": 3900.0, "risk_adj_ev_usd": 3315.0, "ev_per_hr": 2600.0, "priority_score": 2486.25, "rank": 16}, {"id": "ACT-62", "title": "Hugging Face ZeroGPU Explorers Grant (Free Nvidia H200/A100 Spaces)", "category": "Grant / Credits", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Needs: Hugging Face account click to join zero-gpu-explorers org and request ZeroGPU hardware grant on public Space.", "deadline_label": "Rolling Community Grant", "deadline_days": 7.0, "upside_usd": 6000, "pool_note": "Free dynamic Nvidia H200/A100 GPU compute on HF Spaces", "prob": 0.65, "hours": 1.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Unlock free dynamic Nvidia GPU allocation from Hugging Face to host live white-box Price's-theorem activation propagation and open-weight agent verification demos at $0 GPU cost.", "next_steps": ["Deploy public Gradio Space wrapping our white-box ReLU/SwiGLU activation estimator and @spaces.GPU decorator.", "Apply to zero-gpu-explorers community compute track for free H200/A100 hardware backing."], "links": [{"label": "HF ZeroGPU Explorers", "url": "https://huggingface.co/zero-gpu-explorers"}, {"label": "HF Spaces GPU Docs", "url": "https://huggingface.co/docs/hub/spaces-gpus"}], "prob_pct": 65.0, "ev_usd": 3900.0, "risk_adj_ev_usd": 3315.0, "ev_per_hr": 2600.0, "priority_score": 2486.25, "rank": 17}, {"id": "ACT-43", "title": "Cursor Marketplace & Community Plugins (.mdc Rules + Fenced MCP)", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: gh CLI for PR to cursor/community-plugins. Zero extra credentials needed.", "deadline_label": "Anytime (2h PR)", "deadline_days": 5.0, "upside_usd": 10000, "pool_note": "Direct distribution to multi-agent Cursor IDE teams", "prob": 0.5, "hours": 2.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Submit our 65-172 token .cursor/rules/*.mdc conformance gates (ZeroHardcodedValuesAstGate + DomainAgnosticNamingGate) plus fenced-task-loop MCP server to cursor/community-plugins.", "next_steps": ["Format modular .cursor/rules/*.mdc files with glob matchers and zero-bloat instructions.", "Bundle one-click Cursor MCP server configuration coordinating parallel Background Agents via SQLite WAL leases.", "Open clean PR to github.com/cursor/community-plugins targeting cursor.com/marketplace."], "links": [{"label": "Cursor Marketplace", "url": "https://cursor.com/marketplace"}, {"label": "Cursor Community Plugins Repo", "url": "https://github.com/cursor/community-plugins"}, {"label": "Cursor Official Docs", "url": "https://cursor.com/docs"}], "prob_pct": 50.0, "ev_usd": 5000.0, "risk_adj_ev_usd": 4250.0, "ev_per_hr": 2500.0, "priority_score": 2479.17, "rank": 18}, {"id": "ACT-38", "title": "Apify Store Monetized Pay-Per-Event (PPE) MCP Actors (80% Payout)", "category": "Monetization", "status_tag": "Ready Now", "auto_mode": "Needs API/MCP Key", "auth_needed": "Needs: Apify API Token (APIFY_TOKEN) + payout bank/Stripe link in Apify Console to collect 80% Pay-Per-Event earnings.", "deadline_label": "3-5 Days to Live Store", "deadline_days": 6.0, "upside_usd": 24000, "pool_note": "80% creator payout + native x402 agentic payments", "prob": 0.38, "hours": 4.0, "dilution": "0% Non-Dilutive", "margin_pct": 80, "public_safe": true, "summary": "Deploy ShadowWasteAuditor and DropInQueueObjectBridge as Standby-Mode Apify MCP Actors charging per audited trace or check-gated execution, automatically exposed inside apify/apify-mcp-server.", "next_steps": ["Scaffold Standby-Mode Python MCP Actor emitting custom Pay-Per-Event billing events per verified task.", "Enable Apify Pay-Per-Event + x402 agentic micropayment compatibility (Apify handles global tax & billing for 20% fee).", "Publish to Apify Store so Make, n8n, Gumloop, and Claude/Cursor MCP clients discover and pay per run."], "links": [{"label": "Apify Store", "url": "https://apify.com/store"}, {"label": "Actor Publishing & PPE Docs", "url": "https://docs.apify.com/actors/publishing"}, {"label": "Apify Meta-MCP Repo", "url": "https://github.com/apify/apify-mcp-server"}], "prob_pct": 38.0, "ev_usd": 9120.0, "risk_adj_ev_usd": 7752.0, "ev_per_hr": 2280.0, "priority_score": 2214.86, "rank": 19}, {"id": "ACT-64", "title": "Thiel Fellowship ($250,000 Non-Dilutive — <=22 Age Gate)", "category": "Grant / Credits", "status_tag": "Backlog", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Strict human eligibility gate: applicant must be <=22 years old and not enrolled in university. Keep for eligible founder/co-founder.", "deadline_label": "Rolling Application", "deadline_days": 45.0, "upside_usd": 250000, "pool_note": "$250,000 over 2 years (0% equity, upgraded from $100k)", "prob": 0.04, "hours": 4.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Upgraded $250,000 two-year 0%-equity grant from the Thiel Foundation for builders <=22 years old shipping category-defining technical systems outside university.", "next_steps": ["Verify age (<=22) and full-time non-student eligibility gate before investing application hours.", "Submit live deployed Teleion Fabric + Eranos for Good systems and white-box research portfolio on thielfellowship.org."], "links": [{"label": "Thiel Fellowship", "url": "https://thielfellowship.org/"}], "prob_pct": 4.0, "ev_usd": 10000.0, "risk_adj_ev_usd": 8500.0, "ev_per_hr": 2500.0, "priority_score": 2171.2, "rank": 20}, {"id": "ACT-10", "title": "Conviction Embed Fellowship ($150k Uncapped MFN SAFE)", "category": "Fundraising / VC", "status_tag": "Ready Now", "deadline_label": "Rolling Cohort", "deadline_days": 21.0, "upside_usd": 150000, "pool_note": "$150k cash + $1.2M+ cloud/AI credits", "prob": 0.08, "hours": 5.0, "dilution": "Uncapped MFN SAFE", "margin_pct": 100, "public_safe": true, "summary": "Best founder terms in AI pre-seed: $150k on an Uncapped MFN SAFE (no low valuation cap) plus $1.2M+ in AWS/GCP/Azure/model credits.", "next_steps": ["Prepare concise 1-page memo centering on Durable Agent Substrates + Counterfactual FinOps.", "Include live metrics: 98.4% prompt compression, 0/50 retry overwrite rate, 48%-66% inference savings.", "Submit application with 63s live system demo."], "links": [{"label": "Conviction Embed", "url": "https://www.conviction.com/embed"}], "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent compiles 1-page memo, metrics & 81s demo video. Needs: founder signature/submission on conviction.com/embed.", "prob_pct": 8.0, "ev_usd": 12000.0, "risk_adj_ev_usd": 10200.0, "ev_per_hr": 2400.0, "priority_score": 2132.73, "rank": 21}, {"id": "ACT-55", "title": "Futurepedia & High-Intent AI Tool Directory SEO Funnel", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent compiles SEO-optimized copy, category tags, and screenshots. Needs: 30s web portal submission.", "deadline_label": "Anytime (1h Task)", "deadline_days": 7.0, "upside_usd": 4000, "pool_note": "Evergreen search traffic for 'LLM cost optimization'", "prob": 0.55, "hours": 1.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "List our Metered MCP FinOps Gate and Fenced Agent Substrate on Futurepedia under Developer Tools & AI Cost Optimization for compounding organic search inbound.", "next_steps": ["Prepare crisp 150-word problem/solution copy targeting CTOs searching for agent reliability and token cost control.", "Attach ?utm_source=futurepedia tracking link to measure B2B pilot conversion."], "links": [{"label": "Futurepedia AI Directory", "url": "https://www.futurepedia.io/"}, {"label": "Live FinOps Gate Docs", "url": "https://aidonerightcorp.github.io/metered-mcp-finops-gate/"}], "prob_pct": 55.0, "ev_usd": 2200.0, "risk_adj_ev_usd": 1870.0, "ev_per_hr": 2200.0, "priority_score": 2103.75, "rank": 22}, {"id": "ACT-04", "title": "NLnet Foundation (NGI Zero Core / Commons) Grant", "category": "Grant / Credits", "status_tag": "Ready Now", "deadline_label": "Rolling Cycle", "deadline_days": 14.0, "upside_usd": 35000, "pool_note": "EUR 5,000 - EUR 50,000 cash", "prob": 0.32, "hours": 5.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Milestone-paid European open-source grant for verifiable fenced multi-agent queues, bitemporal stores, and open MCP tooling.", "next_steps": ["Anchor proposal on already-public Apache/MIT repos (fenced-task-loop + metered-mcp-finops-gate).", "Define 4 concrete milestones ($8k-$10k each): CAS fencing spec, bitemporal audit CLI, security fuzz suite, docs.", "Submit concise plain-text technical form on nlnet.nl/propose."], "links": [{"label": "NLnet Propose", "url": "https://nlnet.nl/propose/"}, {"label": "Metered MCP Repo", "url": "https://github.com/aidonerightcorp/metered-mcp-finops-gate"}], "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent writes full 4-milestone technical proposal & budget from public MIT/Apache repos. Needs: 30s founder paste & submit on nlnet.nl/propose + ops email inbox.", "prob_pct": 32.0, "ev_usd": 11200.0, "risk_adj_ev_usd": 9520.0, "ev_per_hr": 2240.0, "priority_score": 2030.93, "rank": 23}, {"id": "ACT-42", "title": "OpenAI GPT Store & OpenAPI 3.1 Actions FinOps Waste Auditor", "category": "Monetization", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent generates OpenAPI 3.1 YAML + live Cloudflare Action endpoint. Needs: ChatGPT Plus/Team builder account click to publish to GPT Store.", "deadline_label": "5-7 Days", "deadline_days": 7.0, "upside_usd": 15000, "pool_note": "Top-of-funnel B2B FinOps pilot lead capture", "prob": 0.35, "hours": 3.0, "dilution": "0% Non-Dilutive", "margin_pct": 92, "public_safe": true, "summary": "Bridge our ShadowWasteAuditor and bitemporal Task Object lookup into an OpenAPI 3.1 Action inside a public 'Agent FinOps & Retry Waste Auditor' Custom GPT.", "next_steps": ["Export OpenAPI 3.1 specification mapping /v1/audit-trace and /v1/fenced-lookup over HTTPS.", "Configure Custom GPT instructions to compute exact duplicate-fingerprint waste and output CFO savings PDFs.", "Publish to OpenAI GPT Store with direct CTA into our 20% FinOps savings-share pilot (ACT-08)."], "links": [{"label": "OpenAI GPT Actions Docs", "url": "https://developers.openai.com/api/docs/actions/introduction"}, {"label": "OpenAI Agents SDK Repo", "url": "https://github.com/openai/openai-agents-python"}], "prob_pct": 35.0, "ev_usd": 5250.0, "risk_adj_ev_usd": 4462.5, "ev_per_hr": 1750.0, "priority_score": 1673.44, "rank": 24}, {"id": "ACT-45", "title": "Meta Open-Weight Agent Stack & Hugging Face Spaces Benchmark Arena", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "95% Agent Auto", "auth_needed": "Needs only HF_TOKEN (or 30s git push to huggingface.co/spaces) to publish interactive Gradio/HTML benchmark Space.", "deadline_label": "This Week (3h)", "deadline_days": 6.0, "upside_usd": 9000, "pool_note": "Hugging Face trending Space + open-weight dev funnel", "prob": 0.55, "hours": 3.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Launch an interactive light-mode Paper & Ink Hugging Face Space running live head-to-head simulations of Passive Agent Memory vs. Fenced Queue + Check-Gated Task Objects (80.66% token cut).", "next_steps": ["Package compare_chat_memory_vs_fenced_queue_object_db and ShadowWasteAuditor into a zero-auth Gradio/FastAPI Space.", "Allow visitors to upload JSONL agent logs and download a counterfactual token-savings audit.", "Cross-link public GitHub repos and 12-notebook architecture suite."], "links": [{"label": "Hugging Face Spaces", "url": "https://huggingface.co/spaces"}, {"label": "HF Spaces Documentation", "url": "https://huggingface.co/docs/hub/spaces-overview"}], "prob_pct": 55.0, "ev_usd": 4950.0, "risk_adj_ev_usd": 4207.5, "ev_per_hr": 1650.0, "priority_score": 1602.86, "rank": 25}, {"id": "ACT-54", "title": "Peerlist Launchpad Weekly Showcase + Indie Hackers FinOps Log", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent drafts full launch assets and empirical cost-cutting case study. Needs: 30s founder post on peerlist.io/launchpad & indiehackers.com.", "deadline_label": "Monday 00:00 UTC Batch", "deadline_days": 6.0, "upside_usd": 4500, "pool_note": "Builder network discovery + founder DM inbound", "prob": 0.55, "hours": 1.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Ship Monday launch on Peerlist Launchpad paired with a transparent engineering benchmark breakdown on Indie Hackers targeting bootstrapped AI SaaS founders.", "next_steps": ["Queue Peerlist Launchpad project card before Monday 00:00 UTC batch open.", "Publish Indie Hackers post showing how SaaS founders cut LLM API bills 48%-80% without switching models.", "Include free read-only ShadowWasteAuditor trace upload link."], "links": [{"label": "Peerlist Launchpad", "url": "https://peerlist.io/launchpad"}, {"label": "Indie Hackers", "url": "https://www.indiehackers.com/"}], "prob_pct": 55.0, "ev_usd": 2475.0, "risk_adj_ev_usd": 2103.75, "ev_per_hr": 1650.0, "priority_score": 1602.86, "rank": 26}, {"id": "ACT-06", "title": "Launch Metered x402 & Prepaid MCP Developer Gateway", "category": "Monetization", "status_tag": "Ready Now", "deadline_label": "3-7 Days to First $", "deadline_days": 7.0, "upside_usd": 36000, "pool_note": "$3k/mo Year-1 run-rate target", "prob": 0.35, "hours": 8.0, "dilution": "0% Non-Dilutive", "margin_pct": 91, "public_safe": true, "summary": "Monetize deterministic verification tools (3D viewport gate, schema/contract auditor, storyboard still generator) per call or via $49 prepaid packs.", "next_steps": ["Expose 4 high-value stateless MCP tools behind HTTP 402 + prepaid API key balance.", "Add Stripe Payment Link webhook -> atomic SQLite/D1 order_capture credit top-up.", "Publish copy-paste claude_desktop_config.json & Hermes/Cursor MCP snippet."], "links": [{"label": "Metered Gate Engine", "url": "https://github.com/aidonerightcorp/metered-mcp-finops-gate"}], "auto_mode": "Needs API/MCP Key", "auth_needed": "Needs: Stripe Restricted Key + Webhook Secret (or Polar.sh token) to auto-credit prepaid MCP API keys on payment.", "prob_pct": 35.0, "ev_usd": 12600.0, "risk_adj_ev_usd": 10710.0, "ev_per_hr": 1575.0, "priority_score": 1506.09, "rank": 27}, {"id": "ACT-50", "title": "OpenClaw ClawHub CLI 4-Skill Ecosystem Suite Expansion", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "95% Agent Auto", "auth_needed": "Needs: 1-time clawhub login --token clh_... from clawhub.ai settings so agent publishes all 4 skills via CLI.", "deadline_label": "This Week (2.5h)", "deadline_days": 6.0, "upside_usd": 7000, "pool_note": "4 vector-indexed skills on clawhub.ai", "prob": 0.55, "hours": 2.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Expand beyond ACT-16 by publishing 4 modular CLI-installable skills (shadow-waste-auditor, bitemporal-object-cache, zero-magic-ast-gate, x402-budget-guard) via clawhub skill publish.", "next_steps": ["Package standalone SKILL.md + zero-dependency Python 3.10+ stdio tools for each of the 4 capabilities.", "Publish with high-intent --categories and --topics tags for ClawHub vector search ranking.", "Cross-link all 4 skills back to our Metered MCP Gateway and FinOps pilot."], "links": [{"label": "ClawHub Registry", "url": "https://clawhub.ai/"}, {"label": "OpenClaw Docs", "url": "https://docs.openclaw.ai/"}, {"label": "clawhub npm Metadata", "url": "https://registry.npmjs.org/clawhub"}], "prob_pct": 55.0, "ev_usd": 3850.0, "risk_adj_ev_usd": 3272.5, "ev_per_hr": 1540.0, "priority_score": 1496.0, "rank": 28}, {"id": "ACT-09", "title": "Programmatic Launch-Video-as-Code Studio Packs", "category": "Monetization", "status_tag": "Ready Now", "deadline_label": "5-10 Days to First $", "deadline_days": 10.0, "upside_usd": 24000, "pool_note": "$950-$2,500 per launch pack", "prob": 0.4, "hours": 6.0, "dilution": "0% Non-Dilutive", "margin_pct": 92, "public_safe": true, "summary": "Deliver 60-90s 1080p narrated product demos (16:9 + 9:16 + SRT + banner) in 24 hours at $0.00 API cost using local Explainroo + 3D WebGL.", "next_steps": ["Publish 3-style portfolio reel (Paper, Blueprint, Clean + 3D WebGL cutaway).", "Offer fixed-price $1,250 'DevTool Launch Pack' (60s 1080p MP4 + 9:16 Short + GitHub social banner).", "Run every deliverable through mechanical box-edge collision & -15 LUFS Whisper verification."], "links": [{"label": "Sample v0.1.0 Demo Release", "url": "https://github.com/aidonerightcorp/fenced-task-loop/releases/tag/v0.1.0"}], "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: local Explainroo + RTX 3060 WebGL GPU + ffmpeg (-14 LUFS). Needs Stripe Payment Link for client checkout.", "prob_pct": 40.0, "ev_usd": 9600.0, "risk_adj_ev_usd": 8160.0, "ev_per_hr": 1600.0, "priority_score": 1483.64, "rank": 29}, {"id": "ACT-58", "title": "AI Grant Open-Source Microgrant Track (aigrant.org, $5k-$50k)", "category": "Grant / Credits", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Distinct from ACT-11 (aigrant.com SAFE)! Agent compiles OSS maintainer dossier & benchmarks; founder sends concise note to contact portal on aigrant.org + Hersh Desai / Lenny Bogdonoff.", "deadline_label": "Rolling OSS Maintainer Track", "deadline_days": 14.0, "upside_usd": 25000, "pool_note": "$5,000-$50,000 cash or compute (0% equity, no strings)", "prob": 0.16, "hours": 2.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "While aigrant.com Batch 4 SAFE applications are closed, aigrant.org awards $5k-$50k no-strings-attached grants for high-leverage open-source AI infrastructure (like GGUF and 10-second training).", "next_steps": ["Anchor brief on shipped zero-dependency open-source repos (fenced-task-loop PR #151420 in NousResearch/hermes-agent, openclaw-fenced-loop-skill, white-box Price's-theorem covariance propagator).", "Highlight concrete reproducible numbers: 80.66% memory-vs-queue token cut, 80.3x white-box MSE gain, 0/50 zombie-write corruption.", "Send crisp plain-text maintainer pitch to contact portal on aigrant.org."], "links": [{"label": "AI Grant Open Source (aigrant.org)", "url": "https://aigrant.org/"}, {"label": "Fenced Task Loop OSS Repo", "url": "https://github.com/aidonerightcorp/fenced-task-loop"}], "prob_pct": 16.0, "ev_usd": 4000.0, "risk_adj_ev_usd": 3400.0, "ev_per_hr": 1600.0, "priority_score": 1450.67, "rank": 30}, {"id": "ACT-08", "title": "Counterfactual LLM FinOps Savings-Share Proxy Pilot", "category": "Monetization", "status_tag": "In Sprint", "deadline_label": "7-14 Days to First $", "deadline_days": 14.0, "upside_usd": 60000, "pool_note": "20% of saved LLM spend ($5k/mo ARR)", "prob": 0.3, "hours": 12.0, "dilution": "0% Non-Dilutive", "margin_pct": 89, "public_safe": true, "summary": "Zero-friction B2B offer: drop-in OpenAI-compatible proxy that cuts Overthinking & duplicate work by 48%-66% and bills 20% of measured savings.", "next_steps": ["Package finops_savings_share_router + distinct-checker cache as a 1-command Docker / Cloudflare Worker proxy.", "Generate weekly PDF/HTML CFO savings ledger (baseline vs actual tokens + quarantined self-checks).", "Onboard 3 AI-heavy startup design partners on a $0-base / 20%-savings pilot."], "links": [{"label": "FinOps Gate Repo", "url": "https://github.com/aidonerightcorp/metered-mcp-finops-gate"}], "auto_mode": "Needs API/MCP Key", "auth_needed": "Already authed for proxy deploy (Cloudflare/Docker). Needs: Stripe Invoicing key + dedicated ops@ email/Cal link for B2B pilot onboarding.", "prob_pct": 30.0, "ev_usd": 18000.0, "risk_adj_ev_usd": 15300.0, "ev_per_hr": 1500.0, "priority_score": 1360.0, "rank": 31}, {"id": "ACT-60", "title": "O'Shaughnessy Fellowships & Grants (osv.llc, $10k-$100k Equity-Free)", "category": "Grant / Credits", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent prepares open-source proof portfolio, demo links, and milestone summary. Needs: founder portal submission on osv.llc / osvfellowship.com.", "deadline_label": "Annual / Rolling Grants Window", "deadline_days": 25.0, "upside_usd": 50000, "pool_note": "$100k Fellowships + $10k OSV Grants (0% equity)", "prob": 0.1, "hours": 3.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Equity-free OSV funding ($10k Grants up to $100k Fellowships) backing ambitious open-source builders, scientific computing tools, and public-good marketplaces.", "next_steps": ["Pitch open-source check-gated multi-agent infrastructure + Eranos for Good public-good marketplace.", "Attach live deployed URLs, 12 reproducible technical notebooks, and MIT/Apache repositories.", "Submit single application considered for both the $100k Fellowship and $10k Grant tracks."], "links": [{"label": "O'Shaughnessy Ventures", "url": "https://www.osv.llc/"}, {"label": "OSV Fellowship Portal", "url": "https://www.osvfellowship.com/"}], "prob_pct": 10.0, "ev_usd": 5000.0, "risk_adj_ev_usd": 4250.0, "ev_per_hr": 1428.57, "priority_score": 1260.99, "rank": 32}, {"id": "ACT-53", "title": "Product Hunt Coordinated Launch + GraphQL v2 Telemetry", "category": "Ops & Launch", "status_tag": "In Sprint", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent renders 1080p Explainroo demo video, Paper & Ink gallery slides, and maker comment. Needs: founder Product Hunt login click at 12:01 AM PT.", "deadline_label": "10-14 Days", "deadline_days": 12.0, "upside_usd": 15000, "pool_note": "Product of the Day shot + B2B FinOps pilot signups", "prob": 0.35, "hours": 4.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Execute a coordinated Product Hunt launch for our Counterfactual Agent FinOps Proxy & Fenced Task Substrate backed by local-GPU 1080p video assets.", "next_steps": ["Render 4 light-mode Paper & Ink gallery comparison cards (Memory Poisoning vs. Check-Gated Objects, 20% Savings Ledger).", "Stage maker first-comment with instant 3-line SDK snippet and zero-auth live sandbox.", "Monitor launch velocity and comments via Product Hunt GraphQL API v2."], "links": [{"label": "Product Hunt API v2 Docs", "url": "https://api.producthunt.com/v2/docs"}, {"label": "Product Hunt Launch Guide", "url": "https://help.producthunt.com/en/"}], "prob_pct": 35.0, "ev_usd": 5250.0, "risk_adj_ev_usd": 4462.5, "ev_per_hr": 1312.5, "priority_score": 1201.44, "rank": 33}, {"id": "ACT-16", "title": "OpenClaw / ClawHub Registry Listing (Hermes x OpenClaw)", "category": "Ops & Launch", "status_tag": "Ready Now", "deadline_label": "Anytime (2h Task)", "deadline_days": 7.0, "upside_usd": 5000, "pool_note": "Ecosystem distribution + inbound leads", "prob": 0.5, "hours": 2.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Register openclaw-fenced-loop-skill (SKILL.md + JSON-RPC 2.0 stdio MCP server) on ClawHub so OpenClaw and Hermes agents share one SQLite WAL queue.", "next_steps": ["Verify SKILL.md metadata tags and zero-dependency Python 3.10+ stdio launch command.", "Submit aidonerightcorp/openclaw-fenced-loop-skill to ClawHub skill index."], "links": [{"label": "OpenClaw Skill Repo", "url": "https://github.com/aidonerightcorp/openclaw-fenced-loop-skill"}], "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: gh CLI (openclaw-fenced-loop-skill live). Needs: 1-time ClawHub GitHub OAuth login if web-gated.", "prob_pct": 50.0, "ev_usd": 2500.0, "risk_adj_ev_usd": 2125.0, "ev_per_hr": 1250.0, "priority_score": 1195.31, "rank": 34}, {"id": "ACT-59", "title": "Emergent Ventures Fellowship — Mercatus Center ($10k-$50k Grant)", "category": "Grant / Credits", "status_tag": "Ready Now", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "IMPORTANT: Mercatus explicitly rejects LLM-written prose! Agent compiles factual benchmark exhibits only; founder MUST write authentic first-person <1,500-word essay & submit on mercatus.tfaforms.net/5099527.", "deadline_label": "Rolling Fast Review", "deadline_days": 14.0, "upside_usd": 25000, "pool_note": "$10,000-$50,000+ zero-equity grant (Tyler Cowen)", "prob": 0.18, "hours": 3.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Fast, low-overhead Mercatus Center moonshot grant ideal for Eranos for Good (eranosforgood.org two-sided NGO public-good marketplace) + open self-improving public-good agent kits.", "next_steps": ["Write authentic founder-voiced personal background, mainstream consensus view you strongly agree with, and <1,500-word project proposal (zero generative prose).", "Center impact thesis on Eranos for Good connecting donated inference/agent work directly to resource-constrained NGOs.", "Submit directly via verified Mercatus FormAssembly intake portal."], "links": [{"label": "Emergent Ventures Application Form", "url": "https://mercatus.tfaforms.net/5099527"}, {"label": "Marginal Revolution (EV Cohorts)", "url": "https://marginalrevolution.com/"}, {"label": "Eranos for Good Surface", "url": "https://eranosforgood.org"}], "prob_pct": 18.0, "ev_usd": 4500.0, "risk_adj_ev_usd": 3825.0, "ev_per_hr": 1285.71, "priority_score": 1165.71, "rank": 35}, {"id": "ACT-46", "title": "Cloudflare Workers & Vercel AI 1-Click Starter Templates", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: gh CLI + wrangler CLI. Only 30s Vercel template submission form click for vercel.com/templates/ai.", "deadline_label": "7-10 Days", "deadline_days": 10.0, "upside_usd": 11000, "pool_note": "1-click Deploy buttons feeding hosted Pro upgrades", "prob": 0.45, "hours": 4.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Publish a 1-click Cloudflare Worker + D1 CAS Lease Queue + x402 MCP template and a Next.js + ShadowWasteAuditor AI FinOps template on Vercel Templates.", "next_steps": ["Create standalone starter repo with wrangler.jsonc D1 schema migration for CAS lease_epoch + bitemporal objects.", "Create Vercel AI SDK middleware template wrapping generateText/streamText in DropInQueueObjectBridge.", "Submit to vercel.com/templates/ai and open upstream community showcase PR."], "links": [{"label": "Cloudflare Workers Docs", "url": "https://developers.cloudflare.com/workers/"}, {"label": "Cloudflare Templates Repo", "url": "https://github.com/cloudflare/templates"}, {"label": "Vercel AI Templates", "url": "https://vercel.com/templates/ai"}], "prob_pct": 45.0, "ev_usd": 4950.0, "risk_adj_ev_usd": 4207.5, "ev_per_hr": 1237.5, "priority_score": 1147.5, "rank": 36}, {"id": "ACT-44", "title": "xAI Grok Remote MCP Tool & X Developer Audit Bot Launch", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "Needs API/MCP Key", "auth_needed": "Needs: X Developer API v2 keys + XAI_API_KEY to run automated @-mention trace audit replies and register Grok Bot plugin.", "deadline_label": "7-10 Days", "deadline_days": 9.0, "upside_usd": 12000, "pool_note": "Grok Remote MCP ecosystem + viral X dev distribution", "prob": 0.35, "hours": 3.5, "dilution": "0% Non-Dilutive", "margin_pct": 95, "public_safe": true, "summary": "Publish xai-sdk-python Remote MCP integration examples (server_url + allowed_tools) and deploy an X Developer bot that replies to public agent traces with instant FinOps waste breakdowns.", "next_steps": ["Verify Streaming-HTTP Remote MCP compatibility with api.x.ai tools array (server_url, server_label, allowed_tools).", "Publish drop-in xai-sdk-python + Vercel @ai-sdk/xai fenced-queue cookbook.", "Submit MCP server & Grok Bot metadata through xAI developer portal."], "links": [{"label": "xAI Developer Docs", "url": "https://docs.x.ai/"}, {"label": "xAI API Overview", "url": "https://x.ai/api"}, {"label": "X Developer Platform", "url": "https://developer.x.com/"}, {"label": "xAI Python SDK", "url": "https://github.com/xai-org/xai-sdk-python"}], "prob_pct": 35.0, "ev_usd": 4200.0, "risk_adj_ev_usd": 3570.0, "ev_per_hr": 1200.0, "priority_score": 1122.0, "rank": 37}, {"id": "ACT-41", "title": "Anthropic Claude Remote MCP Connector & Plugin Bundle Listing", "category": "Ops & Launch", "status_tag": "In Sprint", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Already authed on Cloudflare Workers for Streamable-HTTP remote endpoint. Needs: Claude Team/Developer org submission sign-off.", "deadline_label": "10-14 Days", "deadline_days": 14.0, "upside_usd": 18000, "pool_note": "1-click connector across Claude Web, Desktop & Code", "prob": 0.3, "hours": 4.5, "dilution": "0% Non-Dilutive", "margin_pct": 94, "public_safe": true, "summary": "Deploy a Streamable-HTTP Remote MCP Connector with readOnlyHint/destructiveHint annotations and clean .well-known endpoints for native 1-click discovery inside Claude.", "next_steps": ["Annotate all remote MCP tools with accurate titles, readOnlyHint, and destructiveHint metadata.", "Ensure zero trailing-slash redirects on .well-known OAuth 2.1 PKCE / zero-auth trial endpoints.", "Package GitHub Plugin Bundle combining remote MCP connector + SKILL.md embodiments for directory review."], "links": [{"label": "MCP Specification Docs", "url": "https://modelcontextprotocol.io/"}, {"label": "Anthropic MCP Announcement", "url": "https://www.anthropic.com/news/model-context-protocol"}, {"label": "Claude Code GitHub", "url": "https://github.com/anthropics/claude-code"}], "prob_pct": 30.0, "ev_usd": 5400.0, "risk_adj_ev_usd": 4590.0, "ev_per_hr": 1200.0, "priority_score": 1088.0, "rank": 38}, {"id": "ACT-17", "title": "Pro Agent Embodiment & Harness Skill Packs ($49-$299)", "category": "Monetization", "status_tag": "Ready Now", "deadline_label": "7-14 Days", "deadline_days": 14.0, "upside_usd": 18000, "pool_note": "Digital license + $2k custom team fit", "prob": 0.35, "hours": 6.0, "dilution": "0% Non-Dilutive", "margin_pct": 95, "public_safe": true, "summary": "Sell battle-tested 65-172 token specialized agent embodiments (-96% context bloat) bundled with AST zero-magic-number and SQLite fencing gates.", "next_steps": ["Package the 9 embodiments into drop-in starter kits for Claude Code, Cursor, Hermes, and OpenClaw.", "Publish free Lite tier on GitHub + $99 Team Pro Pack (with FinOps dashboard & cloud DDL templates)."], "links": [{"label": "Hermes Fenced Loop", "url": "https://github.com/aidonerightcorp/fenced-task-loop"}], "auto_mode": "Needs API/MCP Key", "auth_needed": "Already built: 9 embodiments. Needs: Polar.sh or LemonSqueezy/Stripe API key to automate license delivery on GitHub.", "prob_pct": 35.0, "ev_usd": 6300.0, "risk_adj_ev_usd": 5355.0, "ev_per_hr": 1050.0, "priority_score": 952.0, "rank": 39}, {"id": "ACT-48", "title": "Raycast Store Extension: Live Agent Lease & Waste HUD", "category": "Ops & Launch", "status_tag": "Ready Now", "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: gh CLI for PR to raycast/extensions + local Node/TypeScript build validation.", "deadline_label": "Anytime (3.5h PR)", "deadline_days": 8.0, "upside_usd": 6500, "pool_note": "High-affinity macOS AI engineer desktop distribution", "prob": 0.5, "hours": 3.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Publish a Raycast Store extension via PR to raycast/extensions letting engineers inspect SQLite/remote CAS task leases, approve 1-use escalations, and view token savings from Cmd+Space.", "next_steps": ["Implement 3 Raycast commands: Inspect Active Leases, Approve Human Escalation Token, and Audit Trace Waste.", "Pass ray lint and Raycast Store screenshot guidelines.", "Open PR against github.com/raycast/extensions."], "links": [{"label": "Raycast Store", "url": "https://www.raycast.com/store"}, {"label": "Raycast Developer Docs", "url": "https://developers.raycast.com/"}, {"label": "raycast/extensions Repo", "url": "https://github.com/raycast/extensions"}], "prob_pct": 50.0, "ev_usd": 3250.0, "risk_adj_ev_usd": 2762.5, "ev_per_hr": 928.57, "priority_score": 876.98, "rank": 40}, {"id": "ACT-49", "title": "Slack Marketplace & Discord App Directory Approval Gate Bots ($99/mo)", "category": "Monetization", "status_tag": "In Sprint", "auto_mode": "Needs API/MCP Key", "auth_needed": "Needs: Slack App Client ID/Signing Secret + Discord Application Bot Token + Stripe checkout webhook.", "deadline_label": "14-21 Days", "deadline_days": 18.0, "upside_usd": 28000, "pool_note": "Free 50 approvals/mo -> $99/mo Enterprise Audit Tier", "prob": 0.28, "hours": 8.0, "dilution": "0% Non-Dilutive", "margin_pct": 92, "public_safe": true, "summary": "Distribute official Slack & Discord bots that deliver HMAC-signed, time-limited one-use Human Escalation Envelopes when autonomous agents hit high-risk side effects.", "next_steps": ["Connect AutonomousControlPlane.mint_human_escalation_packet to interactive Slack Block Kit & Discord Components.", "Enforce cryptographic single-use consumption + bitemporal audit log export.", "Submit to slack.com/marketplace and discord.com/discovery/applications."], "links": [{"label": "Slack Marketplace", "url": "https://slack.com/marketplace"}, {"label": "Slack Distribution Docs", "url": "https://docs.slack.dev/app-management/distribution/"}, {"label": "Discord App Directory", "url": "https://discord.com/discovery/applications"}, {"label": "Discord Developer Docs", "url": "https://docs.discord.com/developers/intro"}], "prob_pct": 28.0, "ev_usd": 7840.0, "risk_adj_ev_usd": 6664.0, "ev_per_hr": 980.0, "priority_score": 876.84, "rank": 41}, {"id": "ACT-33", "title": "Self-Managing Grant, Pitch & Opportunity Control Plane SaaS", "category": "Monetization", "status_tag": "In Sprint", "deadline_label": "14-21 Days", "deadline_days": 18.0, "upside_usd": 45000, "pool_note": "$199/mo founder copilot + custom lab setup", "prob": 0.25, "hours": 12.0, "dilution": "0% Non-Dilutive", "margin_pct": 90, "public_safe": true, "auto_mode": "95% Agent Auto", "auth_needed": "Already built in src/autonomous_execution_control_plane.py! Needs Stripe link when taking external subscribers.", "summary": "Productize our AutonomousControlPlane: HTTP 200 drift detection, Beta-Binomial EV/hr knapsack scheduling, tailored pitch compilation, and 1-click human approval links.", "next_steps": ["Expose AutonomousControlPlane over stateless HTTP + MCP tools.", "Add daily cron endpoint-drift checker and one-use confirmation email/webhook dispatch."], "links": [{"label": "Live Roadmap App", "url": "https://aidonerightcorp.github.io/metered-mcp-finops-gate/"}], "prob_pct": 25.0, "ev_usd": 11250.0, "risk_adj_ev_usd": 9562.5, "ev_per_hr": 937.5, "priority_score": 838.82, "rank": 42}, {"id": "ACT-47", "title": "Stripe App Marketplace: Counterfactual AI FinOps Billing Ledger", "category": "Monetization", "status_tag": "In Sprint", "auto_mode": "Needs API/MCP Key", "auth_needed": "Needs: Stripe Developer account + Stripe CLI app upload sign-off to list on marketplace.stripe.com.", "deadline_label": "14-21 Days", "deadline_days": 20.0, "upside_usd": 32000, "pool_note": "Automated 20% savings-share billing inside Stripe UI", "prob": 0.25, "hours": 9.0, "dilution": "0% Non-Dilutive", "margin_pct": 91, "public_safe": true, "summary": "List a Stripe App + @stripe/ai toolkit integration that renders audited LLM token savings directly inside Stripe Dashboard and automates 20% performance-fee usage metering.", "next_steps": ["Build Stripe UI Extension drawer showing weekly baseline tokens vs. fenced 0-token Task Object hits.", "Wire Stripe Billing Meter Events to ShadowWasteAuditor verified savings records.", "Submit for Stripe App Marketplace review to tap CFO/RevOps search traffic."], "links": [{"label": "Stripe App Marketplace", "url": "https://marketplace.stripe.com/"}, {"label": "Stripe Apps Docs", "url": "https://docs.stripe.com/stripe-apps"}, {"label": "Stripe AI & Agent Toolkit", "url": "https://github.com/stripe/ai"}], "prob_pct": 25.0, "ev_usd": 8000.0, "risk_adj_ev_usd": 6800.0, "ev_per_hr": 888.89, "priority_score": 791.53, "rank": 43}, {"id": "ACT-32", "title": "Zero-Magic-Number & Conformance Gate GitHub App ($49-$199/mo)", "category": "Monetization", "status_tag": "In Sprint", "deadline_label": "10-14 Days to Launch", "deadline_days": 14.0, "upside_usd": 30000, "pool_note": "$2.5k/mo B2B DevTools SaaS target", "prob": 0.28, "hours": 10.0, "dilution": "0% Non-Dilutive", "margin_pct": 93, "public_safe": true, "auto_mode": "Needs API/MCP Key", "auth_needed": "Needs: GitHub App registration (App ID + Private Key + Webhook Secret) + Stripe/Polar billing token.", "summary": "Commercialize our mechanical ZeroHardcodedValuesAstGate, DomainAgnosticNamingGate, and capability-parity scanner as a 1-click GitHub PR Check.", "next_steps": ["Package AST & schema conformance gates as a stateless Cloudflare Worker GitHub Webhook.", "List on GitHub Marketplace with free OSS tier + $99/mo private-repo team plan."], "links": [{"label": "Metered Gate Repo", "url": "https://github.com/aidonerightcorp/metered-mcp-finops-gate"}], "prob_pct": 28.0, "ev_usd": 8400.0, "risk_adj_ev_usd": 7140.0, "ev_per_hr": 840.0, "priority_score": 761.6, "rank": 44}, {"id": "ACT-30", "title": "Nous Research Atropos Exact-Verifier RL Environments", "category": "Ops & Launch", "status_tag": "Ready Now", "deadline_label": "Rolling Ecosystem PR", "deadline_days": 10.0, "upside_usd": 8000, "pool_note": "Direct Nous Research maintainer collaboration + compute", "prob": 0.4, "hours": 4.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: gh CLI + local Python exact verifiers (reversible circuits, SAT packing, CAS SQLite invariants).", "summary": "Contribute zero-hallucination deterministic RLVR environments (reversible gate synthesis & SQLite fencing) to NousResearch/atropos.", "next_steps": ["Wrap our constructive exact verifiers into Atropos async rollout environment classes.", "Open clean upstream PR/example linking our Hermes Marketplace plugin lineage."], "links": [{"label": "NousResearch/atropos", "url": "https://github.com/NousResearch/atropos"}], "prob_pct": 40.0, "ev_usd": 3200.0, "risk_adj_ev_usd": 2720.0, "ev_per_hr": 800.0, "priority_score": 741.82, "rank": 45}, {"id": "ACT-05", "title": "Agent Commerce & x402 Metered MCP Prize Track Entry", "category": "Prize Track", "status_tag": "Ready Now", "deadline_label": "Active (Nov-Dec 2026)", "deadline_days": 12.0, "upside_usd": 12500, "pool_note": "$25,000+ prize pool", "prob": 0.22, "hours": 4.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Deploy stateless Edge V8 Isolate x402 MCP Worker (worker.mjs) + SQLite WAL anti-replay gate and record a 60s retry-storm demo.", "next_steps": ["Deploy cloudflare_edge_x402_mcp_worker/worker.mjs to an isolated external Workers subdomain.", "Show live curl test: unfunded -> HTTP 402 x402-v1, settled -> HTTP 200, duplicate retry -> HTTP 402 (0 double-charges).", "Submit metered-mcp-finops-gate repo + live endpoint."], "links": [{"label": "Metered MCP FinOps Repo", "url": "https://github.com/aidonerightcorp/metered-mcp-finops-gate"}], "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: gh CLI + Cloudflare Workers CLI + local explainroo GPU video renderer.", "prob_pct": 22.0, "ev_usd": 2750.0, "risk_adj_ev_usd": 2337.5, "ev_per_hr": 687.5, "priority_score": 629.33, "rank": 46}, {"id": "ACT-31", "title": "Hermes Desktop SDK Live Lease & Effort Telemetry Pane", "category": "Ops & Launch", "status_tag": "Ready Now", "deadline_label": "Post-PR v0.2.0 Upgrade", "deadline_days": 12.0, "upside_usd": 6000, "pool_note": "Featured Desktop Marketplace UI showcase", "prob": 0.45, "hours": 4.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: gh CLI + local Node/Playwright screenshot verification.", "summary": "Build a Rule-8-compliant @hermes/plugin-sdk React Desktop tab displaying live lease_epoch timelines, blocked zombie writes, and token savings.", "next_steps": ["Implement desktop/plugin.js strictly via @hermes/plugin-sdk (zero DOM/prototype patching).", "Submit clean v0.2.0 SHA-bump PR once initial PR #151420 is reviewed."], "links": [{"label": "Fenced Task Loop Repo", "url": "https://github.com/aidonerightcorp/fenced-task-loop"}], "prob_pct": 45.0, "ev_usd": 2700.0, "risk_adj_ev_usd": 2295.0, "ev_per_hr": 600.0, "priority_score": 549.23, "rank": 47}, {"id": "ACT-63", "title": "Z Fellows 1-Week Technical Sprint ($10,000 @ $1B Cap SAFE)", "category": "Fundraising / VC", "status_tag": "Backlog", "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Agent preps technical demo reel & traction brief. Needs: founder application + SAFE signature if opting into venture track.", "deadline_label": "Rolling Cohort", "deadline_days": 30.0, "upside_usd": 10000, "pool_note": "$10k on $1B Valuation Cap SAFE (~0.001% dilution)", "prob": 0.14, "hours": 2.5, "dilution": "Uncapped MFN SAFE", "margin_pct": 100, "public_safe": true, "summary": "Cory Levy's fast 1-week technical founder cohort providing $10,000 at a near-zero-dilution $1B cap plus dense Silicon Valley angel/founder warm introductions.", "next_steps": ["Lead application with live deployed agent fabric, 80.66% token-reduction benchmark, and open-source ecosystem PRs.", "Use cohort week strictly to close B2B FinOps design partners among fellow technical founders."], "links": [{"label": "Z Fellows", "url": "https://www.zfellows.com/"}], "prob_pct": 14.0, "ev_usd": 1400.0, "risk_adj_ev_usd": 1190.0, "ev_per_hr": 560.0, "priority_score": 491.35, "rank": 48}, {"id": "ACT-27", "title": "Hermes Marketplace Plugin #2: Bitemporal Context & Memory Engine", "category": "Prize Track", "status_tag": "Ready Now", "deadline_label": "Wed Nov 11, 5:00 PM EST", "deadline_days": 3.1, "upside_usd": 5000, "pool_note": "2nd Hermes Marketplace listing + runner-up/top-5 shot", "prob": 0.28, "hours": 3.5, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: gh CLI (aidonerightcorp) + local hermes plugins doctor. Only 30s X post + Typeform if entering separately.", "summary": "Wire our <320B compaction-proof session hydrator + pre-filtered BM25/Vector RRF store into Hermes ctx.register_context_engine() & register_memory_provider().", "next_steps": ["Package zero-dependency SQLite FTS5 + bitemporal (valid_from, valid_to) memory/context plugin.", "Validate capability parity via hermes plugins doctor --ci (0 core overrides, prompt-cache sacred).", "Publish standalone repo + optional second catalog PR for permanent Hermes Marketplace distribution."], "links": [{"label": "Fenced Loop Plugin", "url": "https://github.com/aidonerightcorp/fenced-task-loop"}, {"label": "Catalog PR #151420", "url": "https://github.com/NousResearch/hermes-agent/pull/151420"}], "prob_pct": 28.0, "ev_usd": 1400.0, "risk_adj_ev_usd": 1190.0, "ev_per_hr": 400.0, "priority_score": 422.93, "rank": 49}, {"id": "ACT-14", "title": "Coinbase CDP / Base x402 Builder Microgrant", "category": "Grant / Credits", "status_tag": "Ready Now", "deadline_label": "Rolling Monthly", "deadline_days": 15.0, "upside_usd": 10000, "pool_note": "$3,000-$30,000 non-dilutive grant", "prob": 0.22, "hours": 5.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Submit metered-mcp-finops-gate + stateless Edge x402 MCP Worker for Base/CDP agentic payment infrastructure grant.", "next_steps": ["Add optional EIP-712 / x402 facilitator signature verifier module alongside local HMAC challenge.", "Submit live public GitHub repo + interactive demo endpoint."], "links": [{"label": "Metered x402 Repo", "url": "https://github.com/aidonerightcorp/metered-mcp-finops-gate"}], "auto_mode": "Agent + 30s Sign-Off", "auth_needed": "Already authed: public GitHub repo + Worker. Needs: Base/CDP wallet address for USDC grant payout + 30s form submit.", "prob_pct": 22.0, "ev_usd": 2200.0, "risk_adj_ev_usd": 1870.0, "ev_per_hr": 440.0, "priority_score": 397.38, "rank": 50}, {"id": "ACT-13", "title": "Algora.io & Polar.sh Paid Open-Source AI Bounties", "category": "Monetization", "status_tag": "Ready Now", "deadline_label": "Immediate (1-5 Days)", "deadline_days": 3.0, "upside_usd": 4500, "pool_note": "$250-$5,000 per merged PR (3 PR pack)", "prob": 0.45, "hours": 6.0, "dilution": "0% Non-Dilutive", "margin_pct": 98, "public_safe": true, "summary": "Zero sales cycle cash + maintainer relationships: solve scoped MCP, SQLite concurrency, and agent-harness bounties using fault_localized_patch_verifier.", "next_steps": ["Filter active Algora.io bounties >= $500 in Python, TypeScript, and Rust AI agent repos.", "Run local reproducer + AST fault localization + regression test before opening PR.", "Collect instant payout on merge."], "links": [{"label": "Algora Home", "url": "https://algora.io/"}, {"label": "Polar.sh OSS Funding", "url": "https://polar.sh/"}], "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: gh CLI for PRs + local pytest/AST verifier. Needs: one-time GitHub OAuth link on algora.io / polar.sh + Stripe payout connect.", "prob_pct": 45.0, "ev_usd": 2025.0, "risk_adj_ev_usd": 1721.25, "ev_per_hr": 337.5, "priority_score": 358.59, "rank": 51}, {"id": "ACT-20", "title": "NFL Big Data Bowl 2027 (Sensor Tracking Prize Track)", "category": "Prize Track", "status_tag": "Backlog", "deadline_label": "2 Months Left", "deadline_days": 60.0, "upside_usd": 25000, "pool_note": "$100,000 pool (only 534 teams!)", "prob": 0.18, "hours": 24.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Judged notebook + visual storytelling competition with 10x fewer teams (534) than standard competitions — huge edge for our 3D WebGL + Explainroo visuals.", "next_steps": ["Ingest Combine + tracking series through leak-free bitemporal_oof_hill_climber.", "Render custom 3D kinematic player-trajectory surface + publication-grade Paper & Ink charts."], "links": [{"label": "Kaggle Competitions", "url": "https://www.kaggle.com/competitions"}], "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: kaggle API CLI + local RTX 3060 3D WebGL + Explainroo studio.", "prob_pct": 18.0, "ev_usd": 4500.0, "risk_adj_ev_usd": 3825.0, "ev_per_hr": 187.5, "priority_score": 161.99, "rank": 52}, {"id": "ACT-36", "title": "PTCG AI Battle Simulation & Self-Play Policy Evolution", "category": "Prize Track", "status_tag": "Backlog", "deadline_label": "60 Days Left", "deadline_days": 60.0, "upside_usd": 10000, "pool_note": "Simulation track + strategy showcase", "prob": 0.18, "hours": 14.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: kaggle API CLI + ZeroHardcodedValuesAstGate island evolution engine.", "summary": "Evolve compact, zero-epoch heuristic value weights (`ConstructivePolytopeNeuronDrafter`) inside fast local self-play islands.", "next_steps": ["Compile legal-move + prize-trade lookahead scorer into microsecond float32 ReLU weights.", "Run 4-island tournament selection locally on CPU before submitting agent."], "links": [{"label": "Kaggle Competitions", "url": "https://www.kaggle.com/competitions"}], "prob_pct": 18.0, "ev_usd": 1800.0, "risk_adj_ev_usd": 1530.0, "ev_per_hr": 128.57, "priority_score": 111.08, "rank": 53}, {"id": "ACT-26", "title": "Name That LLM ($50,000 Model Fingerprinting)", "category": "Prize Track", "status_tag": "Backlog", "deadline_label": "2 Months Left", "deadline_days": 60.0, "upside_usd": 20000, "pool_note": "$50,000 pool (5,139 teams)", "prob": 0.14, "hours": 22.0, "dilution": "0% Non-Dilutive", "margin_pct": 100, "public_safe": true, "summary": "Combine 3-gram subword frequencies, punctuation/cadence entropy, and out-of-fold calibrated gradient boosting to classify generator families.", "next_steps": ["Extract byte/char n-gram TF-IDF + structural formatting fingerprints.", "Enforce strict prompt-grouped cross-validation to prevent topic leakage."], "links": [{"label": "Kaggle Competitions", "url": "https://www.kaggle.com/competitions"}], "auto_mode": "95% Agent Auto", "auth_needed": "Already authed: kaggle API CLI + local CPU feature/GBDT pipeline.", "prob_pct": 14.0, "ev_usd": 2800.0, "risk_adj_ev_usd": 2380.0, "ev_per_hr": 127.27, "priority_score": 109.96, "rank": 54}]};
-const STORAGE_KEY = "prioritized_roadmap_done_v1";
-
-let state = {
-  cat: "ALL",
-  status: "ALL",
-  autoMode: "ALL",
-  dilution: "ALL",
-  maxHours: 30,
-  query: "",
-  sortKey: "rank",
-  sortAsc: true,
-  expanded: new Set(["ACT-01", "ACT-02"]),
-  done: new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]")),
-  knapsackBudget: null,
-  knapsackSelected: new Set(),
-  onlyKnapsack: false,
-};
-
-function saveDone() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(state.done)));
-}
-
-function fmtUsd(v) {
-  return "$" + Math.round(v).toLocaleString("en-US");
-}
-
-function catClass(cat) {
-  if (cat.startsWith("Prize")) return "cat-Prize";
-  if (cat.startsWith("Grant")) return "cat-Grant";
-  if (cat.startsWith("Fundraising")) return "cat-Fundraising";
-  if (cat.startsWith("Ops")) return "cat-Ops";
-  return "cat-" + cat;
-}
-
-function autoClass(mode) {
-  if (!mode) return "auto-key";
-  if (mode.startsWith("95%")) return "auto-ready";
-  if (mode.includes("30s")) return "auto-sign";
-  return "auto-key";
-}
-
-function solveKnapsack(budgetHours) {
-  const unit = 4; // quarter-hour integer DP grid
-  const cap = Math.round(budgetHours * unit);
-  const candidates = CATALOG.rows.filter(r => !state.done.has(r.id));
-  const dp = new Array(cap + 1).fill(0);
-  const pick = Array.from({ length: candidates.length }, () => new Uint8Array(cap + 1));
-
-  for (let i = 0; i < candidates.length; i++) {
-    const w = Math.max(1, Math.round(candidates[i].hours * unit));
-    const val = candidates[i].ev_usd;
-    for (let c = cap; c >= w; c--) {
-      if (dp[c - w] + val > dp[c]) {
-        dp[c] = dp[c - w] + val;
-        pick[i][c] = 1;
-      }
-    }
-  }
-  const chosen = new Set();
-  let rem = cap;
-  for (let i = candidates.length - 1; i >= 0; i--) {
-    if (pick[i][rem] === 1) {
-      chosen.add(candidates[i].id);
-      rem -= Math.max(1, Math.round(candidates[i].hours * unit));
-    }
-  }
-  return chosen;
-}
-
-function filteredRows() {
-  const q = state.query.trim().toLowerCase();
-  const urgentDays = CATALOG.runtime_constants.urgent_days_ceiling;
-  let list = CATALOG.rows.filter(r => {
-    const isDone = state.done.has(r.id);
-    if (state.cat === "URGENT" && r.deadline_days > urgentDays) return false;
-    if (state.cat !== "ALL" && state.cat !== "URGENT" && r.category !== state.cat) return false;
-    if (state.status === "OPEN_ONLY" && isDone) return false;
-    if (state.status === "DONE_ONLY" && !isDone) return false;
-    if (!["ALL", "OPEN_ONLY", "DONE_ONLY"].includes(state.status) && r.status_tag !== state.status) return false;
-    if (state.autoMode !== "ALL" && (r.auto_mode || "") !== state.autoMode) return false;
-    if (state.dilution === "NON_DILUTIVE" && !r.dilution.startsWith("0%")) return false;
-    if (state.dilution === "EQUITY" && r.dilution.startsWith("0%")) return false;
-    if (r.hours > state.maxHours) return false;
-    if (state.onlyKnapsack && state.knapsackBudget && !state.knapsackSelected.has(r.id)) return false;
-    if (q) {
-      const hay = (
-        r.id + " " + r.title + " " + r.category + " " + r.summary + " " +
-        r.pool_note + " " + (r.auto_mode || "") + " " + (r.auth_needed || "") + " " + r.next_steps.join(" ")
-      ).toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
-    return true;
-  });
-
-  list.sort((a, b) => {
-    let va = state.sortKey === "done" ? (state.done.has(a.id) ? 1 : 0) : a[state.sortKey];
-    let vb = state.sortKey === "done" ? (state.done.has(b.id) ? 1 : 0) : b[state.sortKey];
-    if (typeof va === "string") {
-      const cmp = va.localeCompare(vb);
-      return state.sortAsc ? cmp : -cmp;
-    }
-    return state.sortAsc ? (va - vb) : (vb - va);
-  });
-  return list;
-}
-
-function render() {
-  const rows = filteredRows();
-  const tbody = document.getElementById("tableBody");
-  tbody.innerHTML = "";
-
-  let sumEv = 0;
-  let sumUpside = 0;
-  let sumHours = 0;
-
-  for (const r of rows) {
-    const isDone = state.done.has(r.id);
-    const isExp = state.expanded.has(r.id);
-    const isKnap = state.knapsackBudget && state.knapsackSelected.has(r.id);
-    sumEv += r.ev_usd;
-    sumUpside += r.upside_usd;
-    sumHours += r.hours;
-
-    const tr = document.createElement("tr");
-    tr.className = "main-row" + (isDone ? " done-row" : "") + (isKnap ? " knapsack-hit" : "");
-
-    const urgentBadge = r.deadline_days <= CATALOG.runtime_constants.urgent_days_ceiling
-      ? `<span class="badge urgent-pill">Urgent</span>` : "";
-    const knapBadge = isKnap ? `<span class="badge knap-pill">&#9733; In ${state.knapsackBudget}h Sprint</span>` : "";
-    const autoBadge = r.auto_mode ? `<span class="badge ${autoClass(r.auto_mode)}">${r.auto_mode}</span>` : "";
-    const marginText = r.category === "Monetization" ? `${r.margin_pct}% gross margin` : r.dilution;
-
-    tr.innerHTML = `
-      <td><input type="checkbox" data-done="${r.id}" ${isDone ? "checked" : ""} aria-label="Mark ${r.title} done"></td>
-      <td class="num"><strong>#${r.rank}</strong></td>
-      <td class="title-cell">
-        <div class="item-title" data-toggle="${r.id}">
-          <span>${isExp ? "&#9662;" : "&#9656;"}</span>
-          <span>${r.title}</span>
-        </div>
-        ${urgentBadge}${knapBadge}${autoBadge}
-        <div class="item-summary">${r.summary}</div>
-      </td>
-      <td><span class="badge ${catClass(r.category)}">${r.category}</span></td>
-      <td><strong>${r.status_tag}</strong></td>
-      <td>${r.deadline_label}</td>
-      <td class="num"><strong>${fmtUsd(r.upside_usd)}</strong><div class="item-summary">${r.pool_note}</div></td>
-      <td class="num">${r.prob_pct.toFixed(0)}%</td>
-      <td class="num"><strong>${r.hours}h</strong></td>
-      <td class="num"><strong>${fmtUsd(r.ev_usd)}</strong></td>
-      <td class="num"><strong style="color:var(--teal);">${fmtUsd(r.ev_per_hr)}/h</strong></td>
-      <td>${marginText}</td>
-    `;
-    tbody.appendChild(tr);
-
-    const dtr = document.createElement("tr");
-    dtr.className = "detail-row" + (isExp ? " open" : "");
-    const stepsHtml = r.next_steps.map(s => `<li>${s}</li>`).join("");
-    const linksHtml = (r.links || []).map(
-      l => `<a class="link-chip" href="${l.url}" target="_blank" rel="noopener noreferrer">${l.label} &nearr;</a>`
-    ).join("");
-    const authHtml = r.auth_needed
-      ? `<div class="auth-note"><strong>Automation &amp; Required Auth (${r.auto_mode || "Standard"}):</strong> ${r.auth_needed}</div>`
-      : "";
-    dtr.innerHTML = `
-      <td colspan="12">
-        <div class="detail-box">
-          <div>
-            <h4>Concrete Execution Steps (${r.id})</h4>
-            <ol>${stepsHtml}</ol>
-            ${authHtml}
-          </div>
-          <div>
-            <h4>Direct Links &amp; Built Assets</h4>
-            <div class="link-chips">${linksHtml}</div>
-          </div>
-        </div>
-      </td>
-    `;
-    tbody.appendChild(dtr);
-  }
-
-  document.getElementById("kpiCount").textContent = `${rows.length} / ${CATALOG.rows.length}`;
-  document.getElementById("kpiDoneSub").textContent = `${state.done.size} marked completed`;
-  document.getElementById("kpiEv").textContent = fmtUsd(sumEv);
-  document.getElementById("kpiUpsideSub").textContent = `Target pool sum: ${fmtUsd(sumUpside)}`;
-  document.getElementById("kpiHours").textContent = `${sumHours.toFixed(2).replace(/\.00$/, "")}h`;
-  document.getElementById("kpiEvHr").textContent = sumHours > 0 ? `${fmtUsd(sumEv / sumHours)}/h` : "$0/h";
-
-  document.querySelectorAll("thead th[data-sort]").forEach(th => {
-    const key = th.getAttribute("data-sort");
-    const base = th.getAttribute("data-label") || th.textContent.replace(/ [▲▼]$/, "");
-    th.setAttribute("data-label", base);
-    th.textContent = key === state.sortKey ? `${base} ${state.sortAsc ? "▲" : "▼"}` : base;
-  });
-
-  const banner = document.getElementById("knapBanner");
-  if (state.knapsackBudget) {
-    let kh = 0, kev = 0;
-    CATALOG.rows.forEach(r => {
-      if (state.knapsackSelected.has(r.id)) { kh += r.hours; kev += r.ev_usd; }
-    });
-    document.getElementById("knapSummaryText").innerHTML =
-      `<strong>Optimal ${state.knapsackBudget}h Knapsack:</strong> Selected <strong>${state.knapsackSelected.size}</strong> actions using <strong>${kh.toFixed(2).replace(/\.00$/, "")}h</strong> &rarr; Expected Value <strong>${fmtUsd(kev)}</strong> (<strong>${fmtUsd(kev / Math.max(0.25, kh))}/h</strong>).`;
-    banner.classList.add("visible");
-    document.getElementById("btnClearKnap").style.display = "inline-block";
-  } else {
-    banner.classList.remove("visible");
-    document.getElementById("btnClearKnap").style.display = "none";
-  }
-}
-
-document.getElementById("categoryPills").addEventListener("click", e => {
-  const btn = e.target.closest("button[data-cat]");
-  if (!btn) return;
-  state.cat = btn.getAttribute("data-cat");
-  document.querySelectorAll("#categoryPills button").forEach(b => b.classList.remove("active-pill"));
-  btn.classList.add("active-pill");
-  render();
-});
-
-document.getElementById("knapsackRow").addEventListener("click", e => {
-  const btn = e.target.closest("button[data-knap]");
-  if (!btn) return;
-  const hrs = Number(btn.getAttribute("data-knap"));
-  state.knapsackBudget = hrs;
-  state.knapsackSelected = solveKnapsack(hrs);
-  document.querySelectorAll("#knapsackRow button[data-knap]").forEach(b => b.classList.remove("active-pill"));
-  btn.classList.add("active-pill");
-  render();
-});
-
-document.getElementById("btnClearKnap").addEventListener("click", () => {
-  state.knapsackBudget = null;
-  state.knapsackSelected = new Set();
-  state.onlyKnapsack = false;
-  document.getElementById("chkOnlyKnap").checked = false;
-  document.querySelectorAll("#knapsackRow button[data-knap]").forEach(b => b.classList.remove("active-pill"));
-  render();
-});
-
-document.getElementById("chkOnlyKnap").addEventListener("change", e => {
-  state.onlyKnapsack = e.target.checked;
-  render();
-});
-
-document.getElementById("searchInput").addEventListener("input", e => { state.query = e.target.value; render(); });
-document.getElementById("statusSelect").addEventListener("change", e => { state.status = e.target.value; render(); });
-document.getElementById("autoSelect").addEventListener("change", e => { state.autoMode = e.target.value; render(); });
-document.getElementById("dilutionSelect").addEventListener("change", e => { state.dilution = e.target.value; render(); });
-document.getElementById("btnAuthGuide").addEventListener("click", () => {
-  document.getElementById("authPanel").classList.toggle("open");
-});
-document.getElementById("maxHoursRange").addEventListener("input", e => {
-  state.maxHours = Number(e.target.value);
-  document.getElementById("maxHoursLabel").textContent = `${state.maxHours}h`;
-  render();
-});
-
-document.querySelectorAll("thead th[data-sort]").forEach(th => {
-  th.addEventListener("click", () => {
-    const k = th.getAttribute("data-sort");
-    if (state.sortKey === k) {
-      state.sortAsc = !state.sortAsc;
-    } else {
-      state.sortKey = k;
-      state.sortAsc = ["rank", "title", "category", "status_tag", "deadline_days", "hours", "dilution"].includes(k);
-    }
-    render();
-  });
-});
-
-document.getElementById("tableBody").addEventListener("click", e => {
-  const toggle = e.target.closest("[data-toggle]");
-  if (toggle) {
-    const id = toggle.getAttribute("data-toggle");
-    if (state.expanded.has(id)) state.expanded.delete(id);
-    else state.expanded.add(id);
-    render();
-  }
-});
-
-document.getElementById("tableBody").addEventListener("change", e => {
-  const chk = e.target.closest("input[data-done]");
-  if (!chk) return;
-  const id = chk.getAttribute("data-done");
-  if (chk.checked) state.done.add(id);
-  else state.done.delete(id);
-  saveDone();
-  if (state.knapsackBudget) state.knapsackSelected = solveKnapsack(state.knapsackBudget);
-  render();
-});
-
-document.getElementById("btnExpandAll").addEventListener("click", e => {
-  const visible = filteredRows();
-  const allOpen = visible.every(r => state.expanded.has(r.id));
-  if (allOpen) state.expanded.clear();
-  else visible.forEach(r => state.expanded.add(r.id));
-  e.target.textContent = allOpen ? "Expand All Steps" : "Collapse All Steps";
-  render();
-});
-
-document.getElementById("btnReset").addEventListener("click", () => {
-  state.cat = "ALL";
-  state.status = "ALL";
-  state.autoMode = "ALL";
-  state.dilution = "ALL";
-  state.maxHours = 30;
-  state.query = "";
-  state.sortKey = "rank";
-  state.sortAsc = true;
-  state.knapsackBudget = null;
-  state.knapsackSelected = new Set();
-  state.onlyKnapsack = false;
-  document.getElementById("searchInput").value = "";
-  document.getElementById("statusSelect").value = "ALL";
-  document.getElementById("autoSelect").value = "ALL";
-  document.getElementById("dilutionSelect").value = "ALL";
-  document.getElementById("maxHoursRange").value = "30";
-  document.getElementById("maxHoursLabel").textContent = "30h";
-  document.getElementById("chkOnlyKnap").checked = false;
-  document.querySelectorAll("#categoryPills button, #knapsackRow button[data-knap]").forEach(b => b.classList.remove("active-pill"));
-  document.querySelector('#categoryPills button[data-cat="ALL"]').classList.add("active-pill");
-  render();
-});
-
-document.getElementById("btnExportCsv").addEventListener("click", () => {
-  const rows = filteredRows();
-  const cols = ["rank", "id", "title", "category", "status_tag", "auto_mode", "deadline_label", "upside_usd", "prob_pct", "hours", "ev_usd", "ev_per_hr", "dilution"];
-  const lines = [cols.join(",")];
-  rows.forEach(r => {
-    lines.push(cols.map(c => `"${String(r[c]).replace(/"/g, '""')}"`).join(","));
-  });
-  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "prioritized_next_steps.csv";
-  a.click();
-});
-
-render();
-</script>
 </body>
 </html>
