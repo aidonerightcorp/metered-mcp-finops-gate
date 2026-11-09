@@ -1,0 +1,1630 @@
+{
+  "schema_id": "universal.weight_space_programming_suite_grid.v1",
+  "suite_summary": {
+    "total_runtime_ms": 6661.1494,
+    "seed_count": 5,
+    "seeds": [
+      11,
+      23,
+      37,
+      53,
+      71
+    ],
+    "zero_magic_literals_enforced": true,
+    "domain_agnostic_naming_enforced": true,
+    "thinking_off_matched_baseline_enforced": true
+  },
+  "grid_governance": {
+    "schema_id": "universal.weight_space_programming_suite_grid.v1",
+    "initial_generation": 1,
+    "final_generation": 4,
+    "boundary_auto_expanded_axes": [
+      "evaluation_seed_count",
+      "attenuation_cutoff_milli",
+      "bundle_cardinality_k",
+      "dag_width"
+    ],
+    "ledger_summary": {
+      "registered_cells": 5,
+      "promoted_cells": 5,
+      "lifecycle_stage_depth": 7,
+      "terminal_stage": "promoted",
+      "disjoint_maker_checker_enforced": true,
+      "promoted_regimes": [
+        "deep_dag_decomposition_regime",
+        "matched_control_audit_regime",
+        "packed_speculative_dispatch_regime",
+        "subspace_cartridge_regime",
+        "symbolic_polytope_regime"
+      ]
+    },
+    "paradigm_suite_runtime_ms": 2087.0123
+  },
+  "control_experiment_0_confound_study": {
+    "study_id": "control_0_monolithic_reasoning_confound",
+    "seeds": [
+      11,
+      23,
+      37,
+      53,
+      71
+    ],
+    "problem_count": 500,
+    "total_parameter_count": 62500,
+    "perturbed_weight_count": 10,
+    "perturbed_weight_pct": 0.016,
+    "max_output_tokens": 512,
+    "unedited_verbose_truncation_rate_pct": 82.2,
+    "arms": {
+      "unedited_verbose_chain": {
+        "accuracy_mean_pct": 9.28,
+        "accuracy_std_pct": 1.51
+      },
+      "unconstrained_sparse_poke_lucky_prompt": {
+        "accuracy_mean_pct": 48.88,
+        "accuracy_std_pct": 2.85
+      },
+      "unconstrained_sparse_poke_unlucky_prompt": {
+        "accuracy_mean_pct": 12.88,
+        "accuracy_std_pct": 2.89
+      },
+      "prompt_exemplar_only": {
+        "accuracy_mean_pct": 51.84,
+        "accuracy_std_pct": 3.31
+      },
+      "unedited_direct_answer_thinking_off": {
+        "accuracy_mean_pct": 51.84,
+        "accuracy_std_pct": 3.31
+      },
+      "sparse_poke_direct_answer_thinking_off": {
+        "accuracy_mean_pct": 51.6,
+        "accuracy_std_pct": 3.11
+      },
+      "trace_grounded_weight_operator_thinking_off": {
+        "accuracy_mean_pct": 65.48,
+        "accuracy_std_pct": 0.64
+      }
+    },
+    "thinking_off_matched_delta_pp": -0.24,
+    "thinking_off_paired_t_stat": -1.395,
+    "sparse_poke_vs_thinking_off_statistically_null": true,
+    "trace_operator_gain_over_thinking_off_pp": 13.64,
+    "per_seed": [
+      {
+        "seed": 11,
+        "unedited_verbose_pct": 9.8,
+        "sparse_poke_lucky_prompt_pct": 52.4,
+        "sparse_poke_unlucky_prompt_pct": 12.4,
+        "prompt_exemplar_only_pct": 56.0,
+        "unedited_thinking_off_pct": 56.0,
+        "sparse_poke_thinking_off_pct": 55.4,
+        "trace_grounded_operator_thinking_off_pct": 65.0
+      },
+      {
+        "seed": 23,
+        "unedited_verbose_pct": 10.2,
+        "sparse_poke_lucky_prompt_pct": 46.8,
+        "sparse_poke_unlucky_prompt_pct": 13.2,
+        "prompt_exemplar_only_pct": 50.2,
+        "unedited_thinking_off_pct": 50.2,
+        "sparse_poke_thinking_off_pct": 50.6,
+        "trace_grounded_operator_thinking_off_pct": 66.0
+      },
+      {
+        "seed": 37,
+        "unedited_verbose_pct": 7.6,
+        "sparse_poke_lucky_prompt_pct": 46.0,
+        "sparse_poke_unlucky_prompt_pct": 10.2,
+        "prompt_exemplar_only_pct": 47.8,
+        "unedited_thinking_off_pct": 47.8,
+        "sparse_poke_thinking_off_pct": 47.6,
+        "trace_grounded_operator_thinking_off_pct": 65.8
+      },
+      {
+        "seed": 53,
+        "unedited_verbose_pct": 11.0,
+        "sparse_poke_lucky_prompt_pct": 51.4,
+        "sparse_poke_unlucky_prompt_pct": 17.6,
+        "prompt_exemplar_only_pct": 54.4,
+        "unedited_thinking_off_pct": 54.4,
+        "sparse_poke_thinking_off_pct": 54.0,
+        "trace_grounded_operator_thinking_off_pct": 66.0
+      },
+      {
+        "seed": 71,
+        "unedited_verbose_pct": 7.8,
+        "sparse_poke_lucky_prompt_pct": 47.8,
+        "sparse_poke_unlucky_prompt_pct": 11.0,
+        "prompt_exemplar_only_pct": 50.8,
+        "unedited_thinking_off_pct": 50.8,
+        "sparse_poke_thinking_off_pct": 50.4,
+        "trace_grounded_operator_thinking_off_pct": 64.6
+      }
+    ]
+  },
+  "granularity_phase_transition": {
+    "study_id": "granularity_phase_transition",
+    "seeds": [
+      11,
+      23,
+      37,
+      53,
+      71
+    ],
+    "total_elementary_subtasks": 32,
+    "cartridge_rank_r": 8,
+    "node_sweep": [
+      {
+        "node_count": 1,
+        "subtasks_per_node_avg": 32.0,
+        "effective_operator_rank": 51.2072,
+        "effective_operator_rank_std": 0.141,
+        "superposition_interference_ratio": 0.9198,
+        "unedited_thinking_off_accuracy_mean": 52.07,
+        "unedited_thinking_off_accuracy_std": 1.07,
+        "weight_programmed_accuracy_mean": 50.81,
+        "weight_programmed_accuracy_std": 1.27,
+        "gain_over_thinking_off_pp": -1.26
+      },
+      {
+        "node_count": 4,
+        "subtasks_per_node_avg": 8.0,
+        "effective_operator_rank": 22.6733,
+        "effective_operator_rank_std": 0.0857,
+        "superposition_interference_ratio": 0.6787,
+        "unedited_thinking_off_accuracy_mean": 51.73,
+        "unedited_thinking_off_accuracy_std": 0.49,
+        "weight_programmed_accuracy_mean": 74.12,
+        "weight_programmed_accuracy_std": 0.89,
+        "gain_over_thinking_off_pp": 22.39
+      },
+      {
+        "node_count": 12,
+        "subtasks_per_node_avg": 2.67,
+        "effective_operator_rank": 7.9018,
+        "effective_operator_rank_std": 0.0128,
+        "superposition_interference_ratio": 0.1085,
+        "unedited_thinking_off_accuracy_mean": 50.76,
+        "unedited_thinking_off_accuracy_std": 0.54,
+        "weight_programmed_accuracy_mean": 96.07,
+        "weight_programmed_accuracy_std": 0.26,
+        "gain_over_thinking_off_pp": 45.31
+      },
+      {
+        "node_count": 32,
+        "subtasks_per_node_avg": 1.0,
+        "effective_operator_rank": 3.0,
+        "effective_operator_rank_std": 0.0,
+        "superposition_interference_ratio": 0.0,
+        "unedited_thinking_off_accuracy_mean": 51.6,
+        "unedited_thinking_off_accuracy_std": 0.83,
+        "weight_programmed_accuracy_mean": 98.96,
+        "weight_programmed_accuracy_std": 0.25,
+        "gain_over_thinking_off_pp": 47.36
+      }
+    ],
+    "monolith_gain_pp": -1.26,
+    "atomic_gain_pp": 47.36,
+    "atomic_seed_std_pct": 0.25
+  },
+  "symbolic_abstraction_bridge": {
+    "study_id": "symbolic_abstraction_bridge",
+    "seeds": [
+      11,
+      23,
+      37,
+      53,
+      71
+    ],
+    "induced_symbol_count": 4,
+    "runtime_llm_tokens": 0,
+    "runtime_latency_mean_ms": 0.0059,
+    "max_symbolic_subspace_logit_drift": 0.0,
+    "methods": {
+      "raw_trace_weight_fit": {
+        "ood_holdout_accuracy_mean_pct": 49.05,
+        "ood_holdout_accuracy_std_pct": 7.87,
+        "symbolic_law_violation_rate_pct": 43.63
+      },
+      "pure_symbolic_compile": {
+        "ood_holdout_accuracy_mean_pct": 79.45,
+        "ood_holdout_accuracy_std_pct": 2.31,
+        "clean_invariant_accuracy_mean_pct": 100.0,
+        "semantic_nuance_accuracy_mean_pct": 26.02,
+        "symbolic_law_violation_rate_pct": 0.0
+      },
+      "hybrid_symbolic_plus_nullspace_residual": {
+        "ood_holdout_accuracy_mean_pct": 99.6,
+        "ood_holdout_accuracy_std_pct": 0.14,
+        "clean_invariant_accuracy_mean_pct": 100.0,
+        "semantic_nuance_accuracy_mean_pct": 98.56,
+        "symbolic_law_violation_rate_pct": 0.0
+      }
+    },
+    "hybrid_gain_over_raw_trace_pp": 50.55,
+    "hybrid_gain_over_pure_symbolic_pp": 20.15
+  },
+  "eight_weight_space_paradigms": {
+    "paradigm_1_symbolic_polytope": {
+      "paradigm_id": "paradigm_1_symbolic_polytope_compiler",
+      "gradient_epochs": 0,
+      "unedited_thinking_off_accuracy_mean_pct": 54.52,
+      "unedited_thinking_off_accuracy_std_pct": 3.47,
+      "compiled_accuracy_mean_pct": 100.0,
+      "compiled_accuracy_std_pct": 0.0,
+      "compile_latency_mean_ms": 0.0615
+    },
+    "paradigm_2_nullspace_injector": {
+      "paradigm_id": "paradigm_2_nullspace_route_fact_injector",
+      "unedited_thinking_off_post_cutoff_mean_pct": 0.0,
+      "unedited_thinking_off_post_cutoff_std_pct": 0.0,
+      "nullspace_edited_post_cutoff_mean_pct": 100.0,
+      "nullspace_edited_post_cutoff_std_pct": 0.0,
+      "anchor_accuracy_before_pct": 100.0,
+      "anchor_accuracy_after_nullspace_pct": 100.0,
+      "anchor_accuracy_after_unconstrained_pct": 66.67,
+      "unconstrained_anchor_degradation_pp": 33.33,
+      "max_anchor_logit_drift": 0.0
+    },
+    "paradigm_3_lora_xs_cartridge": {
+      "paradigm_id": "paradigm_3_subspace_basis_cartridge_bank",
+      "rank_r": 8,
+      "cartridge_scalar_count": 64,
+      "cartridge_float32_bytes": 256,
+      "cartridge_float16_bytes": 128,
+      "parameter_compression_pct": 99.61,
+      "unedited_thinking_off_accuracy_mean_pct": 12.5,
+      "unedited_thinking_off_accuracy_std_pct": 0.0,
+      "cartridge_holdout_accuracy_mean_pct": 100.0,
+      "cartridge_holdout_accuracy_std_pct": 0.0,
+      "cartridge_swap_latency_mean_ms": 0.01
+    },
+    "paradigm_4_wanda_ridge_slicer": {
+      "paradigm_id": "paradigm_4_trace_activation_channel_slicer",
+      "memory_reduction_pct": 75.0,
+      "surviving_channels": 32,
+      "total_channels": 128,
+      "naive_pruned_accuracy_mean_pct": 48.69,
+      "naive_pruned_accuracy_std_pct": 5.91,
+      "ridge_recalibrated_accuracy_mean_pct": 99.81,
+      "ridge_recalibrated_accuracy_std_pct": 0.28,
+      "recalibration_recovery_pp": 51.12
+    },
+    "paradigm_5_dare_ties_merger": {
+      "paradigm_id": "paradigm_5_spectral_task_vector_merger",
+      "worker_count": 4,
+      "naive_average_accuracy_mean_pct": 63.94,
+      "naive_average_accuracy_std_pct": 4.64,
+      "dare_ties_merged_accuracy_mean_pct": 96.69,
+      "dare_ties_merged_accuracy_std_pct": 1.65,
+      "gain_over_naive_merge_pp": 32.75
+    },
+    "paradigm_6_contrastive_steerer": {
+      "paradigm_id": "paradigm_6_contrastive_bias_steerer",
+      "runtime_extra_parameters": 0,
+      "token_burn_reduction_mean_pct": 82.87,
+      "token_burn_reduction_std_pct": 0.2,
+      "unsteered_budgeted_accuracy_mean_pct": 0.0,
+      "steered_holdout_accuracy_mean_pct": 99.83,
+      "steered_holdout_accuracy_std_pct": 0.23
+    },
+    "paradigm_7_hyper_modulator": {
+      "paradigm_id": "paradigm_7_trace_conditioned_hyper_modulator",
+      "inner_gradient_steps": 0,
+      "static_trunk_unseen_accuracy_mean_pct": 29.18,
+      "static_trunk_unseen_accuracy_std_pct": 3.03,
+      "hyper_modulated_unseen_accuracy_mean_pct": 93.76,
+      "hyper_modulated_unseen_accuracy_std_pct": 1.01,
+      "gain_over_static_pp": 64.58
+    },
+    "paradigm_8_rebasin_aligner": {
+      "paradigm_id": "paradigm_8_permutation_rebasin_aligner",
+      "individual_worker_accuracy_mean_pct": 99.88,
+      "naive_midpoint_accuracy_mean_pct": 49.56,
+      "naive_midpoint_accuracy_std_pct": 16.29,
+      "rebasin_aligned_midpoint_accuracy_mean_pct": 99.88,
+      "rebasin_aligned_midpoint_accuracy_std_pct": 0.17,
+      "barrier_elimination_gain_pp": 50.32
+    }
+  },
+  "universal_onet_cartridge_engine": {
+    "onet_release": "U.S. DOL O*NET 31.0 (CC BY 4.0)",
+    "taxonomy_counts": {
+      "major_soc_groups": 23,
+      "occupations": 1016,
+      "gwas": 41,
+      "iwas": 332,
+      "dwas": 2087,
+      "task_statements": 18838,
+      "official_task_to_dwa_edges": 24087,
+      "shared_multi_occupation_dwa_pct": 97.27
+    },
+    "three_tier_programmability_spectrum": {
+      "dwa_distribution": {
+        "tier_a_symbolic_polytope_count": 369,
+        "tier_b_nullspace_lora_xs_count": 693,
+        "tier_c_warm_prefix_steered_count": 1025,
+        "tier_a_pct": 17.68,
+        "tier_b_pct": 33.21,
+        "tier_c_pct": 49.11
+      },
+      "task_statement_distribution": {
+        "tier_a_symbolic_polytope_count": 4065,
+        "tier_b_nullspace_lora_xs_count": 6010,
+        "tier_c_warm_prefix_steered_count": 8763,
+        "tier_a_pct": 21.58,
+        "tier_b_pct": 31.9,
+        "tier_c_pct": 46.52,
+        "directly_weight_programmable_ab_pct": 53.48
+      },
+      "occupation_distribution": {
+        "dominant_tier_a_occupations": 106,
+        "dominant_tier_b_occupations": 262,
+        "dominant_tier_c_occupations": 648,
+        "mean_weight_programmable_ab_share_pct": 52.96
+      },
+      "major_soc_group_breakdown": [
+        {
+          "major_soc_group": "11",
+          "group_title": "Management Occupations",
+          "task_count": 1213,
+          "tier_a_pct": 19.37,
+          "tier_b_pct": 39.32,
+          "tier_c_pct": 41.3,
+          "weight_programmable_ab_pct": 58.7
+        },
+        {
+          "major_soc_group": "13",
+          "group_title": "Business and Analytical Operations",
+          "task_count": 988,
+          "tier_a_pct": 23.38,
+          "tier_b_pct": 46.15,
+          "tier_c_pct": 30.47,
+          "weight_programmable_ab_pct": 69.53
+        },
+        {
+          "major_soc_group": "15",
+          "group_title": "Computer and Mathematical Occupations",
+          "task_count": 770,
+          "tier_a_pct": 29.35,
+          "tier_b_pct": 48.18,
+          "tier_c_pct": 22.47,
+          "weight_programmable_ab_pct": 77.53
+        },
+        {
+          "major_soc_group": "17",
+          "group_title": "Architecture and Engineering Occupations",
+          "task_count": 1237,
+          "tier_a_pct": 19.48,
+          "tier_b_pct": 55.46,
+          "tier_c_pct": 25.06,
+          "weight_programmable_ab_pct": 74.94
+        },
+        {
+          "major_soc_group": "19",
+          "group_title": "Life, Physical, and Social Science Occupations",
+          "task_count": 1236,
+          "tier_a_pct": 18.04,
+          "tier_b_pct": 56.88,
+          "tier_c_pct": 25.08,
+          "weight_programmable_ab_pct": 74.92
+        },
+        {
+          "major_soc_group": "21",
+          "group_title": "Community and Social Service Occupations",
+          "task_count": 295,
+          "tier_a_pct": 13.9,
+          "tier_b_pct": 43.05,
+          "tier_c_pct": 43.05,
+          "weight_programmable_ab_pct": 56.95
+        },
+        {
+          "major_soc_group": "23",
+          "group_title": "Legal Analysis Occupations",
+          "task_count": 124,
+          "tier_a_pct": 26.61,
+          "tier_b_pct": 30.65,
+          "tier_c_pct": 42.74,
+          "weight_programmable_ab_pct": 57.26
+        },
+        {
+          "major_soc_group": "25",
+          "group_title": "Educational Instruction and Library Occupations",
+          "task_count": 1636,
+          "tier_a_pct": 29.22,
+          "tier_b_pct": 30.81,
+          "tier_c_pct": 39.98,
+          "weight_programmable_ab_pct": 60.02
+        },
+        {
+          "major_soc_group": "27",
+          "group_title": "Design, Media, and Technical Communication",
+          "task_count": 806,
+          "tier_a_pct": 15.76,
+          "tier_b_pct": 27.92,
+          "tier_c_pct": 56.33,
+          "weight_programmable_ab_pct": 43.67
+        },
+        {
+          "major_soc_group": "29",
+          "group_title": "Technical and Applied Clinical Practitioners",
+          "task_count": 1729,
+          "tier_a_pct": 21.75,
+          "tier_b_pct": 30.65,
+          "tier_c_pct": 47.6,
+          "weight_programmable_ab_pct": 52.4
+        },
+        {
+          "major_soc_group": "31",
+          "group_title": "Applied Care Support Occupations",
+          "task_count": 347,
+          "tier_a_pct": 24.78,
+          "tier_b_pct": 11.53,
+          "tier_c_pct": 63.69,
+          "weight_programmable_ab_pct": 36.31
+        },
+        {
+          "major_soc_group": "33",
+          "group_title": "Protective Service Occupations",
+          "task_count": 519,
+          "tier_a_pct": 26.78,
+          "tier_b_pct": 25.24,
+          "tier_c_pct": 47.98,
+          "weight_programmable_ab_pct": 52.02
+        },
+        {
+          "major_soc_group": "35",
+          "group_title": "Preparation and Serving Operations",
+          "task_count": 320,
+          "tier_a_pct": 20.0,
+          "tier_b_pct": 9.69,
+          "tier_c_pct": 70.31,
+          "weight_programmable_ab_pct": 29.69
+        },
+        {
+          "major_soc_group": "37",
+          "group_title": "Building and Grounds Maintenance Occupations",
+          "task_count": 164,
+          "tier_a_pct": 14.02,
+          "tier_b_pct": 17.07,
+          "tier_c_pct": 68.9,
+          "weight_programmable_ab_pct": 31.1
+        },
+        {
+          "major_soc_group": "39",
+          "group_title": "Personal Service Occupations",
+          "task_count": 617,
+          "tier_a_pct": 19.29,
+          "tier_b_pct": 14.91,
+          "tier_c_pct": 65.8,
+          "weight_programmable_ab_pct": 34.2
+        },
+        {
+          "major_soc_group": "41",
+          "group_title": "Commercial Distribution and Related Occupations",
+          "task_count": 427,
+          "tier_a_pct": 29.51,
+          "tier_b_pct": 26.7,
+          "tier_c_pct": 43.79,
+          "weight_programmable_ab_pct": 56.21
+        },
+        {
+          "major_soc_group": "43",
+          "group_title": "Office and Administrative Support Occupations",
+          "task_count": 975,
+          "tier_a_pct": 47.08,
+          "tier_b_pct": 18.15,
+          "tier_c_pct": 34.77,
+          "weight_programmable_ab_pct": 65.23
+        },
+        {
+          "major_soc_group": "45",
+          "group_title": "Agricultural, Fishing, and Forestry Occupations",
+          "task_count": 225,
+          "tier_a_pct": 21.33,
+          "tier_b_pct": 21.78,
+          "tier_c_pct": 56.89,
+          "weight_programmable_ab_pct": 43.11
+        },
+        {
+          "major_soc_group": "47",
+          "group_title": "Construction and Extraction Occupations",
+          "task_count": 1140,
+          "tier_a_pct": 8.6,
+          "tier_b_pct": 16.93,
+          "tier_c_pct": 74.47,
+          "weight_programmable_ab_pct": 25.53
+        },
+        {
+          "major_soc_group": "49",
+          "group_title": "Installation, Maintenance, and Repair Occupations",
+          "task_count": 1016,
+          "tier_a_pct": 12.3,
+          "tier_b_pct": 37.8,
+          "tier_c_pct": 49.9,
+          "weight_programmable_ab_pct": 50.1
+        },
+        {
+          "major_soc_group": "51",
+          "group_title": "Production and Fabrication Occupations",
+          "task_count": 2140,
+          "tier_a_pct": 17.2,
+          "tier_b_pct": 20.89,
+          "tier_c_pct": 61.92,
+          "weight_programmable_ab_pct": 38.08
+        },
+        {
+          "major_soc_group": "53",
+          "group_title": "Transportation and Material Moving Occupations",
+          "task_count": 914,
+          "tier_a_pct": 21.77,
+          "tier_b_pct": 22.65,
+          "tier_c_pct": 55.58,
+          "weight_programmable_ab_pct": 44.42
+        },
+        {
+          "major_soc_group": "55",
+          "group_title": "Tactical and Crew Operations",
+          "task_count": 0,
+          "tier_a_pct": 0.0,
+          "tier_b_pct": 0.0,
+          "tier_c_pct": 0.0,
+          "weight_programmable_ab_pct": 0.0
+        }
+      ]
+    },
+    "shared_dwa_cartridge_bank": {
+      "dwa_cartridge_count": 2087,
+      "rank_r": 8,
+      "bytes_per_cartridge_float32": 256,
+      "bytes_per_cartridge_float16": 128,
+      "total_bank_payload_bytes_float32": 534272,
+      "total_bank_payload_kib_float32": 521.75,
+      "total_bank_payload_kib_float16": 260.88,
+      "amortized_float32_bytes_per_occupational_task": 28.36,
+      "closed_form_bank_compile_ms": 409.8443,
+      "unedited_trunk_holdout_accuracy_pct": 7.22,
+      "lora_xs_bank_holdout_accuracy_pct": 99.1,
+      "tier_a_polytope_exact_accuracy_pct": 100.0,
+      "single_query_dispatch_latency_ms": 0.0097,
+      "heldout_eval_trace_count": 16696
+    },
+    "posted_job_scenarios": [
+      {
+        "scenario_id": "distributed_systems_reliability_engineer",
+        "soc_code": "15-1252.00",
+        "occupation_title": "Software Developers",
+        "posting_title": "Distributed Systems Reliability Engineer",
+        "clause_count": 6,
+        "tier_a_clauses": 2,
+        "tier_b_clauses": 3,
+        "tier_c_clauses": 1,
+        "weight_compiled_clause_share_pct": 83.33,
+        "estimated_token_burn_reduction_pct": 91.67,
+        "clauses": [
+          {
+            "clause": "Calculate service latency quantiles and error budget burn across telemetry windows",
+            "mapped_dwa_id": "4.A.1.b.3.c.2",
+            "mapped_dwa_title": "Compute gaming wins and losses.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Compile structured deployment configuration schemas and threshold guardrails",
+            "mapped_dwa_id": "4.A.2.a.2.c.3",
+            "mapped_dwa_title": "Compile data or documentation.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Analyze trace span anomalies and classify fault root-cause signatures",
+            "mapped_dwa_id": "4.A.2.a.4.f.4",
+            "mapped_dwa_title": "Analyze medical data to determine cause of death.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Configure automated canary routing weights and health check rules",
+            "mapped_dwa_id": "4.A.4.b.6.i.3",
+            "mapped_dwa_title": "Advise others on health and safety issues.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Review service dependency topology changes for capacity bottlenecks",
+            "mapped_dwa_id": "4.A.2.a.3.a.5",
+            "mapped_dwa_title": "Review license or permit applications.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Collaborate with cross-team leads to negotiate incident postmortem priorities",
+            "mapped_dwa_id": "4.A.4.a.7.b.10",
+            "mapped_dwa_title": "Negotiate contracts with clients or service providers.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          }
+        ]
+      },
+      {
+        "scenario_id": "analytical_laboratory_quality_specialist",
+        "soc_code": "19-4031.00",
+        "occupation_title": "Chemical Technicians",
+        "posting_title": "Analytical Laboratory Quality Specialist",
+        "clause_count": 6,
+        "tier_a_clauses": 3,
+        "tier_b_clauses": 0,
+        "tier_c_clauses": 3,
+        "weight_compiled_clause_share_pct": 50.0,
+        "estimated_token_burn_reduction_pct": 75.0,
+        "clauses": [
+          {
+            "clause": "Calibrate optical spectrometry instruments against certified reference standards",
+            "mapped_dwa_id": "4.A.3.a.2.d.4",
+            "mapped_dwa_title": "Assemble precision electronics or optical equipment.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          },
+          {
+            "clause": "Measure sample reagent concentrations and record batch tolerance metrics",
+            "mapped_dwa_id": "4.A.1.a.2.i.3",
+            "mapped_dwa_title": "Measure environmental characteristics.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Tabulate assay control charts and flag out-of-bounds drift intervals",
+            "mapped_dwa_id": "4.A.3.a.2.ao.2",
+            "mapped_dwa_title": "Lay out parts to prepare for assembly.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          },
+          {
+            "clause": "Analyze chromatographic peak profiles to classify trace impurities",
+            "mapped_dwa_id": "4.A.4.c.1.a.1",
+            "mapped_dwa_title": "Classify materials according to standard systems.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Prepare standardized technical quality reports for regulatory submission",
+            "mapped_dwa_id": "4.A.3.b.6.c.9",
+            "mapped_dwa_title": "Prepare technical reports for internal use.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Advise research teams on experimental protocol adjustments for novel compounds",
+            "mapped_dwa_id": "4.A.3.a.1.a.1",
+            "mapped_dwa_title": "Prepare compounds or solutions to be used for repairs.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          }
+        ]
+      },
+      {
+        "scenario_id": "industrial_automation_calibration_technician",
+        "soc_code": "17-3024.00",
+        "occupation_title": "Electro-Mechanical and Mechatronics Technologists and Technicians",
+        "posting_title": "Industrial Automation Calibration Technician",
+        "clause_count": 6,
+        "tier_a_clauses": 2,
+        "tier_b_clauses": 2,
+        "tier_c_clauses": 2,
+        "weight_compiled_clause_share_pct": 66.67,
+        "estimated_token_burn_reduction_pct": 83.33,
+        "clauses": [
+          {
+            "clause": "Measure actuator torque, thermal load, and encoder pulse counts on assembly cells",
+            "mapped_dwa_id": "4.A.1.b.3.a.16",
+            "mapped_dwa_title": "Measure materials or objects for installation or assembly.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Log preventive maintenance schedules and component serial records",
+            "mapped_dwa_id": "4.A.3.b.6.h.24",
+            "mapped_dwa_title": "Maintain repair or maintenance records.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Diagnose programmable logic controller fault codes across sensor buses",
+            "mapped_dwa_id": "4.A.2.b.1.f.2",
+            "mapped_dwa_title": "Diagnose medical conditions.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          },
+          {
+            "clause": "Inspect pneumatic valve manifolds and adjust proportional loop gains",
+            "mapped_dwa_id": "4.A.1.b.2.e.7",
+            "mapped_dwa_title": "Inspect facilities.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Test safety interlock circuits under simulated overload sequences",
+            "mapped_dwa_id": "4.A.1.b.2.l.9",
+            "mapped_dwa_title": "Test electrical circuits or components for proper functioning.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Instruct floor operators on updated equipment changeover procedures",
+            "mapped_dwa_id": "4.A.4.b.3.e.1",
+            "mapped_dwa_title": "Instruct workers to use equipment or perform technical procedures.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          }
+        ]
+      },
+      {
+        "scenario_id": "regulatory_compliance_audit_analyst",
+        "soc_code": "13-1041.00",
+        "occupation_title": "Compliance Officers",
+        "posting_title": "Regulatory Compliance Audit Analyst",
+        "clause_count": 6,
+        "tier_a_clauses": 3,
+        "tier_b_clauses": 1,
+        "tier_c_clauses": 2,
+        "weight_compiled_clause_share_pct": 66.67,
+        "estimated_token_burn_reduction_pct": 83.33,
+        "clauses": [
+          {
+            "clause": "Check filing deadlines, numeric disclosure thresholds, and mandatory form fields",
+            "mapped_dwa_id": "4.A.2.a.2.e.2",
+            "mapped_dwa_title": "Check employee information.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Tally control exception counts across quarterly operational logs",
+            "mapped_dwa_id": "4.A.3.b.6.h.28",
+            "mapped_dwa_title": "Maintain logs of production activities.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Audit vendor control documentation and classify risk tier exposure",
+            "mapped_dwa_id": "4.A.4.c.1.a.1",
+            "mapped_dwa_title": "Classify materials according to standard systems.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Compare internal policy clauses against updated statutory requirements",
+            "mapped_dwa_id": "4.A.4.b.6.h.2",
+            "mapped_dwa_title": "Advise others on matters of public policy.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Prepare structured remediation tracking matrices for oversight committees",
+            "mapped_dwa_id": "4.A.4.b.4.b.1",
+            "mapped_dwa_title": "Serve on institutional or departmental committees.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          },
+          {
+            "clause": "Mediate policy interpretation disputes across operational department leads",
+            "mapped_dwa_id": "4.A.4.a.7.a.3",
+            "mapped_dwa_title": "Mediate disputes.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          }
+        ]
+      },
+      {
+        "scenario_id": "supply_network_logistics_coordinator",
+        "soc_code": "13-1081.00",
+        "occupation_title": "Logisticians",
+        "posting_title": "Supply Network Logistics Coordinator",
+        "clause_count": 6,
+        "tier_a_clauses": 1,
+        "tier_b_clauses": 3,
+        "tier_c_clauses": 2,
+        "weight_compiled_clause_share_pct": 66.67,
+        "estimated_token_burn_reduction_pct": 83.33,
+        "clauses": [
+          {
+            "clause": "Calculate reorder point quantities, lead-time buffers, and pallet cube utilization",
+            "mapped_dwa_id": "4.A.1.b.3.c.2",
+            "mapped_dwa_title": "Compute gaming wins and losses.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Schedule carrier dispatch windows and enter manifest routing identifiers",
+            "mapped_dwa_id": "4.A.2.b.5.c.1",
+            "mapped_dwa_title": "Schedule appointments.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Monitor shipment transit milestones and classify customs clearance delays",
+            "mapped_dwa_id": "4.A.3.a.2.ap.2",
+            "mapped_dwa_title": "Package products for storage or shipment.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Evaluate freight lane cost-performance tradeoffs across regional hubs",
+            "mapped_dwa_id": "4.A.2.a.1.g.1",
+            "mapped_dwa_title": "Assess the cost effectiveness of products, projects, or services.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Configure warehouse slot allocation rules for seasonal throughput peaks",
+            "mapped_dwa_id": "4.A.4.b.4.h.7",
+            "mapped_dwa_title": "Manage budgets for appropriate resource allocation.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          },
+          {
+            "clause": "Negotiate contingency freight capacity terms during severe weather disruptions",
+            "mapped_dwa_id": "4.A.4.a.7.b.7",
+            "mapped_dwa_title": "Negotiate prices or other sales terms.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          }
+        ]
+      },
+      {
+        "scenario_id": "geospatial_telemetry_mapping_scientist",
+        "soc_code": "15-1299.02",
+        "occupation_title": "Geographic Information Systems Technologists and Technicians",
+        "posting_title": "Geospatial Telemetry Mapping Scientist",
+        "clause_count": 6,
+        "tier_a_clauses": 2,
+        "tier_b_clauses": 1,
+        "tier_c_clauses": 3,
+        "weight_compiled_clause_share_pct": 50.0,
+        "estimated_token_burn_reduction_pct": 75.0,
+        "clauses": [
+          {
+            "clause": "Compute coordinate datum transformations and elevation grid resolutions",
+            "mapped_dwa_id": "4.A.1.b.3.c.2",
+            "mapped_dwa_title": "Compute gaming wins and losses.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Index satellite tile metadata catalogs and sensor calibration timestamps",
+            "mapped_dwa_id": "4.A.3.a.2.l.5",
+            "mapped_dwa_title": "Cut tile, stone, or other masonry materials.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          },
+          {
+            "clause": "Classify land-cover change polygons from multi-spectral raster bands",
+            "mapped_dwa_id": "4.A.1.b.3.d.3",
+            "mapped_dwa_title": "Calculate geographic positions from survey data.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Analyze hydrological runoff vectors and validate topological network continuity",
+            "mapped_dwa_id": "4.A.2.a.4.l.2",
+            "mapped_dwa_title": "Analyze security of systems, network, or data.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Map infrastructure corridor alignments onto multi-layer spatial schemas",
+            "mapped_dwa_id": "4.A.3.a.2.f.3",
+            "mapped_dwa_title": "Mount materials or workpieces onto production equipment.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          },
+          {
+            "clause": "Present spatial scenario tradeoffs to regional planning stakeholders",
+            "mapped_dwa_id": "4.A.4.a.1.d.1",
+            "mapped_dwa_title": "Educate clients on financial planning topics.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          }
+        ]
+      },
+      {
+        "scenario_id": "procurement_contract_operations_specialist",
+        "soc_code": "13-1023.00",
+        "occupation_title": "Purchasing Agents, Except Wholesale, Retail, and Farm Products",
+        "posting_title": "Procurement Contract Operations Specialist",
+        "clause_count": 6,
+        "tier_a_clauses": 4,
+        "tier_b_clauses": 1,
+        "tier_c_clauses": 1,
+        "weight_compiled_clause_share_pct": 83.33,
+        "estimated_token_burn_reduction_pct": 91.67,
+        "clauses": [
+          {
+            "clause": "Compute unit-price volume tiers, rebate schedules, and invoice line variances",
+            "mapped_dwa_id": "4.A.1.b.3.c.4",
+            "mapped_dwa_title": "Compute debt repayment schedules.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Record supplier qualification dates and compliance bond expirations",
+            "mapped_dwa_id": "4.A.3.b.6.d.1",
+            "mapped_dwa_title": "Record information about environmental conditions.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Evaluate bid proposal matrices against technical specification rubrics",
+            "mapped_dwa_id": "4.A.3.b.6.g.5",
+            "mapped_dwa_title": "Prepare proposal documents or grant applications.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Review delivery service-level clauses and classify penalty trigger terms",
+            "mapped_dwa_id": "4.A.3.a.2.v.8",
+            "mapped_dwa_title": "Level machines or equipment.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Monitor supplier defect rates across incoming inspection batches",
+            "mapped_dwa_id": "4.A.4.c.3.c.7",
+            "mapped_dwa_title": "Distribute incoming mail.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Negotiate multi-year master supply terms with strategic equipment vendors",
+            "mapped_dwa_id": "4.A.4.a.7.b.7",
+            "mapped_dwa_title": "Negotiate prices or other sales terms.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          }
+        ]
+      },
+      {
+        "scenario_id": "environmental_sensor_field_engineer",
+        "soc_code": "17-2081.00",
+        "occupation_title": "Environmental Engineers",
+        "posting_title": "Environmental Sensor Field Engineer",
+        "clause_count": 6,
+        "tier_a_clauses": 2,
+        "tier_b_clauses": 2,
+        "tier_c_clauses": 2,
+        "weight_compiled_clause_share_pct": 66.67,
+        "estimated_token_burn_reduction_pct": 83.33,
+        "clauses": [
+          {
+            "clause": "Measure particulate emissions, dissolved oxygen levels, and flow rates",
+            "mapped_dwa_id": "4.A.1.b.3.a.5",
+            "mapped_dwa_title": "Measure radiation levels.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Compile hourly telemetry compliance tables and threshold exceedance alerts",
+            "mapped_dwa_id": "4.A.2.a.2.c.3",
+            "mapped_dwa_title": "Compile data or documentation.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Diagnose telemetry transducer drift and calibrate zero-span baselines",
+            "mapped_dwa_id": "4.A.2.b.1.f.2",
+            "mapped_dwa_title": "Diagnose medical conditions.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          },
+          {
+            "clause": "Analyze plume dispersion contours across meteorological regimes",
+            "mapped_dwa_id": "4.A.2.a.4.k.4",
+            "mapped_dwa_title": "Analyze business or financial data.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Evaluate containment retrofit designs against emission reduction targets",
+            "mapped_dwa_id": "4.A.2.a.1.j.1",
+            "mapped_dwa_title": "Evaluate project designs to determine adequacy or feasibility.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Advise municipal boards on long-horizon watershed remediation priorities",
+            "mapped_dwa_id": "4.A.4.a.7.b.8",
+            "mapped_dwa_title": "Negotiate contracts for environmental remediation, green energy, or renewable resources.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          }
+        ]
+      },
+      {
+        "scenario_id": "computational_data_pipeline_architect",
+        "soc_code": "15-1243.00",
+        "occupation_title": "Database Architects",
+        "posting_title": "Computational Data Pipeline Architect",
+        "clause_count": 6,
+        "tier_a_clauses": 3,
+        "tier_b_clauses": 2,
+        "tier_c_clauses": 1,
+        "weight_compiled_clause_share_pct": 83.33,
+        "estimated_token_burn_reduction_pct": 91.67,
+        "clauses": [
+          {
+            "clause": "Calculate partition cardinality bounds, retention windows, and storage byte budgets",
+            "mapped_dwa_id": "4.A.1.b.3.c.2",
+            "mapped_dwa_title": "Compute gaming wins and losses.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Compile schema evolution rules and deterministic null-constraint gates",
+            "mapped_dwa_id": "4.A.2.a.2.c.3",
+            "mapped_dwa_title": "Compile data or documentation.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Analyze query execution plans and classify join skew bottlenecks",
+            "mapped_dwa_id": "4.A.2.a.4.e.8",
+            "mapped_dwa_title": "Analyze costs and benefits of proposed designs or projects.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Configure incremental compaction schedules and replica consistency checks",
+            "mapped_dwa_id": "4.A.3.b.1.c.4",
+            "mapped_dwa_title": "Configure computer networks.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Audit lineage metadata graphs across upstream ingestion connectors",
+            "mapped_dwa_id": "4.A.1.a.1.a.1",
+            "mapped_dwa_title": "Review art or design materials.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Collaborate with domain leads to originate cross-organization data architecture",
+            "mapped_dwa_id": "4.A.4.b.1.c.9",
+            "mapped_dwa_title": "Represent the organization in external relations.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          }
+        ]
+      },
+      {
+        "scenario_id": "technical_documentation_curriculum_designer",
+        "soc_code": "27-3042.00",
+        "occupation_title": "Technical Writers",
+        "posting_title": "Technical Documentation & Curriculum Designer",
+        "clause_count": 6,
+        "tier_a_clauses": 1,
+        "tier_b_clauses": 3,
+        "tier_c_clauses": 2,
+        "weight_compiled_clause_share_pct": 66.67,
+        "estimated_token_burn_reduction_pct": 83.33,
+        "clauses": [
+          {
+            "clause": "Index API endpoint parameter tables, version tags, and release changelog entries",
+            "mapped_dwa_id": "4.A.1.b.1.a.1",
+            "mapped_dwa_title": "Apply identification labels or tags.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Check cross-reference link integrity and code snippet syntax rules",
+            "mapped_dwa_id": "4.A.3.b.6.l.7",
+            "mapped_dwa_title": "Prepare informational or reference materials.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Review engineering specifications and classify prerequisite skill modules",
+            "mapped_dwa_id": "4.A.4.a.1.a.4",
+            "mapped_dwa_title": "Explain engineering drawings, specifications, or other technical information.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Prepare structured troubleshooting decision trees for field technicians",
+            "mapped_dwa_id": "4.A.3.a.3.i.1",
+            "mapped_dwa_title": "Operate laboratory or field equipment.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          },
+          {
+            "clause": "Evaluate learner assessment completion patterns across module cohorts",
+            "mapped_dwa_id": "4.A.2.b.2.i.1",
+            "mapped_dwa_title": "Develop health assessment methods or programs.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Interview subject-matter engineers to synthesize conceptual architecture guides",
+            "mapped_dwa_id": "4.A.3.a.2.at.5",
+            "mapped_dwa_title": "Set equipment guides, stops, spacers, or other fixtures.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          }
+        ]
+      },
+      {
+        "scenario_id": "facility_energy_grid_operations_supervisor",
+        "soc_code": "51-8013.00",
+        "occupation_title": "Power Plant Operators",
+        "posting_title": "Facility Energy Grid Operations Supervisor",
+        "clause_count": 6,
+        "tier_a_clauses": 1,
+        "tier_b_clauses": 1,
+        "tier_c_clauses": 4,
+        "weight_compiled_clause_share_pct": 33.33,
+        "estimated_token_burn_reduction_pct": 66.67,
+        "clauses": [
+          {
+            "clause": "Measure bus voltage, reactive power factor, and turbine frequency margins",
+            "mapped_dwa_id": "4.A.3.a.2.v.6",
+            "mapped_dwa_title": "Position equipment using hand tools, power tools, or heavy equipment.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          },
+          {
+            "clause": "Record switching sequence logs and breaker lockout tag identifiers",
+            "mapped_dwa_id": "4.A.3.a.2.n.1",
+            "mapped_dwa_title": "Cut trees or logs.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          },
+          {
+            "clause": "Monitor load dispatch curves and classify feeder phase imbalances",
+            "mapped_dwa_id": "4.A.4.c.1.a.1",
+            "mapped_dwa_title": "Classify materials according to standard systems.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Adjust generation setpoint ramps across interconnected substation tie-lines",
+            "mapped_dwa_id": "4.A.3.a.3.g.2",
+            "mapped_dwa_title": "Operate natural gas generation equipment.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          },
+          {
+            "clause": "Inspect transformer thermal profiles and schedule cooling bank rotation",
+            "mapped_dwa_id": "4.A.2.b.5.c.1",
+            "mapped_dwa_title": "Schedule appointments.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Supervise control-room shift handoffs and coordinate emergency load restoration",
+            "mapped_dwa_id": "4.A.4.b.4.g.2",
+            "mapped_dwa_title": "Coordinate flight control or management activities.",
+            "tier": "tier_c_warm_prefix_steered_synthesis"
+          }
+        ]
+      },
+      {
+        "scenario_id": "quantitative_operations_research_analyst",
+        "soc_code": "15-2031.00",
+        "occupation_title": "Operations Research Analysts",
+        "posting_title": "Quantitative Operations Research Analyst",
+        "clause_count": 6,
+        "tier_a_clauses": 2,
+        "tier_b_clauses": 4,
+        "tier_c_clauses": 0,
+        "weight_compiled_clause_share_pct": 100.0,
+        "estimated_token_burn_reduction_pct": 100.0,
+        "clauses": [
+          {
+            "clause": "Compute linear relaxation bounds, slack variables, and dual shadow prices",
+            "mapped_dwa_id": "4.A.1.b.3.c.2",
+            "mapped_dwa_title": "Compute gaming wins and losses.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Tabulate simulation seed summaries and resource utilization ratios",
+            "mapped_dwa_id": "4.A.2.b.2.b.3",
+            "mapped_dwa_title": "Design computer modeling or simulation programs.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Analyze queueing network bottlenecks and classify arrival burst regimes",
+            "mapped_dwa_id": "4.A.2.a.4.l.2",
+            "mapped_dwa_title": "Analyze security of systems, network, or data.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Configure mixed-integer scheduling heuristics for multi-stage routing",
+            "mapped_dwa_id": "4.A.3.b.1.c.4",
+            "mapped_dwa_title": "Configure computer networks.",
+            "tier": "tier_a_symbolic_polytope"
+          },
+          {
+            "clause": "Compare counterfactual policy rollouts across sensitivity parameter grids",
+            "mapped_dwa_id": "4.A.4.b.6.h.2",
+            "mapped_dwa_title": "Advise others on matters of public policy.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          },
+          {
+            "clause": "Advise executive leadership on capacity expansion under uncertain demand",
+            "mapped_dwa_id": "4.A.2.a.4.b.1",
+            "mapped_dwa_title": "Estimate demand for products or services.",
+            "tier": "tier_b_nullspace_lora_xs_cartridge"
+          }
+        ]
+      }
+    ],
+    "lexical_sanitizer_stats": {
+      "always_replacements": 8,
+      "visible_replacements": 47,
+      "marketing_replacements": 302,
+      "extra_replacements": 0,
+      "strings_sanitized": 352
+    },
+    "engine_runtime_ms": 4474.5016
+  },
+  "benchmark_decomposition_attenuation": {
+    "archetype_count": 5,
+    "summary": {
+      "mean_monolithic_thinking_off_pass_pct": 49.16,
+      "mean_unchecked_dag_pass_pct": 45.28,
+      "mean_weight_compiled_checked_dag_pass_pct": 96.1,
+      "mean_gain_over_thinking_off_pp": 46.94,
+      "mean_llm_token_reduction_pct": 84.69
+    },
+    "archetypes": [
+      {
+        "archetype_id": "symbolic_math_derivation",
+        "origin_tokens": 768,
+        "atom_granularity_tokens": 64,
+        "component_node_count": 12,
+        "dag_width": 3,
+        "dag_depth": 6,
+        "branching_factor": 1.65,
+        "coupling_index": 0.24,
+        "effective_critical_steps": 7,
+        "tier_shares": {
+          "tier_a": 0.46,
+          "tier_b": 0.38,
+          "tier_c": 0.16
+        },
+        "monolithic_verbose_pass_pct": 10.4,
+        "monolithic_thinking_off_pass_pct": 51.6,
+        "analytical_unchecked_product_law_pct": 50.95,
+        "unchecked_dag_pass_mean_pct": 53.12,
+        "check_gated_prompt_only_pass_mean_pct": 90.96,
+        "weight_compiled_checked_dag_pass_mean_pct": 97.6,
+        "weight_compiled_checked_dag_pass_std_pct": 1.44,
+        "gain_over_monolithic_thinking_off_pp": 46.0,
+        "gain_over_unchecked_dag_pp": 44.48,
+        "prompt_gated_llm_tokens": 1224.0,
+        "weight_compiled_llm_tokens": 114.7392,
+        "llm_token_reduction_vs_monolith_pct": 85.06
+      },
+      {
+        "archetype_id": "repository_patch_repair",
+        "origin_tokens": 1152,
+        "atom_granularity_tokens": 64,
+        "component_node_count": 18,
+        "dag_width": 4,
+        "dag_depth": 7,
+        "branching_factor": 1.92,
+        "coupling_index": 0.31,
+        "effective_critical_steps": 10,
+        "tier_shares": {
+          "tier_a": 0.34,
+          "tier_b": 0.44,
+          "tier_c": 0.22
+        },
+        "monolithic_verbose_pass_pct": 14.8,
+        "monolithic_thinking_off_pass_pct": 43.8,
+        "analytical_unchecked_product_law_pct": 31.69,
+        "unchecked_dag_pass_mean_pct": 33.2,
+        "check_gated_prompt_only_pass_mean_pct": 85.68,
+        "weight_compiled_checked_dag_pass_mean_pct": 94.96,
+        "weight_compiled_checked_dag_pass_std_pct": 1.31,
+        "gain_over_monolithic_thinking_off_pp": 51.16,
+        "gain_over_unchecked_dag_pp": 61.76,
+        "prompt_gated_llm_tokens": 1836.0,
+        "weight_compiled_llm_tokens": 236.6496,
+        "llm_token_reduction_vs_monolith_pct": 79.46
+      },
+      {
+        "archetype_id": "multi_hop_tool_policy",
+        "origin_tokens": 896,
+        "atom_granularity_tokens": 64,
+        "component_node_count": 14,
+        "dag_width": 4,
+        "dag_depth": 6,
+        "branching_factor": 1.78,
+        "coupling_index": 0.21,
+        "effective_critical_steps": 8,
+        "tier_shares": {
+          "tier_a": 0.48,
+          "tier_b": 0.4,
+          "tier_c": 0.12
+        },
+        "monolithic_verbose_pass_pct": 18.2,
+        "monolithic_thinking_off_pass_pct": 49.2,
+        "analytical_unchecked_product_law_pct": 48.62,
+        "unchecked_dag_pass_mean_pct": 49.04,
+        "check_gated_prompt_only_pass_mean_pct": 88.32,
+        "weight_compiled_checked_dag_pass_mean_pct": 96.64,
+        "weight_compiled_checked_dag_pass_std_pct": 0.67,
+        "gain_over_monolithic_thinking_off_pp": 47.44,
+        "gain_over_unchecked_dag_pp": 47.6,
+        "prompt_gated_llm_tokens": 1428.0,
+        "weight_compiled_llm_tokens": 100.3968,
+        "llm_token_reduction_vs_monolith_pct": 88.8
+      },
+      {
+        "archetype_id": "algorithmic_spec_synthesis",
+        "origin_tokens": 1024,
+        "atom_granularity_tokens": 64,
+        "component_node_count": 16,
+        "dag_width": 3,
+        "dag_depth": 8,
+        "branching_factor": 1.72,
+        "coupling_index": 0.28,
+        "effective_critical_steps": 10,
+        "tier_shares": {
+          "tier_a": 0.38,
+          "tier_b": 0.42,
+          "tier_c": 0.2
+        },
+        "monolithic_verbose_pass_pct": 12.4,
+        "monolithic_thinking_off_pass_pct": 46.4,
+        "analytical_unchecked_product_law_pct": 34.74,
+        "unchecked_dag_pass_mean_pct": 33.36,
+        "check_gated_prompt_only_pass_mean_pct": 86.0,
+        "weight_compiled_checked_dag_pass_mean_pct": 94.0,
+        "weight_compiled_checked_dag_pass_std_pct": 2.28,
+        "gain_over_monolithic_thinking_off_pp": 47.6,
+        "gain_over_unchecked_dag_pp": 60.64,
+        "prompt_gated_llm_tokens": 1632.0,
+        "weight_compiled_llm_tokens": 191.232,
+        "llm_token_reduction_vs_monolith_pct": 81.33
+      },
+      {
+        "archetype_id": "structured_evidence_audit",
+        "origin_tokens": 960,
+        "atom_granularity_tokens": 64,
+        "component_node_count": 15,
+        "dag_width": 5,
+        "dag_depth": 5,
+        "branching_factor": 2.05,
+        "coupling_index": 0.17,
+        "effective_critical_steps": 7,
+        "tier_shares": {
+          "tier_a": 0.52,
+          "tier_b": 0.36,
+          "tier_c": 0.12
+        },
+        "monolithic_verbose_pass_pct": 21.6,
+        "monolithic_thinking_off_pass_pct": 54.8,
+        "analytical_unchecked_product_law_pct": 56.59,
+        "unchecked_dag_pass_mean_pct": 57.68,
+        "check_gated_prompt_only_pass_mean_pct": 90.56,
+        "weight_compiled_checked_dag_pass_mean_pct": 97.28,
+        "weight_compiled_checked_dag_pass_std_pct": 1.15,
+        "gain_over_monolithic_thinking_off_pp": 42.48,
+        "gain_over_unchecked_dag_pp": 39.6,
+        "prompt_gated_llm_tokens": 1530.0,
+        "weight_compiled_llm_tokens": 107.568,
+        "llm_token_reduction_vs_monolith_pct": 88.8
+      }
+    ],
+    "granularity_pareto_sweep": [
+      {
+        "atom_granularity_tokens": 32,
+        "component_node_count": 36,
+        "unchecked_dag_pass_pct": 9.36,
+        "weight_compiled_checked_pass_pct": 92.16,
+        "weight_compiled_llm_tokens": 387.1296
+      },
+      {
+        "atom_granularity_tokens": 64,
+        "component_node_count": 18,
+        "unchecked_dag_pass_pct": 33.2,
+        "weight_compiled_checked_pass_pct": 94.96,
+        "weight_compiled_llm_tokens": 236.6496
+      },
+      {
+        "atom_granularity_tokens": 128,
+        "component_node_count": 9,
+        "unchecked_dag_pass_pct": 43.04,
+        "weight_compiled_checked_pass_pct": 95.6,
+        "weight_compiled_llm_tokens": 161.4096
+      },
+      {
+        "atom_granularity_tokens": 256,
+        "component_node_count": 7,
+        "unchecked_dag_pass_pct": 47.6,
+        "weight_compiled_checked_pass_pct": 96.0,
+        "weight_compiled_llm_tokens": 192.5616
+      }
+    ],
+    "depth_attenuation_curve": [
+      {
+        "dag_depth": 2,
+        "unchecked_dag_pass_pct": 70.72,
+        "check_gated_prompt_only_pass_pct": 96.16,
+        "weight_compiled_checked_pass_pct": 98.72
+      },
+      {
+        "dag_depth": 4,
+        "unchecked_dag_pass_pct": 49.52,
+        "check_gated_prompt_only_pass_pct": 90.16,
+        "weight_compiled_checked_pass_pct": 96.48
+      },
+      {
+        "dag_depth": 6,
+        "unchecked_dag_pass_pct": 38.08,
+        "check_gated_prompt_only_pass_pct": 84.8,
+        "weight_compiled_checked_pass_pct": 94.56
+      },
+      {
+        "dag_depth": 8,
+        "unchecked_dag_pass_pct": 25.28,
+        "check_gated_prompt_only_pass_pct": 79.84,
+        "weight_compiled_checked_pass_pct": 94.64
+      },
+      {
+        "dag_depth": 10,
+        "unchecked_dag_pass_pct": 17.2,
+        "check_gated_prompt_only_pass_pct": 77.52,
+        "weight_compiled_checked_pass_pct": 91.68
+      }
+    ]
+  },
+  "worker_bundle_efficiency": {
+    "dispatch_modes_evaluated": [
+      "single_isolated",
+      "back_to_back_sequential",
+      "simultaneous_batched_pack",
+      "speculative_maker_checker_pipeline"
+    ],
+    "bundle_cardinalities_evaluated": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "baseline_isolated_k1": {
+      "dispatch_mode": "single_isolated",
+      "bundle_cardinality_k": 1,
+      "latency_per_task_ms": 97.5489,
+      "throughput_tasks_per_sec": 10.25,
+      "llm_tokens_per_task": 588.0,
+      "accuracy_mean_pct": 89.23,
+      "measured_subspace_kernel_ms": 0.0089
+    },
+    "optimal_speculative_k4": {
+      "dispatch_mode": "speculative_maker_checker_pipeline",
+      "bundle_cardinality_k": 4,
+      "latency_per_task_ms": 4.8444,
+      "throughput_tasks_per_sec": 206.42,
+      "llm_tokens_per_task": 23.03,
+      "accuracy_mean_pct": 96.71,
+      "measured_subspace_kernel_ms": 0.0033
+    },
+    "end_to_end_throughput_speedup_x": 20.14,
+    "end_to_end_llm_token_reduction_pct": 96.08,
+    "end_to_end_accuracy_gain_pp": 7.48,
+    "dispatch_sweep": [
+      {
+        "dispatch_mode": "single_isolated",
+        "bundle_cardinality_k": 1,
+        "latency_per_task_ms": 97.5489,
+        "throughput_tasks_per_sec": 10.25,
+        "llm_tokens_per_task": 588.0,
+        "accuracy_mean_pct": 89.23,
+        "measured_subspace_kernel_ms": 0.0089
+      },
+      {
+        "dispatch_mode": "back_to_back_sequential",
+        "bundle_cardinality_k": 1,
+        "latency_per_task_ms": 97.5669,
+        "throughput_tasks_per_sec": 10.25,
+        "llm_tokens_per_task": 588.0,
+        "accuracy_mean_pct": 89.23,
+        "measured_subspace_kernel_ms": 0.0089
+      },
+      {
+        "dispatch_mode": "simultaneous_batched_pack",
+        "bundle_cardinality_k": 1,
+        "latency_per_task_ms": 34.0021,
+        "throughput_tasks_per_sec": 29.41,
+        "llm_tokens_per_task": 459.66,
+        "accuracy_mean_pct": 90.43,
+        "measured_subspace_kernel_ms": 0.0133
+      },
+      {
+        "dispatch_mode": "speculative_maker_checker_pipeline",
+        "bundle_cardinality_k": 1,
+        "latency_per_task_ms": 9.6545,
+        "throughput_tasks_per_sec": 103.58,
+        "llm_tokens_per_task": 62.66,
+        "accuracy_mean_pct": 96.83,
+        "measured_subspace_kernel_ms": 0.0133
+      },
+      {
+        "dispatch_mode": "single_isolated",
+        "bundle_cardinality_k": 2,
+        "latency_per_task_ms": 97.5499,
+        "throughput_tasks_per_sec": 10.25,
+        "llm_tokens_per_task": 588.0,
+        "accuracy_mean_pct": 89.27,
+        "measured_subspace_kernel_ms": 0.0099
+      },
+      {
+        "dispatch_mode": "back_to_back_sequential",
+        "bundle_cardinality_k": 2,
+        "latency_per_task_ms": 82.4279,
+        "throughput_tasks_per_sec": 12.13,
+        "llm_tokens_per_task": 416.0,
+        "accuracy_mean_pct": 87.47,
+        "measured_subspace_kernel_ms": 0.0099
+      },
+      {
+        "dispatch_mode": "simultaneous_batched_pack",
+        "bundle_cardinality_k": 2,
+        "latency_per_task_ms": 17.0047,
+        "throughput_tasks_per_sec": 58.81,
+        "llm_tokens_per_task": 268.66,
+        "accuracy_mean_pct": 90.47,
+        "measured_subspace_kernel_ms": 0.0112
+      },
+      {
+        "dispatch_mode": "speculative_maker_checker_pipeline",
+        "bundle_cardinality_k": 2,
+        "latency_per_task_ms": 6.4523,
+        "throughput_tasks_per_sec": 154.98,
+        "llm_tokens_per_task": 36.24,
+        "accuracy_mean_pct": 96.88,
+        "measured_subspace_kernel_ms": 0.0112
+      },
+      {
+        "dispatch_mode": "single_isolated",
+        "bundle_cardinality_k": 3,
+        "latency_per_task_ms": 97.5479,
+        "throughput_tasks_per_sec": 10.25,
+        "llm_tokens_per_task": 588.0,
+        "accuracy_mean_pct": 89.09,
+        "measured_subspace_kernel_ms": 0.0079
+      },
+      {
+        "dispatch_mode": "back_to_back_sequential",
+        "bundle_cardinality_k": 3,
+        "latency_per_task_ms": 77.3793,
+        "throughput_tasks_per_sec": 12.92,
+        "llm_tokens_per_task": 358.67,
+        "accuracy_mean_pct": 85.49,
+        "measured_subspace_kernel_ms": 0.0079
+      },
+      {
+        "dispatch_mode": "simultaneous_batched_pack",
+        "bundle_cardinality_k": 3,
+        "latency_per_task_ms": 11.9251,
+        "throughput_tasks_per_sec": 83.86,
+        "llm_tokens_per_task": 204.99,
+        "accuracy_mean_pct": 90.29,
+        "measured_subspace_kernel_ms": 0.004
+      },
+      {
+        "dispatch_mode": "speculative_maker_checker_pipeline",
+        "bundle_cardinality_k": 3,
+        "latency_per_task_ms": 5.3784,
+        "throughput_tasks_per_sec": 185.93,
+        "llm_tokens_per_task": 27.44,
+        "accuracy_mean_pct": 96.68,
+        "measured_subspace_kernel_ms": 0.004
+      },
+      {
+        "dispatch_mode": "single_isolated",
+        "bundle_cardinality_k": 4,
+        "latency_per_task_ms": 97.5479,
+        "throughput_tasks_per_sec": 10.25,
+        "llm_tokens_per_task": 588.0,
+        "accuracy_mean_pct": 89.12,
+        "measured_subspace_kernel_ms": 0.0079
+      },
+      {
+        "dispatch_mode": "back_to_back_sequential",
+        "bundle_cardinality_k": 4,
+        "latency_per_task_ms": 74.8559,
+        "throughput_tasks_per_sec": 13.36,
+        "llm_tokens_per_task": 330.0,
+        "accuracy_mean_pct": 83.72,
+        "measured_subspace_kernel_ms": 0.0079
+      },
+      {
+        "dispatch_mode": "simultaneous_batched_pack",
+        "bundle_cardinality_k": 4,
+        "latency_per_task_ms": 9.4541,
+        "throughput_tasks_per_sec": 105.77,
+        "llm_tokens_per_task": 173.16,
+        "accuracy_mean_pct": 90.32,
+        "measured_subspace_kernel_ms": 0.0033
+      },
+      {
+        "dispatch_mode": "speculative_maker_checker_pipeline",
+        "bundle_cardinality_k": 4,
+        "latency_per_task_ms": 4.8444,
+        "throughput_tasks_per_sec": 206.42,
+        "llm_tokens_per_task": 23.03,
+        "accuracy_mean_pct": 96.71,
+        "measured_subspace_kernel_ms": 0.0033
+      }
+    ],
+    "six_systems_efficiencies": [
+      {
+        "efficiency_id": "radix_kv_prefix_affinity",
+        "mechanism": "IWA/DWA schema-affinity routing keeps shared prefix blocks warm across worker calls",
+        "prefix_token_reduction_pct": 81.9
+      },
+      {
+        "efficiency_id": "l2_256b_cartridge_residency",
+        "mechanism": "Entire 2,087-DWA LoRA-XS bank (521.75 KiB) stays pinned inside L2 cache with zero disk stall",
+        "adapter_load_saved_ms_per_task": 14.78
+      },
+      {
+        "efficiency_id": "speculative_micronet_draft_batch_check",
+        "mechanism": "Weight-compiled operator drafts k atoms in <0.1 ms; disjoint checker validates k in 1 batch",
+        "decode_stage_speedup_x": 37.89
+      },
+      {
+        "efficiency_id": "early_attenuation_circuit_breaker",
+        "mechanism": "Halts downstream DAG subtrees immediately when cumulative branch score drops below cutoff",
+        "wasted_downstream_token_reduction_pct": 10.88
+      },
+      {
+        "efficiency_id": "lsh_fingerprint_inflight_coalescing",
+        "mechanism": "Locality-sensitive task fingerprint deduplicates concurrent near-identical sub-queries",
+        "duplicate_compute_eliminated_pct": 22.0
+      },
+      {
+        "efficiency_id": "entropy_proportional_thinking_budget",
+        "mechanism": "Allocates 0 chain tokens to Tier A/B atoms and scales Tier C budget by router logit entropy",
+        "output_token_reduction_pct": 76.39
+      }
+    ]
+  }
+}
