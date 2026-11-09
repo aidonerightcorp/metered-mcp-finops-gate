@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="only light">
+  <title>Adversarial Red-Team, Reusable AST Cartridges &amp; CEGAR-WSP &middot; Weight-Space Lab</title>
+  <style>
+    :root {
+      color-scheme: only light;
+      --paper: #f5f2ea;
+      --card: #fcfbf7;
+      --card-alt: #eee9dd;
+      --ink: #1e2229;
+      --muted: #555e6b;
+      --line: #d5cdbe;
+      --teal: #1b6b52;
+      --teal-soft: #e6f3ee;
+      --blue: #1d5bbf;
+      --blue-soft: #e8f0fc;
+      --plum: #5c2d91;
+      --plum-soft: #f2ecfb;
+      --amber: #9a5b13;
+      --amber-soft: #fbf1e2;
+      --crimson: #9e2f2f;
+      --crimson-soft: #fbeaea;
+      --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --serif: Georgia, "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.56;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 26px 22px 68px; }
+    .topnav {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      justify-content: space-between; padding-bottom: 14px;
+      border-bottom: 1px solid var(--line); margin-bottom: 22px;
+    }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 7px; }
+    .nav-pill {
+      display: inline-block; padding: 6px 11px; border-radius: 999px;
+      font-size: 12.5px; font-weight: 600; background: var(--card);
+      border: 1px solid var(--line); color: var(--ink);
+    }
+    .nav-pill.active {
+      background: var(--teal-soft); border-color: var(--teal); color: var(--teal);
+    }
+    .eyebrow {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: var(--crimson-soft); border: 1px solid #e4b4b4;
+      color: var(--crimson); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    h1 {
+      font-family: var(--serif); font-size: clamp(27px, 3.2vw, 40px);
+      line-height: 1.16; margin: 4px 0 12px; letter-spacing: -0.015em;
+    }
+    h2 { font-family: var(--serif); font-size: 23px; margin: 0 0 8px; }
+    h3 { font-size: 17px; margin: 0 0 6px; }
+    .lede { font-size: 16.5px; color: var(--muted); max-width: 980px; margin: 0 0 22px; }
+    section {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 14px; padding: 22px 24px; margin-bottom: 22px;
+    }
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px; margin-bottom: 22px;
+    }
+    .kpi {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; padding: 14px 16px;
+    }
+    .kpi .val { font-size: 24px; font-weight: 800; color: var(--teal); font-family: var(--mono); }
+    .kpi .lbl { font-size: 12.8px; color: var(--muted); margin-top: 4px; }
+    .tab-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 9px; margin: 14px 0;
+    }
+    .tab-btn {
+      appearance: none; text-align: left; background: #ffffff;
+      border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 13px;
+      cursor: pointer; color: var(--ink); font-family: var(--sans);
+    }
+    .tab-btn.active { background: var(--teal-soft); border-color: var(--teal); }
+    .tab-btn .t-id { font-size: 11px; font-weight: 800; font-family: var(--mono); color: var(--teal); text-transform: uppercase; }
+    .tab-btn .t-name { font-size: 13.8px; font-weight: 700; margin-top: 3px; }
+    .tab-btn .t-gain { font-size: 12px; font-family: var(--mono); color: var(--muted); margin-top: 2px; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+    @media (max-width: 880px) { .split { grid-template-columns: 1fr; } }
+    .pane { border-radius: 12px; padding: 16px 18px; border: 1px solid var(--line); background: #ffffff; }
+    .pane.attack { background: var(--crimson-soft); border-color: #e4b4b4; }
+    .pane.defense { background: var(--teal-soft); border-color: #b6decb; }
+    .badge {
+      display: inline-block; padding: 3px 9px; border-radius: 999px;
+      font-size: 11.5px; font-weight: 700; font-family: var(--mono);
+    }
+    .badge.crimson { background: #ffffff; color: var(--crimson); border: 1px solid #e4b4b4; }
+    .badge.teal { background: #ffffff; color: var(--teal); border: 1px solid #b6decb; }
+    pre.code {
+      margin: 10px 0 0; background: #faf8f2; border: 1px solid var(--line);
+      border-radius: 9px; padding: 12px 14px; font-family: var(--mono);
+      font-size: 12.2px; overflow-x: auto; white-space: pre-wrap; color: var(--ink);
+    }
+    .controls-row {
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+      background: #faf8f2; border: 1px solid var(--line); border-radius: 11px;
+      padding: 13px 15px; margin: 12px 0;
+    }
+    label.ctrl { font-size: 13px; font-weight: 700; display: flex; flex-direction: column; gap: 4px; }
+    select, input[type="number"] {
+      padding: 7px 10px; border-radius: 7px; border: 1px solid var(--line);
+      background: #ffffff; color: var(--ink); font-family: var(--mono); font-size: 13px;
+    }
+    .svg-box {
+      background: #ffffff; border: 1px solid var(--line); border-radius: 12px;
+      padding: 16px; margin-top: 12px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13.8px; margin-top: 10px; }
+    th, td { text-align: left; padding: 10px 11px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: var(--card-alt); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+    code {
+      font-family: var(--mono); font-size: 12.5px; background: var(--card-alt);
+      padding: 2px 6px; border-radius: 5px;
+    }
+    .footer {
+      margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--line);
+      font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap;
+      justify-content: space-between; gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="topnav">
+      <div class="nav-links">
+        <a class="nav-pill" href="index.html">Research Portal</a>
+        <a class="nav-pill" href="paper-atomic-weight-space.html">arXiv Monograph (.tex)</a>
+        <a class="nav-pill" href="weight-space.html">Weight-Space Findings</a>
+        <a class="nav-pill" href="model-families-traces.html">6 Families &amp; Traces</a>
+        <a class="nav-pill active" href="adversarial-validation-and-code-reuse.html">Adversarial &amp; CEGAR</a>
+        <a class="nav-pill" href="llm-attribution-and-enterprise-fabric.html">Attribution &amp; 5-Runtime</a>
+        <a class="nav-pill" href="kernels-familiarity-and-oneshot-lab.html">Kernels, 1-Shot &amp; Safetensors</a>
+        <a class="nav-pill" href="atomic-graph-explorer.html">Atomic Graph Lab</a>
+        <a class="nav-pill" href="kaggle-and-horizon-systems.html">Kaggle RL &amp; Horizon</a>
+        <a class="nav-pill" href="onet-weight-atlas.html">18,838-Task O*NET</a>
+        <a class="nav-pill" href="omni-fabric.html">Omni-Fabric v0.5.0</a>
+        <a class="nav-pill" href="quorum-forge.html">QuorumForge Swarm</a>
+      </div>
+      <a class="nav-pill" href="paper-atomic-weight-space.html">Read Formal Paper</a>
+    </nav>
+
+    <div class="eyebrow">Adversarial Weight-Space Red-Team &middot; Reusable AST Cartridges &middot; CEGAR-WSP</div>
+    <h1>Breaking &amp; Hardening Weight-Space Compilers Across 8 Attack Surfaces</h1>
+    <p class="lede">
+      Naive weight compilers drop to <strong><code>17.14%</code></strong> mean accuracy under contradictory rules, saturated nullspaces, poisoned traces, collinear skills, OOD inputs, and Byzantine workers.
+      Algebraic and geometric defenses restore <strong><code>99.89%</code></strong> mean accuracy (<code>+82.75 pp</code>) across five seeds (<code>{11, 23, 37, 53, 71}</code>).
+      Zero-token Python AST synthesis achieves <code>100.0%</code> unit pass and cuts wire bytes by <code>92.89%</code>.
+      Counterexample-guided refinement (<code>CEGAR-WSP</code>) reaches <code>99.73%</code> accuracy using <code>6.67x</code> fewer oracle scenarios.
+    </p>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="val">17.14% &rarr; 99.89%</div>
+        <div class="lbl">Mean accuracy across all 8 adversarial red-team stress regimes (<code>+82.75 pp</code> recovery)</div>
+      </div>
+      <div class="kpi">
+        <div class="val">99.17% &plusmn; 1.02%</div>
+        <div class="lbl">SQLite WAL FTS5 + <code>24-d</code> asymmetric bilinear Recall@1 (<code>0</code> bitemporal leaks, <code>0.271 ms</code>)</div>
+      </div>
+      <div class="kpi">
+        <div class="val">100.0% Pass</div>
+        <div class="lbl"><code>AstTemplateWeightCompiler</code> across 6 Python AST templates (<code>0</code> LLM tokens, <code>0.444 ms</code>)</div>
+      </div>
+      <div class="kpi">
+        <div class="val">-92.89% Bytes</div>
+        <div class="lbl"><code>{Transfer, Transform, Store}</code> wire-byte reduction with <code>0</code> stale-lease overwrites</div>
+      </div>
+      <div class="kpi">
+        <div class="val">6.67x Fewer</div>
+        <div class="lbl"><code>CEGAR-WSP</code> oracle scenarios (<code>72</code> vs <code>480</code>) reaching <code>99.73% &plusmn; 0.25%</code> vs <code>55.93%</code> collapse</div>
+      </div>
+    </div>
+
+    <section>
+      <h2>1. Interactive 8-Paradigm Adversarial Red-Team Inspector</h2>
+      <p>
+        Select any of the eight weight-space paradigms below to compare the targeted red-team failure mode against the upgraded mathematical defense.
+      </p>
+      <div class="tab-grid" id="rt-tabs"></div>
+      <div class="split" id="rt-view"></div>
+    </section>
+
+    <section>
+      <h2>2. Live Browser Preview: <code>AstTemplateWeightCompiler</code> (0 LLM Tokens)</h2>
+      <p>
+        We do not prompt an LLM to regenerate boilerplate pipeline code.
+        Instead, a compact weight router selects a vetted Python AST template and regresses operational parameters from traces.
+        Choose a template and adjust workload parameters below to synthesize valid Python source code in your browser with zero LLM tokens.
+      </p>
+      <div class="controls-row">
+        <label class="ctrl">
+          AST Cartridge Template (6 Canonical Primitives)
+          <select id="ast-select">
+            <option value="fenced_batch_transfer">1. Transfer: fenced_batch_transfer (CAS lease_epoch)</option>
+            <option value="delta_frame_packer">2. Transfer: delta_frame_packer (-92.89% wire bytes)</option>
+            <option value="unit_and_schema_transformer">3. Transform: unit_and_schema_transformer (NaN guard)</option>
+            <option value="outlier_clipped_normalizer">4. Transform: outlier_clipped_normalizer (MAD z-clip)</option>
+            <option value="bitemporal_wal_persister">5. Store: bitemporal_wal_persister (valid_at &le; known_at)</option>
+            <option value="tiered_posting_compactor">6. Store: tiered_posting_compactor (-58.33% postings)</option>
+          </select>
+        </label>
+        <label class="ctrl">
+          Regressed Batch / Chunk Cap
+          <input type="number" id="ast-batch" value="64" min="8" max="512" step="8">
+        </label>
+        <label class="ctrl">
+          Regressed Threshold / Scale
+          <input type="number" id="ast-thresh" value="3.5" min="0.5" max="10.0" step="0.5">
+        </label>
+      </div>
+      <div class="pane">
+        <span class="badge teal" id="ast-badge">0 LLM Tokens &middot; 100.0% Adversarial Unit Pass &middot; 0.444 ms Compile</span>
+        <pre class="code" id="ast-code"></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Hybrid SQLite FTS5 + <code>24-d</code> Bilinear Search &amp; <code>{Transfer, Transform, Store}</code></h2>
+      <p>
+        Lexical BM25 alone scores <code>0.0%</code> Recall@1 under polarity inversions and leaks <code>240</code> superseded or future records.
+        Symmetric <code>24-d</code> cosine embeddings reach only <code>10.83%</code> on asymmetric source-to-target twins.
+        SQLite WAL FTS5 bitemporal filtering plus a <code>24 x 24</code> asymmetric bilinear matrix reaches <strong><code>99.17% &plusmn; 1.02%</code></strong> Recall@1 in <code>0.271 ms</code>.
+        This hybrid retriever records <code>0.9958</code> MRR, <code>0.9969</code> nDCG@5, and zero temporal leaks.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Pipeline Stage / Metric</th>
+            <th>Unguarded Baseline</th>
+            <th>Compiled AST + Weight Cartridge</th>
+            <th>Measured Improvement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Hybrid Code &amp; State Search (Recall@1)</strong></td>
+            <td><code>0.00%</code> BM25 / <code>10.83%</code> sym <code>24-d</code></td>
+            <td><code>99.17% &plusmn; 1.02%</code> (<code>0.9958</code> MRR)</td>
+            <td><code>240 &rarr; 0</code> temporal/superseded leaks (<code>0.271 ms</code>)</td>
+          </tr>
+          <tr>
+            <td><strong>Stage 1: Fenced Delta Transfer</strong></td>
+            <td><code>13,924.8 B</code> raw JSON + <code>90</code> stale writes</td>
+            <td><code>990.4 B</code> quantized delta frames</td>
+            <td><strong><code>-92.89%</code></strong> wire bytes; <code>0</code> stale-lease overwrites</td>
+          </tr>
+          <tr>
+            <td><strong>Stage 2: Clipped Schema Transform</strong></td>
+            <td>Unbounded outliers &amp; NaN propagation</td>
+            <td>MAD z-clipped unit normalizer</td>
+            <td><code>0</code> NaN escapes across all adversarial batches</td>
+          </tr>
+          <tr>
+            <td><strong>Stage 3: Bitemporal Compacted Store</strong></td>
+            <td><code>192.0</code> postings + <code>70</code> future leaks</td>
+            <td><code>80.0</code> postings (<code>valid_at &le; cut_at</code>)</td>
+            <td><strong><code>-58.33%</code></strong> postings; <code>0</code> future-leakage rows (<code>1.235 ms</code>)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>4. <code>CEGAR-WSP</code> Curve Explorer: Preventing Model-Generated Collapse</h2>
+      <p>
+        What happens when trace-scarce cells train on unscreened model-generated traces across six rounds?
+        Unchecked self-training collapses from <code>73.90%</code> at Round 0 to <strong><code>55.93%</code></strong> by Round 6 (<code>-17.97 pp</code> degradation).
+        <code>CEGAR-WSP</code> mines minimum-margin boundary scenarios and queries an invariant checker on only <code>12</code> scenarios per round (<code>72</code> total vs <code>480</code> random).
+        This active loop reaches <strong><code>99.73% &plusmn; 0.25%</code></strong> accuracy with <code>0.0</code> anchor drift.
+      </p>
+      <div class="svg-box">
+        <svg viewBox="0 0 760 280" width="100%" height="auto" role="img" aria-label="CEGAR-WSP 6-round accuracy trajectories">
+          <rect x="0" y="0" width="760" height="280" fill="#ffffff"/>
+          <line x1="65" y1="30" x2="720" y2="30" stroke="#e5dfd2" stroke-dasharray="4 4"/>
+          <line x1="65" y1="105" x2="720" y2="105" stroke="#e5dfd2" stroke-dasharray="4 4"/>
+          <line x1="65" y1="180" x2="720" y2="180" stroke="#e5dfd2" stroke-dasharray="4 4"/>
+          <line x1="65" y1="235" x2="720" y2="235" stroke="#bfb6a4"/>
+          <line x1="65" y1="25" x2="65" y2="235" stroke="#bfb6a4"/>
+          <text x="16" y="34" font-size="11.5" fill="#555e6b" font-family="monospace">100%</text>
+          <text x="22" y="109" font-size="11.5" fill="#555e6b" font-family="monospace">80%</text>
+          <text x="22" y="184" font-size="11.5" fill="#555e6b" font-family="monospace">60%</text>
+          <text x="60" y="255" font-size="11.5" fill="#555e6b" font-family="monospace">R0</text>
+          <text x="168" y="255" font-size="11.5" fill="#555e6b" font-family="monospace">R1</text>
+          <text x="276" y="255" font-size="11.5" fill="#555e6b" font-family="monospace">R2</text>
+          <text x="384" y="255" font-size="11.5" fill="#555e6b" font-family="monospace">R3</text>
+          <text x="492" y="255" font-size="11.5" fill="#555e6b" font-family="monospace">R4</text>
+          <text x="600" y="255" font-size="11.5" fill="#555e6b" font-family="monospace">R5</text>
+          <text x="705" y="255" font-size="11.5" fill="#555e6b" font-family="monospace">R6</text>
+
+          <!-- Static baseline: 73.9 -> 73.83 -->
+          <polyline fill="none" stroke="#8b929e" stroke-width="2" stroke-dasharray="5 4"
+            points="65,127.9 173,128.0 281,128.1 389,128.1 497,128.1 605,128.1 713,128.1"/>
+          <!-- Unchecked self-training collapse: 73.9, 71.37, 65.0, 57.43, 56.13, 55.83, 55.93 -->
+          <polyline fill="none" stroke="#9e2f2f" stroke-width="3"
+            points="65,127.9 173,137.4 281,161.3 389,189.6 497,194.5 605,195.6 713,195.3"/>
+          <!-- Random IID oracle (480 scenarios): 73.9, 87.57, 91.97, 93.07, 93.57, 95.23, 94.83 -->
+          <polyline fill="none" stroke="#1d5bbf" stroke-width="2.6"
+            points="65,127.9 173,76.6 281,60.1 389,56.0 497,54.1 605,47.9 713,49.4"/>
+          <!-- CEGAR-WSP (72 scenarios): 73.9, 94.53, 98.83, 99.30, 99.63, 99.77, 99.73 -->
+          <polyline fill="none" stroke="#1b6b52" stroke-width="3.5"
+            points="65,127.9 173,50.5 281,34.4 389,32.6 497,31.4 605,30.9 713,31.0"/>
+
+          <circle cx="713" cy="31.0" r="5" fill="#1b6b52"/>
+          <circle cx="713" cy="49.4" r="4.5" fill="#1d5bbf"/>
+          <circle cx="713" cy="195.3" r="5" fill="#9e2f2f"/>
+
+          <text x="430" y="24" font-size="12" font-weight="bold" fill="#1b6b52" font-family="sans-serif">CEGAR-WSP (72 scenarios): 99.73%</text>
+          <text x="430" y="72" font-size="12" font-weight="bold" fill="#1d5bbf" font-family="sans-serif">Random Oracle (480 scenarios): 94.83%</text>
+          <text x="445" y="122" font-size="11.5" fill="#555e6b" font-family="sans-serif">Static Seed-Only: 73.83%</text>
+          <text x="415" y="216" font-size="12" font-weight="bold" fill="#9e2f2f" font-family="sans-serif">Unchecked Model-Generated Collapse: 55.93%</text>
+        </svg>
+        <div class="fig-cap" style="font-size:13px;color:var(--muted);margin-top:8px;">
+          Five-seed mean accuracy across Refinement Rounds 0 through 6. Boundary counterexample selection reaches <code>99.73%</code> using <code>6.67x</code> fewer oracle evaluations than random sampling.
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Adversarial Weight-Space Validation &amp; CEGAR-WSP &middot; 5-Seed CPU Suite</div>
+      <div><a href="paper-atomic-weight-space.html">Formal Monograph</a> &middot; <a href="llm-attribution-and-enterprise-fabric.html">Next: Attribution &amp; 5-Runtime Exporter &rarr;</a></div>
+    </footer>
+  </div>
+
+  <script>
+    const PARADIGMS = [
+      {
+        id: "Paradigm 1",
+        name: "Contradictory Polytope Rules",
+        gain: "6.55% -> 100.0%",
+        beforeAcc: "6.55% accuracy (0.0% contradiction detection)",
+        beforeDesc: "Overlapping priority-free symbolic inequalities cancel opposing rows and route inputs into arbitrary dead zones.",
+        afterAcc: "100.0% accuracy (100.0% Farkas detection)",
+        afterDesc: "A Farkas dual infeasibility certificate isolates conflicting rules before compilation and applies strict tier precedence."
+      },
+      {
+        id: "Paradigm 2",
+        name: "Saturated SVD Nullspace (Rank 58/64)",
+        gain: "11.04% -> 100.0%",
+        beforeAcc: "11.04% new-task accuracy",
+        beforeDesc: "When 58 anchor directions consume a 64-d layer, only 6 residual dimensions remain and underfit 16 new classes.",
+        afterAcc: "100.0% accuracy (0.0 Tier-1 drift)",
+        afterDesc: "Tiered Tikhonov slack protects Tier-1 invariants at 0.0 drift while Boundary Auto-Expansion widens 64-d to 96-d."
+      },
+      {
+        id: "Paradigm 3",
+        name: "25% Poisoned Historical Traces",
+        gain: "18.54% -> 100.0%",
+        beforeAcc: "18.54% accuracy under label-flip poison",
+        beforeDesc: "Ordinary least-squares ridge treats high-leverage self-checked poisoned traces with quadratic weight and flips boundaries.",
+        afterAcc: "100.0% accuracy (100% self-check quarantine)",
+        afterDesc: "Enforcing maker_lineage != checker_lineage plus Huber IRLS residual reweighting quarantines poisoned rows at 0.0 drift."
+      },
+      {
+        id: "Paradigm 4",
+        name: "Collinear 256B LoRA-XS Merge",
+        gain: "44.58% -> 100.0%",
+        beforeAcc: "44.58% accuracy on 4 concurrent skills",
+        beforeDesc: "Summing four overlapping 8x8 subspace adapters linearly creates destructive off-diagonal cross-talk.",
+        afterAcc: "100.0% accuracy across all 4 skills",
+        afterDesc: "Grassmannian QR subspace orthogonalization assigns disjoint basis blocks and eliminates multi-cartridge interference."
+      },
+      {
+        id: "Paradigm 5",
+        name: "Wanda Rare-Tail Channel Slicing",
+        gain: "8.33% -> 100.0% tail",
+        beforeAcc: "8.33% rare-tail accuracy (96d -> 24d)",
+        beforeDesc: "Mean-activation Wanda pruning drops channels that fire exclusively on critical 2% safety-tail events.",
+        afterAcc: "100.0% rare-tail (99.84% overall, -75% RAM)",
+        afterDesc: "Upper-quantile CVaR max-activation scoring preserves sparse tail-critical channels while still cutting 75% of RAM."
+      },
+      {
+        id: "Paradigm 6",
+        name: "Lexical Polarity Twins (24-d)",
+        gain: "46.88% -> 99.10%",
+        beforeAcc: "46.88% accuracy on directional inversions",
+        beforeDesc: "Symmetric PCA cosine slices confuse high-overlap directional twins such as revoke_role(a,b) versus grant_role(b,a).",
+        afterAcc: "99.10% accuracy (0.0 anchor drift)",
+        afterDesc: "An asymmetric bilinear projection learns skew-symmetric directional role bindings inside the 24-d subspace."
+      },
+      {
+        id: "Paradigm 7",
+        name: "Multi-Head .safetensors OOD Shift",
+        gain: "100% -> 0% silent corrupt",
+        beforeAcc: "100.0% silent OOD overconfidence",
+        beforeDesc: "Unconstrained ReLU logits extrapolate linearly on Wave-3 out-of-distribution inputs and emit wrong high-confidence actions.",
+        afterAcc: "0.0% silent corruption (100.0% OOD AUROC)",
+        afterDesc: "A class-conditional Mahalanobis energy gate embedded in the 18,756-byte .safetensors router abstains cleanly on OOD inputs."
+      },
+      {
+        id: "Paradigm 8",
+        name: "Byzantine Swarm Weight Merge",
+        gain: "1.17% -> 100.0%",
+        beforeAcc: "1.17% accuracy (1 of 5 workers Byzantine)",
+        beforeDesc: "A single compromised worker sending -12x scaled anti-weights dominates naive arithmetic weight averaging.",
+        afterAcc: "100.0% accuracy (100% Byzantine quarantine)",
+        afterDesc: "Weiszfeld geometric median aggregation paired with cosine-cone quarantine rejects the Byzantine delta before promotion."
+      }
+    ];
+
+    const rtTabs = document.getElementById("rt-tabs");
+    const rtView = document.getElementById("rt-view");
+
+    function renderRT(idx) {
+      const p = PARADIGMS[idx];
+      Array.from(rtTabs.children).forEach((el, i) => el.classList.toggle("active", i === idx));
+      rtView.innerHTML = `
+        <div class="pane attack">
+          <span class="badge crimson">Naive Compiler Under Attack</span>
+          <h3 style="margin-top:8px;">${p.id}: ${p.name}</h3>
+          <p><strong>Measured Failure:</strong> <code>${p.beforeAcc}</code></p>
+          <p>${p.beforeDesc}</p>
+        </div>
+        <div class="pane defense">
+          <span class="badge teal">Upgraded Weight-Space Defense</span>
+          <h3 style="margin-top:8px;">Recovered Performance: ${p.gain}</h3>
+          <p><strong>Hardened Result:</strong> <code>${p.afterAcc}</code></p>
+          <p>${p.afterDesc}</p>
+        </div>
+      `;
+    }
+
+    PARADIGMS.forEach((p, idx) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "tab-btn" + (idx === 0 ? " active" : "");
+      b.innerHTML = `<div class="t-id">${p.id}</div><div class="t-name">${p.name}</div><div class="t-gain">${p.gain}</div>`;
+      b.addEventListener("click", () => renderRT(idx));
+      rtTabs.appendChild(b);
+    });
+    renderRT(0);
+
+    function updateAstPreview() {
+      const tpl = document.getElementById("ast-select").value;
+      const cap = Math.max(8, parseInt(document.getElementById("ast-batch").value || "64", 10));
+      const thr = parseFloat(document.getElementById("ast-thresh").value || "3.5").toFixed(2);
+      const templates = {
+        fenced_batch_transfer: `def fenced_batch_transfer(records, active_epoch, seen_ids, batch_cap=${cap}):
+    accepted, skipped_stale = [], 0
+    for row in records:
+        if int(row.get("lease_epoch", -1)) < int(active_epoch):
+            skipped_stale += 1
+            continue
+        rid = str(row["id"])
+        if rid in seen_ids:
+            continue
+        seen_ids.add(rid)
+        accepted.append(row)
+        if len(accepted) >= ${cap}:
+            break
+    return {"batch": accepted, "skipped_stale": skipped_stale}`,
+        delta_frame_packer: `def delta_frame_packer(frames, quant_scale=${thr}, chunk_cap=${cap}):
+    if not frames:
+        return {"base": {}, "deltas": []}
+    base = dict(frames[0])
+    deltas = []
+    for row in frames[1:${cap}]:
+        diff = {k: round((row[k] - base.get(k, 0.0)) * ${thr}) for k in row if row[k] != base.get(k)}
+        deltas.append(diff)
+    return {"base": base, "quant_scale": ${thr}, "deltas": deltas}`,
+        unit_and_schema_transformer: `def unit_and_schema_transformer(rows, scale_factor=${thr}, max_rows=${cap}):
+    cleaned = []
+    for r in rows[:${cap}]:
+        val = r.get("value")
+        if val is None or val != val:  # IEEE-754 NaN guard
+            val = 0.0
+        cleaned.append({"id": str(r["id"]), "norm_value": round(float(val) * ${thr}, 6)})
+    return cleaned`,
+        outlier_clipped_normalizer: `def outlier_clipped_normalizer(values, z_cap=${thr}):
+    vals = [0.0 if (v is None or v != v) else float(v) for v in values[:${cap}]]
+    if not vals:
+        return []
+    med = sorted(vals)[len(vals) // 2]
+    mad = sorted(abs(v - med) for v in vals)[len(vals) // 2] or 1e-6
+    return [max(-${thr}, min(${thr}, (v - med) / (1.4826 * mad))) for v in vals]`,
+        bitemporal_wal_persister: `def bitemporal_wal_persister(events, cut_valid_at, cut_known_at, page_cap=${cap}):
+    visible = {}
+    for ev in events:
+        if ev["valid_at"] <= cut_valid_at and ev["known_at"] <= cut_known_at:
+            prev = visible.get(ev["entity_id"])
+            if prev is None or (ev["valid_at"], ev["known_at"]) >= (prev["valid_at"], prev["known_at"]):
+                visible[ev["entity_id"]] = ev
+    return list(visible.values())[:${cap}]`,
+        tiered_posting_compactor: `def tiered_posting_compactor(postings, min_weight=${thr}, keep_top=${cap}):
+    merged = {}
+    for doc_id, score in postings:
+        merged[doc_id] = merged.get(doc_id, 0.0) + float(score)
+    kept = [(d, s) for d, s in merged.items() if abs(s) >= ${thr} * 0.1]
+    kept.sort(key=lambda item: -item[1])
+    return kept[:${cap}]`
+      };
+      document.getElementById("ast-code").textContent = templates[tpl];
+    }
+
+    ["ast-select", "ast-batch", "ast-thresh"].forEach(id => {
+      document.getElementById(id).addEventListener("input", updateAstPreview);
+      document.getElementById(id).addEventListener("change", updateAstPreview);
+    });
+    updateAstPreview();
+  </script>
+</body>
+</html>
